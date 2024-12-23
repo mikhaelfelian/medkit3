@@ -104,30 +104,54 @@ class BaseModel {
     
     public function update($id, $data) {
         try {
+            // Filter data based on fillable fields
             $fields = array_intersect_key($data, array_flip($this->fillable));
             
+            if (empty($fields)) {
+                throw new Exception("No valid fields to update");
+            }
+            
+            // Add timestamps if enabled
             if ($this->timestamps) {
                 $fields['updated_at'] = date('Y-m-d H:i:s');
             }
             
+            // Build SET clause
             $set = [];
             foreach (array_keys($fields) as $field) {
                 $set[] = "{$field} = :{$field}";
             }
             
+            // Prepare SQL
             $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . " WHERE {$this->primaryKey} = :id";
+            
+            // Log the query and data for debugging
+            error_log("Update SQL: " . $sql);
+            error_log("Update Data: " . json_encode($fields));
+            
+            // Prepare and execute
             $stmt = $this->conn->prepare($sql);
             
+            // Bind ID
             $stmt->bindValue(':id', $id);
+            
+            // Bind field values
             foreach ($fields as $key => $value) {
                 $stmt->bindValue(":{$key}", $value);
             }
             
-            return $stmt->execute();
+            // Execute and check result
+            $result = $stmt->execute();
+            
+            if (!$result) {
+                throw new Exception("Database update failed: " . implode(", ", $stmt->errorInfo()));
+            }
+            
+            return $result;
             
         } catch (PDOException $e) {
             error_log("Database Error in BaseModel::update - " . $e->getMessage());
-            throw new Exception("Failed to update record");
+            throw new Exception("Failed to update record: " . $e->getMessage());
         }
     }
     

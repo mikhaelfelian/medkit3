@@ -14,7 +14,7 @@ $data = $data ?? [];
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?= BaseRouting::url('') ?>">Home</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo BaseRouting::url(''); ?>">Home</a></li>
                         <li class="breadcrumb-item active">Pengaturan</li>
                     </ol>
                 </div>
@@ -25,124 +25,85 @@ $data = $data ?? [];
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <!-- Flash Messages -->
-            <?= Notification::render() ?>
+            <?php echo Notification::render(); ?>
             
             <div class="card">
-                <form action="<?= BaseRouting::url('pengaturan/update') ?>" method="POST" enctype="multipart/form-data">
-                    <?= $form->csrf() ?>
-                    
+                <div class="card-header">
+                    <h3 class="card-title">Form Pengaturan</h3>
+                </div>
+                <form action="<?php echo BaseRouting::url('pengaturan/update'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Judul</label>
-                                    <input type="text" 
-                                           name="judul" 
-                                           class="<?= $form->inputClass('judul') ?>" 
-                                           value="<?= $data['judul'] ?? '' ?>">
-                                    <?= $form->error('judul') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Judul Aplikasi</label>
-                                    <input type="text" 
-                                           name="judul_app" 
-                                           class="<?= $form->inputClass('judul_app') ?>" 
-                                           value="<?= $data['judul_app'] ?? '' ?>">
-                                    <?= $form->error('judul_app') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Alamat</label>
-                                    <textarea name="alamat" 
-                                              class="<?= $form->inputClass('alamat') ?>" 
-                                              rows="3"><?= $data['alamat'] ?? '' ?></textarea>
-                                    <?= $form->error('alamat') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Kota</label>
-                                    <input type="text" 
-                                           name="kota" 
-                                           class="<?= $form->inputClass('kota') ?>" 
-                                           value="<?= $data['kota'] ?? '' ?>">
-                                    <?= $form->error('kota') ?>
+                        <div class="form-group">
+                            <label for="judul_app">Nama Aplikasi</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="judul_app" 
+                                   name="judul_app" 
+                                   value="<?php echo $data->judul_app ?? ''; ?>" 
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deskripsi">Deskripsi</label>
+                            <textarea class="form-control" 
+                                      id="deskripsi" 
+                                      name="deskripsi" 
+                                      rows="3"><?php echo $data->deskripsi ?? ''; ?></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logo">Logo</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" 
+                                           class="custom-file-input" 
+                                           id="logo" 
+                                           name="logo" 
+                                           accept="image/*">
+                                    <label class="custom-file-label" for="logo">Choose file</label>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>URL</label>
-                                    <input type="text" 
-                                           name="url" 
-                                           class="<?= $form->inputClass('url') ?>" 
-                                           value="<?= $data['url'] ?? '' ?>">
-                                    <?= $form->error('url') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Theme</label>
-                                    <select name="theme" class="<?= $form->inputClass('theme') ?>">
-                                        <option value="default" <?= ($data['theme'] ?? '') == 'default' ? 'selected' : '' ?>>Default</option>
-                                        <option value="dark" <?= ($data['theme'] ?? '') == 'dark' ? 'selected' : '' ?>>Dark</option>
-                                    </select>
-                                    <?= $form->error('theme') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Pagination Limit</label>
-                                    <input type="number" 
-                                           name="pagination_limit" 
-                                           class="<?= $form->inputClass('pagination_limit') ?>" 
-                                           value="<?= $data['pagination_limit'] ?? 10 ?>">
-                                    <?= $form->error('pagination_limit') ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Logo</label>
-                                    <div class="custom-file">
-                                        <input type="file" 
-                                               name="logo" 
-                                               class="<?= $form->inputClass('logo', 'custom-file-input') ?>" 
-                                               id="logo">
-                                        <label class="custom-file-label" for="logo">Choose file</label>
-                                    </div>
-                                    <?= $form->error('logo') ?>
-                                    <?php if (!empty($data['logo'])): ?>
-                                        <img src="<?= AssetHelper::custom('img/' . $data['logo']) ?>" 
-                                             alt="Logo" 
-                                             class="mt-2" 
-                                             style="max-height: 50px">
-                                    <?php endif; ?>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label>Favicon</label>
-                                    <div class="custom-file">
-                                        <input type="file" 
-                                               name="favicon" 
-                                               class="<?= $form->inputClass('favicon', 'custom-file-input') ?>" 
-                                               id="favicon">
-                                        <label class="custom-file-label" for="favicon">Choose file</label>
-                                    </div>
-                                    <?= $form->error('favicon') ?>
-                                    <?php if (!empty($data['favicon'])): ?>
-                                        <img src="<?= AssetHelper::custom('img/' . $data['favicon']) ?>" 
-                                             alt="Favicon" 
-                                             class="mt-2" 
-                                             style="max-height: 32px">
-                                    <?php endif; ?>
+                            <?php if (!empty($data->logo)): ?>
+                                <img src="<?php echo BaseRouting::asset($data->logo); ?>" 
+                                     alt="Current Logo" 
+                                     class="mt-2" 
+                                     style="max-height: 100px;">
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="favicon">Favicon</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" 
+                                           class="custom-file-input" 
+                                           id="favicon" 
+                                           name="favicon" 
+                                           accept="image/*">
+                                    <label class="custom-file-label" for="favicon">Choose file</label>
                                 </div>
                             </div>
+                            <?php if (!empty($data->favicon)): ?>
+                                <img src="<?php echo BaseRouting::asset($data->favicon); ?>" 
+                                     alt="Current Favicon" 
+                                     class="mt-2" 
+                                     style="max-height: 32px;">
+                            <?php endif; ?>
                         </div>
                     </div>
-                    
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </section>
-</div> 
+</div>
+
+<!-- bs-custom-file-input -->
+<script src="<?php echo BaseRouting::asset('theme/admin-lte-3/plugins/bs-custom-file-input/bs-custom-file-input.min.js'); ?>"></script>
+<script>
+$(function() {
+    bsCustomFileInput.init();
+});
+</script> 

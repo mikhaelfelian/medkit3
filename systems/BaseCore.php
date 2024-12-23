@@ -10,6 +10,7 @@ class BaseCore {
         require_once ROOT_PATH . '/systems/controllers/BaseController.php';
         require_once ROOT_PATH . '/systems/models/BaseModel.php';
         require_once ROOT_PATH . '/systems/helpers/ViewHelper.php';
+        require_once ROOT_PATH . '/systems/helpers/AssetHelper.php';
         require_once ROOT_PATH . '/systems/BaseForm.php';
         
         // Register autoloader for models
