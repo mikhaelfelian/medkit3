@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directory Structure - NUSANTARA HMVC</title>
+    <title>Project Structure - MEDKIT3</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h1>Directory Structure</h1>
-    
-    <pre><code>project/
-├── app/
-│   ├── controllers/    # Application controllers
-│   ├── models/        # Database models
-│   ├── views/         # View templates
-│   ├── migrations/    # Database migrations
-│   └── config/        # Application configuration
-├── public/
-│   ├── assets/        # Public assets (CSS, JS, images)
-│   └── uploads/       # User uploaded files
-├── systems/
-│   ├── core/          # Core framework files
-│   ├── helpers/       # Helper functions
-│   ├── libraries/     # Third-party libraries
-│   └── database/      # Database handlers
-├── documentation/     # Framework documentation
-└── vendor/           # Composer dependencies</code></pre>
+    <h1>Project Structure</h1>
 
-    <h2>Key Directories</h2>
-    
-    <h3>app/</h3>
-    <p>Contains your application code including controllers, models, and views.</p>
-    
-    <h3>public/</h3>
-    <p>The only directory that should be publicly accessible via web.</p>
-    
-    <h3>systems/</h3>
-    <p>Contains the framework's core files and libraries.</p>
+    <h2>Directory Layout</h2>
+    <pre><code>
+medkit3/
+├── app/                    # Application-specific code
+│   ├── controllers/       # Application controllers
+│   ├── models/           # Database models
+│   ├── views/            # View templates
+│   ├── helpers/          # Application helpers
+│   └── migrations/       # Database migrations
+├── systems/               # Core framework files
+│   ├── controllers/      # Base controllers
+│   ├── models/          # Base models
+│   ├── routing/         # Routing system
+│   ├── database/        # Database handlers
+│   ├── security/        # Security components
+│   └── helpers/         # Core helpers
+├── public/               # Publicly accessible files
+├── config/              # Configuration files
+└── documentation/       # Documentation files
+    </code></pre>
+
+    <h2>Key Components</h2>
+    <ul>
+        <li><strong>app/</strong> - Contains application-specific code</li>
+        <li><strong>systems/</strong> - Contains the framework's core files</li>
+        <li><strong>public/</strong> - Web server document root</li>
+        <li><strong>config/</strong> - Configuration files</li>
+    </ul>
 </body>
 </html> 

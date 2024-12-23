@@ -3,53 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MVC Pattern - NUSANTARA HMVC</title>
+    <title>MVC Architecture - MEDKIT3</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h1>MVC Pattern</h1>
+    <h1>MVC Architecture</h1>
 
     <h2>Controllers</h2>
-    <pre><code>// app/controllers/ExampleController.php
-class ExampleController extends BaseController {
-    public function __construct() {
-        parent::__construct();
-        $this->loadModel('ExampleModel');
-    }
-
+    <p>Controllers handle user requests and manage application logic.</p>
+    <pre><code>
+class PasienController extends BaseController {
     public function index() {
-        return $this->view('example/index', [
-            'title' => 'Example Page',
-            'data' => $this->model->getAll()
-        ]);
+        // Handle request
+        // Load model
+        // Return view
     }
-}</code></pre>
+}
+    </code></pre>
 
     <h2>Models</h2>
-    <pre><code>// app/models/ExampleModel.php
-class ExampleModel extends BaseModel {
-    protected $table = 'examples';
-    protected $primaryKey = 'id';
-    protected $fillable = ['name', 'description'];
-
-    public function __construct($conn) {
-        parent::__construct($conn, $this->table);
-    }
-}</code></pre>
+    <p>Models handle data and business logic.</p>
+    <pre><code>
+class PasienModel extends BaseModel {
+    protected $table = 'tbl_m_pasien';
+    protected $fillable = ['kode', 'nama', 'nik'];
+}
+    </code></pre>
 
     <h2>Views</h2>
-    <pre><code><!-- app/views/example/index.php -->
+    <p>Views handle the presentation layer.</p>
+    <pre><code>
 &lt;div class="content-wrapper"&gt;
-    &lt;section class="content-header"&gt;
-        &lt;h1&gt;&lt;?= $title ?&gt;&lt;/h1&gt;
-    &lt;/section&gt;
-    
-    &lt;section class="content"&gt;
-        &lt;div class="card"&gt;
-            &lt;div class="card-body"&gt;
-                &lt;!-- Your content here --&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/section&gt;
-&lt;/div&gt;</code></pre>
+    &lt;h1&gt;<?= $title ?>&lt;/h1&gt;
+    &lt;!-- Content here --&gt;
+&lt;/div&gt;
+    </code></pre>
 </body>
 </html> 

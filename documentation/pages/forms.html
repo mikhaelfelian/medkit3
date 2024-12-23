@@ -3,62 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Handling - NUSANTARA HMVC</title>
+    <title>Forms & Validation - MEDKIT3</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h1>Form Handling</h1>
+    <h1>Forms & Validation</h1>
 
-    <h2>Creating Forms</h2>
-    <pre><code>&lt;?php $form = BaseForm::getInstance(); ?&gt;
-
-&lt;form action="&lt;?= BaseRouting::url('example/store') ?&gt;" method="POST"&gt;
-    &lt;?= $form->csrf() ?&gt;
-    
-    &lt;div class="form-group"&gt;
-        &lt;label&gt;Name&lt;/label&gt;
-        &lt;input type="text" 
-               name="name" 
-               class="&lt;?= $form->inputClass('name') ?&gt;" 
-               value="&lt;?= $form->input('name') ?&gt;"&gt;
-        &lt;?= $form->error('name') ?&gt;
-    &lt;/div&gt;
-    
-    &lt;div class="form-group"&gt;
-        &lt;label&gt;Status&lt;/label&gt;
-        &lt;?= $form->select('status', [
-            'active' => 'Active',
-            'inactive' => 'Inactive'
-        ], 'active', ['class' => 'form-control']) ?&gt;
-    &lt;/div&gt;
-    
-    &lt;button type="submit" class="btn btn-primary"&gt;Submit&lt;/button&gt;
-&lt;/form&gt;</code></pre>
-
-    <h2>Form Validation</h2>
-    <pre><code>public function store() {
-    $validation = $this->validate([
-        'name' => ['required', 'min:3'],
-        'email' => ['required', 'email'],
-        'status' => ['required']
-    ]);
-    
-    if ($validation !== true) {
-        $form = BaseForm::getInstance();
-        $form->setErrors($validation);
-        return $this->redirect('example/create');
-    }
-    
-    // Process form...
-}</code></pre>
-
-    <h2>Available Form Methods</h2>
+    <h2>Form Helper</h2>
+    <p>The BaseForm class provides methods for form creation and handling:</p>
     <ul>
-        <li><code>input($name, $default = '')</code> - Get input value</li>
-        <li><code>text($name, $value, $attributes)</code> - Create text input</li>
-        <li><code>select($name, $options, $selected, $attributes)</code> - Create select dropdown</li>
-        <li><code>csrf()</code> - Generate CSRF token field</li>
-        <li><code>error($field)</code> - Get error message for field</li>
-        <li><code>inputClass($field, $defaultClass)</code> - Get input class with validation state</li>
+        <li>input() - Create input fields</li>
+        <li>select() - Create select dropdowns</li>
+        <li>textarea() - Create textarea fields</li>
+        <li>csrf() - Add CSRF protection</li>
+        <li>validation - Handle form validation</li>
     </ul>
+
+    <h2>Example Usage</h2>
+    <pre><code>
+$form = BaseForm::getInstance();
+
+// Open form
+echo $form->open('pasien/store', 'POST');
+
+// Create input
+echo $form->input('text', 'nama', '', ['required' => true]);
+
+// Create select
+echo $form->select('status', [
+    'active' => 'Active',
+    'inactive' => 'Inactive'
+]);
+
+// Close form
+echo $form->close();
+    </code></pre>
 </body>
 </html> 

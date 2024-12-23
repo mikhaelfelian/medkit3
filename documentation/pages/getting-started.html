@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting Started - NUSANTARA HMVC</title>
+    <title>Getting Started - MEDKIT3</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <h1>Getting Started</h1>
@@ -17,38 +18,17 @@
     </ul>
 
     <h2>Installation</h2>
-    <pre><code>git clone [repository-url]
-cd project-directory
-composer install</code></pre>
-
-    <h2>Configuration</h2>
-    <p>1. Configure your database in config/config.php:</p>
-    <pre><code>$db_config = [
-    'development' => [
-        'hostname' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => 'your_database'
-    ]
-];</code></pre>
-
-    <p>2. Set your application configuration:</p>
-    <pre><code>$config = [
-    'development' => [
-        'app_name' => 'Your App Name',
-        'app_version' => '1.0.0',
-        'timezone' => 'Asia/Jakarta',
-        'language' => 'id',
-        'debug_mode' => true,
-        'encryption_key' => 'your-32-char-key',
-        'encryption_method' => 'AES-256-CBC'
-    ]
-];</code></pre>
-
-    <h2>Directory Permissions</h2>
-    <p>Make sure these directories are writable:</p>
-    <pre><code>chmod -R 755 public/uploads/
-chmod -R 755 app/cache/
+    <ol>
+        <li>Clone the repository:
+            <pre><code>git clone https://github.com/yourusername/medkit3.git</code></pre>
+        </li>
+        <li>Configure your web server to point to the public directory</li>
+        <li>Copy config/config.example.php to config/config.php and update settings</li>
+        <li>Import the database schema from database/schema.sql</li>
+        <li>Set proper permissions:
+            <pre><code>chmod -R 755 public/
 chmod -R 755 app/logs/</code></pre>
+        </li>
+    </ol>
 </body>
 </html> 
