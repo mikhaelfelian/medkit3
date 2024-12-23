@@ -9,22 +9,32 @@ class PasienController extends BaseController {
      * Display a listing of patients
      */
     public function index() {
-        $page = (int) $this->input('page', 1);
-        $perPage = 10;
-        $search = $this->input('search');
-        
-        // Get paginated data
-        if ($search) {
-            $data = $this->model->search([], $search, $page, $perPage);
-        } else {
-            $data = $this->model->paginate($page, $perPage, 'id DESC');
+        try {
+            // Get current page from URL, default to 1
+            $page = max(1, intval($this->input('page', 1)));
+            $perPage = 10;
+            
+            // Get paginated data
+            $result = $this->model->paginate($page, $perPage);
+            
+            // Convert data to array if it's not already
+            $data = json_decode(json_encode($result['data']), true);
+            
+            return $this->view('pasien/index', [
+                'title' => 'Data Pasien',
+                'data' => $data,
+                'pagination' => [
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'total_pages' => ceil($result['total'] / $perPage),
+                    'total' => $result['total']
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            Notification::error('Gagal memuat data pasien');
+            return $this->redirect('');
         }
-        
-        return $this->view('pasien/index', [
-            'title' => 'Data Pasien',
-            'data' => $data,
-            'search' => $search
-        ]);
     }
     
     /**

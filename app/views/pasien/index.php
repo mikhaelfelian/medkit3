@@ -1,10 +1,17 @@
 <?php
 $form = BaseForm::getInstance();
-
-// Ensure variables exist
-$result = $result ?? null;
-$pagination = $pagination ?? ['current_page' => 1, 'total' => 0];
 $search = $form->input('search');
+
+// Ensure pagination data exists
+$currentPage = isset($pagination['current_page']) ? (int)$pagination['current_page'] : 1;
+$perPage = isset($pagination['per_page']) ? (int)$pagination['per_page'] : 10;
+$totalPages = isset($pagination['total_pages']) ? (int)$pagination['total_pages'] : 1;
+
+// Calculate starting number for the current page
+$startNumber = (($currentPage - 1) * $perPage) + 1;
+
+// Ensure data is an array
+$data = is_array($data) ? $data : [];
 ?>
 
 <!-- Content Wrapper -->
@@ -18,7 +25,7 @@ $search = $form->input('search');
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo BaseRouting::url('') ?>">Home</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo BaseRouting::url(''); ?>">Home</a></li>
                         <li class="breadcrumb-item active">Data Pasien</li>
                     </ol>
                 </div>
@@ -29,128 +36,86 @@ $search = $form->input('search');
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <!-- Flash Messages -->
             <?php echo Notification::render(); ?>
-
+            
             <div class="card">
                 <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a href="<?php echo BaseRouting::url('pasien/create') ?>" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Tambah Pasien
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <form method="GET" class="float-right">
-                                <div class="input-group input-group-sm" style="width: 250px;">
-                                    <?php echo $form->input('text', 'search', $search, [
-                                        'class' => 'form-control float-right',
-                                        'placeholder' => 'Search'
-                                    ]); ?>
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-default">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title">Daftar Pasien</h3>
+                        <a href="<?php echo BaseRouting::url('pasien/create'); ?>" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Pasien
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th>No. RM</th>
-                                    <th>Nama Pasien</th>
-                                    <th>Alamat</th>
-                                    <th>No. Telp</th>
-                                    <th width="15%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px">No</th>
+                                <th>Kode</th>
+                                <th>NIK</th>
+                                <th>Nama</th>
+                                <th>No. HP</th>
+                                <th>Alamat</th>
+                                <th style="width: 100px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($data)): ?>
                                 <?php 
-                                if (!empty($data['data'])): 
-                                    $start = ($data['current_page'] - 1) * $data['per_page'] + 1;
-                                    foreach($data['data'] as $row): 
+                                $counter = $startNumber;
+                                foreach ($data as $pasien): 
                                 ?>
+                                    <tr>
+                                        <td><?php echo $counter++; ?></td>
+                                        <td>
+                                            <a href="<?php echo BaseRouting::url('pasien/show/' . $pasien['id']); ?>" 
+                                               class="text-primary">
+                                                <?php echo htmlspecialchars($pasien['kode']); ?>
+                                            </a>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($pasien['nik']); ?></td>
+                                        <td><?php echo htmlspecialchars($pasien['nama']); ?></td>
+                                        <td><?php echo htmlspecialchars($pasien['no_hp']); ?></td>
+                                        <td><?php echo htmlspecialchars($pasien['alamat']); ?></td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="<?php echo BaseRouting::url('pasien/edit/' . $pasien['id']); ?>" 
+                                                   class="btn btn-sm btn-info" 
+                                                   title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="<?php echo BaseRouting::url('pasien/delete/' . $pasien['id']); ?>" 
+                                                   class="btn btn-sm btn-danger" 
+                                                   onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
+                                                   title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
                                 <tr>
-                                    <td><?php echo $start++; ?></td>
-                                    <td><?php echo htmlspecialchars($row->kode); ?></td>
-                                    <td><?php echo htmlspecialchars($row->nama); ?></td>
-                                    <td><?php echo htmlspecialchars($row->alamat); ?></td>
-                                    <td><?php echo htmlspecialchars($row->no_hp); ?></td>
-                                    <td>
-                                        <a href="<?php echo BaseRouting::url('pasien/edit/'.$row->id); ?>" 
-                                           class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="<?php echo BaseRouting::url('pasien/delete/'.$row->id); ?>" 
-                                           class="btn btn-danger btn-sm" 
-                                           onclick="return confirm('Hapus data ini?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
+                                    <td colspan="7" class="text-center">Tidak ada data</td>
                                 </tr>
-                                <?php 
-                                    endforeach;
-                                else:
-                                ?>
-                                <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    <?php if (!empty($data['total'])): ?>
-                    <div class="row mt-3">
-                        <div class="col-sm-12 col-md-5">
-                            <div class="dataTables_info">
-                                Showing <?php echo ($data['current_page'] - 1) * $data['per_page'] + 1 ?> 
-                                to <?php echo min($data['current_page'] * $data['per_page'], $data['total']) ?> 
-                                of <?php echo $data['total'] ?> entries
-                                <?php echo $search ? " (filtered from {$data['total']} total entries)" : '' ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-7">
-                            <div class="dataTables_paginate paging_simple_numbers">
-                                <ul class="pagination justify-content-end">
-                                    <!-- Previous -->
-                                    <li class="page-item <?php echo ($data['current_page'] == 1) ? 'disabled' : '' ?>">
-                                        <a class="page-link" 
-                                           href="<?php echo BaseRouting::url('pasien?page=' . ($data['current_page'] - 1) . ($search ? "&search={$search}" : '')) ?>">
-                                            Previous
-                                        </a>
-                                    </li>
-                                    
-                                    <!-- Page Numbers -->
-                                    <?php for($i = 1; $i <= $data['last_page']; $i++): ?>
-                                    <li class="page-item <?php echo ($data['current_page'] == $i) ? 'active' : '' ?>">
-                                        <a class="page-link" 
-                                           href="<?php echo BaseRouting::url('pasien?page=' . $i . ($search ? "&search={$search}" : '')) ?>">
-                                            <?php echo $i ?>
-                                        </a>
-                                    </li>
-                                    <?php endfor; ?>
-                                    
-                                    <!-- Next -->
-                                    <li class="page-item <?php echo ($data['current_page'] >= $data['last_page']) ? 'disabled' : '' ?>">
-                                        <a class="page-link" 
-                                           href="<?php echo BaseRouting::url('pasien?page=' . ($data['current_page'] + 1) . ($search ? "&search={$search}" : '')) ?>">
-                                            Next
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
+                <?php if ($totalPages > 1): ?>
+                <div class="card-footer clearfix">
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?php echo $i == $currentPage ? 'active' : ''; ?>">
+                                <a class="page-link" href="<?php echo BaseRouting::url('pasien?page=' . $i); ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
