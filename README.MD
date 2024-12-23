@@ -99,6 +99,7 @@ MIT License
 ## Created by:
 
 Mikhael Felian Waskito
+Semarang, 23 December 2024
 ```
 
 This README focuses on:
