@@ -1,6 +1,18 @@
-# NUSANTARA - HMVC Framework 1.0 Beta
+# NUSANTARA HMVC 1.0 - Beta
 
-A lightweight HMVC PHP framework with AdminLTE integration for healthcare information systems.
+## About NUSANTARA
+
+NUSANTARA, derived from the ancient Javanese term "Nusantara" meaning "archipelago", represents the vast Indonesian archipelago. This name was chosen to reflect:
+
+1. **Unity in Diversity**: Like Indonesia's motto "Bhinneka Tunggal Ika", this framework unifies various components while maintaining their independence.
+
+2. **Local Wisdom**: Incorporating Indonesian technological advancement while maintaining our cultural identity.
+
+3. **Modular Architecture**: Just as Nusantara consists of thousands of islands working together as one nation, this HMVC framework consists of modular components working together as one system.
+
+4. **Scalability**: Like the vast archipelago, this framework is designed to scale from small to enterprise applications.
+
+A lightweight HMVC (Hierarchical Model-View-Controller) PHP framework with AdminLTE integration, designed with Indonesian healthcare systems in mind.
 
 ## Requirements
 
@@ -112,6 +124,10 @@ Semarang, 23 December 2024
 ## License
 
 MIT License
+
+## Creator's Note
+
+This framework represents my vision of creating a healthcare system framework that embodies Indonesian values while meeting international standards. The name "NUSANTARA" was chosen to inspire Indonesian developers to create solutions that are both locally relevant and globally competitive.
 ```
 
 This README focuses on:
