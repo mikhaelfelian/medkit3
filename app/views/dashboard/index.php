@@ -24,13 +24,13 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>150</h3>
+                            <h3><?= $totalPatients ?></h3>
                             <p>Total Pasien</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <a href="<?php echo BaseRouting::url('pasien'); ?>" class="small-box-footer">
+                        <a href="<?= BaseRouting::url('pasien') ?>" class="small-box-footer">
                             More info <i class="fas fa-arrow-circle-right"></i>
                         </a>
                     </div>

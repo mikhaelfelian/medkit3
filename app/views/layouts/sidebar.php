@@ -1,8 +1,5 @@
 <?php
 $settings = Settings::getInstance();
-$currentUri = $_SERVER['REQUEST_URI'];
-$isMasterData = strpos($currentUri, 'pasien') !== false;
-$isSettings = strpos($currentUri, 'pengaturan') !== false;
 ?>
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -30,34 +27,54 @@ $isSettings = strpos($currentUri, 'pengaturan') !== false;
                 <!-- Dashboard -->
                 <li class="nav-item">
                     <a href="<?php echo BaseRouting::url(''); ?>" 
-                       class="nav-link <?php echo $currentUri == BASE_URL . '/' ? 'active' : ''; ?>">
+                       class="nav-link <?php echo empty($_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI'] == BASE_URL . '/' ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <!-- Master Data -->
-                <li class="nav-header">MASTER DATA</li>
-                <li class="nav-item">
-                    <a href="<?php echo BaseRouting::url('pasien'); ?>" 
-                       class="nav-link <?php echo $isMasterData ? 'active' : ''; ?>">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>Data Pasien</p>
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-database"></i>
+                        <p>
+                            Master Data
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pasien'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Pasien</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
-                <!-- Settings -->
-                <li class="nav-header">PENGATURAN</li>
-                <li class="nav-item">
-                    <a href="<?php echo BaseRouting::url('pengaturan'); ?>" 
-                       class="nav-link <?php echo $isSettings ? 'active' : ''; ?>">
+                <!-- Settings with Submenu -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-cog"></i>
-                        <p>Pengaturan Aplikasi</p>
+                        <p>
+                            Pengaturan
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pengaturan'); ?>" 
+                               class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/pengaturan' ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Pengaturan Aplikasi</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
-</aside> 
+</aside>

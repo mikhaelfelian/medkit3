@@ -4,18 +4,21 @@ if (!defined('ROOT_PATH')) {
     define('ROOT_PATH', dirname(__DIR__));
 }
 
-// Enable error reporting in development
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Load configuration first
+require_once ROOT_PATH . '/config/config.php';
 
-// Load and initialize core
+// Load core classes
+require_once ROOT_PATH . '/systems/Database.php';
 require_once ROOT_PATH . '/systems/BaseCore.php';
+require_once ROOT_PATH . '/systems/BaseSecurity.php';
+require_once ROOT_PATH . '/systems/routing/BaseRouting.php';
+require_once ROOT_PATH . '/systems/forms/BaseForm.php';
 
 // Initialize application
 try {
     new BaseCore();
 } catch (Exception $e) {
-    if (defined('DEBUG_MODE') && DEBUG_MODE) {
+    if (DEBUG_MODE) {
         die("Application Error: " . $e->getMessage());
     } else {
         error_log("Application Error: " . $e->getMessage());

@@ -208,5 +208,16 @@ class BaseModel {
             ];
         }
     }
+    
+    public function count() {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table}";
+            $stmt = $this->conn->query($sql);
+            return $stmt->fetch(PDO::FETCH_OBJ)->total;
+        } catch (PDOException $e) {
+            error_log("Database Error: " . $e->getMessage());
+            return 0;
+        }
+    }
 }
 ?> 

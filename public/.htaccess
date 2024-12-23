@@ -1,16 +1,13 @@
 RewriteEngine On
+RewriteBase /medkit3/public/
 
-# If the request is for a real file or directory, serve it directly
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# Allow direct access to assets
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Otherwise, route through index.php
-RewriteRule ^(.*)$ index.php/$1 [L,QSA]
-
-# Allow direct access to assets folder
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-</IfModule>
+# Redirect all other requests to main index.php
+RewriteRule ^(.*)$ ../index.php [QSA,L]
 
 # Cache control for assets
 <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">

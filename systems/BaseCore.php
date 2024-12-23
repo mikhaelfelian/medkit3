@@ -1,36 +1,61 @@
 <?php
 class BaseCore {
     public function __construct() {
-        // Load config
-        require_once ROOT_PATH . '/config/config.php';
-        
-        // Load core classes
-        require_once ROOT_PATH . '/systems/Database.php';
-        require_once ROOT_PATH . '/systems/routing/BaseRouting.php';
-        require_once ROOT_PATH . '/systems/controllers/BaseController.php';
-        require_once ROOT_PATH . '/systems/models/BaseModel.php';
-        require_once ROOT_PATH . '/systems/helpers/ViewHelper.php';
-        require_once ROOT_PATH . '/systems/helpers/AssetHelper.php';
-        require_once ROOT_PATH . '/systems/BaseForm.php';
-        
-        // Register autoloader for models
-        spl_autoload_register(function ($class) {
-            // Check if class ends with 'Model'
-            if (substr($class, -5) === 'Model') {
-                $file = ROOT_PATH . '/app/models/' . $class . '.php';
-                if (file_exists($file)) {
-                    require_once $file;
-                }
+        try {
+            // Start session
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
-        });
+            
+            // Register autoloader
+            spl_autoload_register([$this, 'autoload']);
+            
+            // Initialize components
+            $this->initializeComponents();
+            
+            // Dispatch the request
+            BaseRouting::dispatch();
+            
+        } catch (Exception $e) {
+            $this->handleError($e);
+        }
+    }
+    
+    private function initializeComponents() {
+        // Initialize database
+        Database::getInstance();
         
-        // Initialize database connection
-        global $conn;
-        $conn = Database::getInstance()->getConnection();
+        // Initialize security
+        BaseSecurity::getInstance();
+    }
+    
+    private function autoload($class) {
+        $paths = [
+            ROOT_PATH . '/systems/controllers/',
+            ROOT_PATH . '/systems/models/',
+            ROOT_PATH . '/systems/helpers/',
+            ROOT_PATH . '/app/controllers/',
+            ROOT_PATH . '/app/models/',
+            ROOT_PATH . '/app/helpers/'
+        ];
         
-        // Initialize routing
-        BaseRouting::init(BASE_URL);
-        BaseRouting::dispatch();
+        foreach ($paths as $path) {
+            $file = $path . $class . '.php';
+            if (file_exists($file)) {
+                require_once $file;
+                return;
+            }
+        }
+    }
+    
+    private function handleError($e) {
+        error_log($e->getMessage());
+        if (DEBUG_MODE) {
+            die("Application Error: " . $e->getMessage());
+        } else {
+            header("Location: " . BASE_URL . "/error");
+            exit;
+        }
     }
 }
 ?> 

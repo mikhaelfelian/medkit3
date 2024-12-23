@@ -1,6 +1,5 @@
 <?php
 $form = BaseForm::getInstance();
-$data = $data ?? [];
 ?>
 
 <!-- Content Wrapper -->
@@ -14,7 +13,7 @@ $data = $data ?? [];
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo BaseRouting::url(''); ?>">Home</a></li>
+                        <li class="breadcrumb-item"><a href="<?= BaseRouting::url('') ?>">Home</a></li>
                         <li class="breadcrumb-item active">Pengaturan</li>
                     </ol>
                 </div>
@@ -25,83 +24,108 @@ $data = $data ?? [];
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <?php echo Notification::render(); ?>
+            <?= Notification::render() ?>
             
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Form Pengaturan</h3>
+                <?= $form->open(BaseRouting::url('pengaturan/update'), 'POST', ['enctype' => 'multipart/form-data']) ?>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="judul">Judul</label>
+                                <?= $form->input('text', 'judul', $data->judul ?? '', ['class' => 'form-control']) ?>
+                                <?php if ($form->hasError('judul')): ?>
+                                    <div class="invalid-feedback"><?= $form->getError('judul') ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="judul_app">Judul Aplikasi</label>
+                                <?= $form->input('text', 'judul_app', $data->judul_app ?? '', ['required' => true]) ?>
+                                <?php if ($form->hasError('judul_app')): ?>
+                                    <div class="invalid-feedback"><?= $form->getError('judul_app') ?></div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="alamat">Alamat</label>
+                                <?= $form->textarea('alamat', $data->alamat ?? '', ['rows' => 3]) ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="deskripsi">Deskripsi</label>
+                                <?= $form->textarea('deskripsi', $data->deskripsi ?? '', ['rows' => 3]) ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="kota">Kota</label>
+                                <?= $form->input('text', 'kota', $data->kota ?? '') ?>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="url">URL</label>
+                                <?= $form->input('url', 'url', $data->url ?? '') ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="theme">Theme</label>
+                                <?= $form->select('theme', [
+                                    'default' => 'Default',
+                                    'dark' => 'Dark',
+                                    'light' => 'Light'
+                                ], $data->theme ?? 'default') ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pagination_limit">Batas Pagination</label>
+                                <?= $form->input('number', 'pagination_limit', $data->pagination_limit ?? 10, [
+                                    'min' => 5,
+                                    'max' => 100
+                                ]) ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="logo">Logo</label>
+                                <div class="custom-file">
+                                    <?= $form->input('file', 'logo', '', [
+                                        'class' => 'custom-file-input',
+                                        'accept' => 'image/*'
+                                    ]) ?>
+                                    <label class="custom-file-label">Choose file</label>
+                                </div>
+                                <?php if (!empty($data->logo)): ?>
+                                    <img src="<?= BaseRouting::asset($data->logo) ?>" alt="Current Logo" class="mt-2" style="max-height: 50px;">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="favicon">Favicon</label>
+                                <div class="custom-file">
+                                    <?= $form->input('file', 'favicon', '', [
+                                        'class' => 'custom-file-input',
+                                        'accept' => 'image/*'
+                                    ]) ?>
+                                    <label class="custom-file-label">Choose file</label>
+                                </div>
+                                <?php if (!empty($data->favicon)): ?>
+                                    <img src="<?= BaseRouting::asset($data->favicon) ?>" alt="Current Favicon" class="mt-2" style="max-height: 32px;">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form action="<?php echo BaseRouting::url('pengaturan/update'); ?>" method="POST" enctype="multipart/form-data">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="judul_app">Nama Aplikasi</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="judul_app" 
-                                   name="judul_app" 
-                                   value="<?php echo $data->judul_app ?? ''; ?>" 
-                                   required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="deskripsi">Deskripsi</label>
-                            <textarea class="form-control" 
-                                      id="deskripsi" 
-                                      name="deskripsi" 
-                                      rows="3"><?php echo $data->deskripsi ?? ''; ?></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="logo">Logo</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" 
-                                           class="custom-file-input" 
-                                           id="logo" 
-                                           name="logo" 
-                                           accept="image/*">
-                                    <label class="custom-file-label" for="logo">Choose file</label>
-                                </div>
-                            </div>
-                            <?php if (!empty($data->logo)): ?>
-                                <img src="<?php echo BaseRouting::asset($data->logo); ?>" 
-                                     alt="Current Logo" 
-                                     class="mt-2" 
-                                     style="max-height: 100px;">
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="favicon">Favicon</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" 
-                                           class="custom-file-input" 
-                                           id="favicon" 
-                                           name="favicon" 
-                                           accept="image/*">
-                                    <label class="custom-file-label" for="favicon">Choose file</label>
-                                </div>
-                            </div>
-                            <?php if (!empty($data->favicon)): ?>
-                                <img src="<?php echo BaseRouting::asset($data->favicon); ?>" 
-                                     alt="Current Favicon" 
-                                     class="mt-2" 
-                                     style="max-height: 32px;">
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+                <?= $form->close() ?>
             </div>
         </div>
     </section>
 </div>
 
 <!-- bs-custom-file-input -->
-<script src="<?php echo BaseRouting::asset('theme/admin-lte-3/plugins/bs-custom-file-input/bs-custom-file-input.min.js'); ?>"></script>
 <script>
 $(function() {
     bsCustomFileInput.init();

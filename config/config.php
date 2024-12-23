@@ -1,58 +1,70 @@
 <?php
+// Environment Configuration
+define('ENVIRONMENT', 'development'); // 'development' or 'production'
+
 // Database Configuration
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'db_medkit3');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+$db_config = [
+    'development' => [
+        'hostname' => 'localhost',
+        'database' => 'db_medkit3',
+        'username' => 'root',
+        'password' => '',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci'
+    ],
+    'production' => [
+        'hostname' => 'localhost',
+        'database' => 'db_medkit3',
+        'username' => 'root',
+        'password' => '',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci'
+    ]
+];
 
 // Application Configuration
-define('BASE_URL', 'http://localhost/medkit3');
+$app_config = [
+    'development' => [
+        'base_url' => 'http://localhost/medkit3',
+        'debug_mode' => true,
+        'timezone' => 'Asia/Jakarta',
+        'encryption_key' => 'your-32-char-key',
+        'encryption_method' => 'AES-256-CBC'
+    ],
+    'production' => [
+        'base_url' => 'https://your-domain.com',
+        'debug_mode' => false,
+        'timezone' => 'Asia/Jakarta',
+        'encryption_key' => 'production-32-char-key',
+        'encryption_method' => 'AES-256-CBC'
+    ]
+];
 
-// Define ROOT_PATH only if not already defined
+// Load environment-specific configuration
+$current_config = $app_config[ENVIRONMENT];
+$current_db = $db_config[ENVIRONMENT];
+
+// Define constants only if not already defined
 if (!defined('ROOT_PATH')) {
     define('ROOT_PATH', dirname(__DIR__));
 }
-
-// Debug Mode
-define('DEBUG_MODE', true);
-
-// Time Zone
-date_default_timezone_set('Asia/Jakarta');
-
-// Error Reporting
-if (DEBUG_MODE) {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-} else {
-    error_reporting(0);
-    ini_set('display_errors', 0);
+if (!defined('BASE_URL')) {
+    define('BASE_URL', $current_config['base_url']);
+}
+if (!defined('DEBUG_MODE')) {
+    define('DEBUG_MODE', $current_config['debug_mode']);
 }
 
-// Session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+define('APP_PATH', ROOT_PATH . '/app');
+define('SYSTEM_PATH', ROOT_PATH . '/systems');
+define('PUBLIC_PATH', ROOT_PATH . '/public');
+define('APP_NAME', 'MEDKIT3');
+define('APP_VERSION', '1.0.0');
 
-// Define helper paths
-define('HELPER_PATH', ROOT_PATH . '/systems/helpers');
+// Set timezone
+date_default_timezone_set($current_config['timezone']);
 
-// Load required files only if they exist
-$required_files = [
-    HELPER_PATH . '/functions.php',
-    HELPER_PATH . '/Notification.php',
-    HELPER_PATH . '/BaseSecurity.php',
-    HELPER_PATH . '/Settings.php',
-    ROOT_PATH . '/app/helpers/GenerateNoRM.php'
-];
-
-foreach ($required_files as $file) {
-    if (file_exists($file)) {
-        require_once $file;
-    } else {
-        error_log("Required file not found: " . $file);
-        if (DEBUG_MODE) {
-            die("Required file not found: " . $file);
-        }
-    }
-}
+// Make configurations globally available
+$GLOBALS['app_config'] = $current_config;
+$GLOBALS['db_config'] = $current_db;
 ?> 

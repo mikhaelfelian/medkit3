@@ -8,7 +8,6 @@ class PengaturanController extends BaseController {
     public function index() {
         try {
             $data = $this->model->getSettings();
-            
             return $this->view('pengaturan/index', [
                 'title' => 'Pengaturan Aplikasi',
                 'data' => $data
@@ -21,53 +20,41 @@ class PengaturanController extends BaseController {
     
     public function update() {
         try {
+            // Get form data
             $data = [
+                'judul' => $this->input('judul'),
                 'judul_app' => $this->input('judul_app'),
-                'deskripsi' => $this->input('deskripsi')
+                'alamat' => $this->input('alamat'),
+                'deskripsi' => $this->input('deskripsi'),
+                'kota' => $this->input('kota'),
+                'url' => $this->input('url'),
+                'theme' => $this->input('theme'),
+                'pagination_limit' => $this->input('pagination_limit')
             ];
-            
-            // Log the initial data
-            error_log("Initial update data: " . json_encode($data));
             
             // Handle logo upload
             if (!empty($_FILES['logo']['name'])) {
-                $logo = $this->uploadFile('logo', 'images/');
-                if ($logo) {
-                    $data['logo'] = $logo;
-                    error_log("Logo uploaded: " . $logo);
-                }
+                $data['logo'] = $this->uploadFile('logo', 'images/');
             }
             
             // Handle favicon upload
             if (!empty($_FILES['favicon']['name'])) {
-                $favicon = $this->uploadFile('favicon', 'images/');
-                if ($favicon) {
-                    $data['favicon'] = $favicon;
-                    error_log("Favicon uploaded: " . $favicon);
-                }
+                $data['favicon'] = $this->uploadFile('favicon', 'images/');
             }
             
-            // Log final data before update
-            error_log("Final update data: " . json_encode($data));
-            
-            $result = $this->model->updateSettings($data);
-            
-            if ($result) {
-                Notification::success('Pengaturan berhasil disimpan');
+            if ($this->model->updateSettings($data)) {
+                Notification::success('Pengaturan berhasil diupdate');
             } else {
-                throw new Exception("Update returned false");
+                throw new Exception('Gagal mengupdate pengaturan');
             }
-            
-            return $this->redirect('pengaturan');
             
         } catch (Exception $e) {
-            error_log("Settings update error: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            Notification::error(DEBUG_MODE ? $e->getMessage() : 'Gagal menyimpan pengaturan');
-            return $this->redirect('pengaturan');
+            Notification::error($e->getMessage());
         }
+        
+        return $this->redirect('pengaturan');
     }
-
+    
     protected function uploadFile($field, $path) {
         if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
             return false;
@@ -75,7 +62,7 @@ class PengaturanController extends BaseController {
         
         $file = $_FILES[$field];
         $filename = time() . '_' . basename($file['name']);
-        $upload_path = ROOT_PATH . '/public/assets/' . $path;
+        $upload_path = PUBLIC_PATH . '/assets/' . $path;
         
         // Create directory if it doesn't exist
         if (!is_dir($upload_path)) {

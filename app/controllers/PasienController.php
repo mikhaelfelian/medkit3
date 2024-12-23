@@ -5,118 +5,73 @@ class PasienController extends BaseController {
         $this->loadModel('Pasien');
     }
     
-    /**
-     * Display a listing of patients
-     */
     public function index() {
         try {
-            // Get current page from URL, default to 1
+            $search = $this->input('search');
             $page = max(1, intval($this->input('page', 1)));
-            $perPage = 10;
+            $per_page = 10;
+
+            $result = $this->model->searchPaginate($search, $page, $per_page);
+            $total = $result['total'];
+            $total_pages = ceil($total / $per_page);
             
-            // Get paginated data
-            $result = $this->model->paginate($page, $perPage);
+            // Calculate showing entries
+            $from = ($page - 1) * $per_page + 1;
+            $to = min($from + $per_page - 1, $total);
             
-            // Convert data to array if it's not already
-            $data = json_decode(json_encode($result['data']), true);
-            
+            // Build search params for pagination links
+            $search_params = $search ? '&search=' . urlencode($search) : '';
+
             return $this->view('pasien/index', [
                 'title' => 'Data Pasien',
-                'data' => $data,
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total_pages' => ceil($result['total'] / $perPage),
-                    'total' => $result['total']
-                ]
+                'data' => $result['data'],
+                'page' => $page,
+                'per_page' => $per_page,
+                'total' => $total,
+                'total_pages' => $total_pages,
+                'from' => $from,
+                'to' => $to,
+                'search_params' => $search_params
             ]);
-            
         } catch (Exception $e) {
+            error_log("Error in PasienController::index - " . $e->getMessage());
             Notification::error('Gagal memuat data pasien');
             return $this->redirect('');
         }
     }
-    
-    /**
-     * Show the form for creating a new patient
-     */
+
     public function create() {
         return $this->view('pasien/create', [
             'title' => 'Tambah Pasien'
         ]);
     }
-    
-    /**
-     * Store a newly created patient
-     */
+
     public function store() {
         try {
-            // Verify CSRF token
-            $form = BaseForm::getInstance();
-            $token = $_POST['csrf_token'] ?? null;
-            if (!$form->verifyCsrfToken($token)) {
-                throw new Exception("Invalid CSRF token");
-            }
+            $data = $this->input();
             
-            // Set old input
-            $form->setOld($_POST);
+            // Generate kode pasien
+            $data['kode'] = $this->model->generateKode();
             
-            // Validate input
-            $validation = $this->validate([
-                'nik' => ['required', 'min:16'],
-                'nama' => ['required'],
-                'alamat' => ['required']
-            ]);
-            
-            if ($validation !== true) {
-                $form->setErrors($validation);
-                return $this->view('pasien/create');
-            }
-            
-            // Generate RM number
-            $rmGenerator = new GenerateNoRM();
-            $kode = $rmGenerator->generate();
-            
-            // Prepare data
-            $data = [
-                'kode' => $kode,
-                'nik' => $this->input('nik'),
-                'nama' => $this->input('nama'),
-                'nama_pgl' => $this->input('nama_pgl'),
-                'no_hp' => $this->input('no_hp'),
-                'alamat' => $this->input('alamat'),
-                'alamat_domisili' => $this->input('alamat_domisili'),
-                'rt' => $this->input('rt'),
-                'rw' => $this->input('rw'),
-                'kelurahan' => $this->input('kelurahan'),
-                'kecamatan' => $this->input('kecamatan'),
-                'kota' => $this->input('kota'),
-                'pekerjaan' => $this->input('pekerjaan')
-            ];
-            
-            // Save data
             if ($this->model->create($data)) {
-                Notification::success('Data pasien berhasil disimpan');
+                Notification::success('Data pasien berhasil ditambahkan');
                 return $this->redirect('pasien');
             }
             
-            throw new Exception("Failed to save data");
+            throw new Exception("Failed to create record");
             
         } catch (Exception $e) {
-            error_log("Error in store: " . $e->getMessage());
-            Notification::error(DEBUG_MODE ? $e->getMessage() : 'Gagal menyimpan data');
-            return $this->view('pasien/create');
+            error_log("Error in PasienController::store - " . $e->getMessage());
+            Notification::error('Gagal menambahkan data pasien');
+            return $this->redirect('pasien/create');
         }
     }
-    
-    /**
-     * Show the form for editing the specified patient
-     */
+
     public function edit($id) {
         try {
             $data = $this->model->find($id);
             if (!$data) {
-                throw new Exception("Patient not found");
+                throw new Exception("Record not found");
             }
             
             return $this->view('pasien/edit', [
@@ -125,80 +80,51 @@ class PasienController extends BaseController {
             ]);
             
         } catch (Exception $e) {
-            if (DEBUG_MODE) {
-                die("Error: " . $e->getMessage());
-            }
+            error_log("Error in PasienController::edit - " . $e->getMessage());
+            Notification::error('Data pasien tidak ditemukan');
             return $this->redirect('pasien');
         }
     }
-    
-    /**
-     * Update the specified patient
-     */
+
     public function update($id) {
-        $security = BaseSecurity::getInstance();
-        $form = BaseForm::getInstance();
-        
         try {
-            // Set old input
-            $form->setOld($_POST);
+            $data = $this->input();
             
-            // Validate input
-            $validation = $this->validate([
-                'nik' => 'required|min:16',
-                'nama' => 'required',
-                'alamat' => 'required'
-            ]);
-            
-            if ($validation !== true) {
-                $form->setErrors($validation);
-                return $this->view('pasien/edit', [
-                    'title' => 'Edit Pasien',
-                    'data' => $this->model->find($id)
-                ]);
-            }
-            
-            // Sanitize and prepare data
-            $data = [
-                'nik' => $security->sanitizeInput($this->input('nik')),
-                'nama' => $security->sanitizeInput($this->input('nama')),
-                'nama_pgl' => $security->sanitizeInput($this->input('nama_pgl')),
-                'no_hp' => $security->sanitizeInput($this->input('no_hp')),
-                'alamat' => $security->sanitizeInput($this->input('alamat')),
-                'alamat_domisili' => $security->sanitizeInput($this->input('alamat_domisili')),
-                'rt' => $security->sanitizeInput($this->input('rt')),
-                'rw' => $security->sanitizeInput($this->input('rw')),
-                'kelurahan' => $security->sanitizeInput($this->input('kelurahan')),
-                'kecamatan' => $security->sanitizeInput($this->input('kecamatan')),
-                'kota' => $security->sanitizeInput($this->input('kota')),
-                'pekerjaan' => $security->sanitizeInput($this->input('pekerjaan'))
-            ];
-            
-            // Update data
             if ($this->model->update($id, $data)) {
-                Notification::success('Data pasien berhasil diperbarui');
+                Notification::success('Data pasien berhasil diupdate');
                 return $this->redirect('pasien');
             }
             
-            throw new Exception("Failed to update data");
+            throw new Exception("Failed to update record");
             
         } catch (Exception $e) {
-            Notification::error(DEBUG_MODE ? $e->getMessage() : 'Gagal memperbarui data');
-            return $this->view('pasien/edit', [
-                'title' => 'Edit Pasien',
-                'data' => $this->model->find($id)
-            ]);
+            error_log("Error in PasienController::update - " . $e->getMessage());
+            Notification::error('Gagal mengupdate data pasien');
+            return $this->redirect('pasien/edit/' . $id);
         }
     }
-    
-    /**
-     * Show the specified patient
-     */
+
+    public function delete($id) {
+        try {
+            if ($this->model->delete($id)) {
+                Notification::success('Data pasien berhasil dihapus');
+                return $this->redirect('pasien');
+            }
+            
+            throw new Exception("Failed to delete record");
+            
+        } catch (Exception $e) {
+            error_log("Error in PasienController::delete - " . $e->getMessage());
+            Notification::error('Gagal menghapus data pasien');
+            return $this->redirect('pasien');
+        }
+    }
+
     public function show($id) {
         try {
             $data = $this->model->find($id);
             if (!$data) {
-                throw new Exception("Patient not found");
+                throw new Exception("Record not found");
             }
             
             return $this->view('pasien/show', [
@@ -207,28 +133,11 @@ class PasienController extends BaseController {
             ]);
             
         } catch (Exception $e) {
-            if (DEBUG_MODE) {
-                die("Error: " . $e->getMessage());
-            }
-            return $this->redirect('pasien');
-        }
-    }
-    
-    /**
-     * Delete the specified patient
-     */
-    public function delete($id) {
-        try {
-            if ($this->model->delete($id)) {
-                Notification::success('Data pasien berhasil dihapus');
-                return $this->redirect('pasien');
-            }
-            throw new Exception("Failed to delete data");
-            
-        } catch (Exception $e) {
-            Notification::error(DEBUG_MODE ? $e->getMessage() : 'Gagal menghapus data');
+            error_log("Error in PasienController::show - " . $e->getMessage());
+            Notification::error('Data pasien tidak ditemukan');
             return $this->redirect('pasien');
         }
     }
 }
+?> 
 ?> 

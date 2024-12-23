@@ -5,19 +5,19 @@ class Database {
     
     private function __construct() {
         try {
-            $this->conn = new PDO(
-                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME,
-                DB_USER,
-                DB_PASS,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-                ]
-            );
+            $db_config = $GLOBALS['db_config'];
+            
+            $dsn = "mysql:host={$db_config['hostname']};dbname={$db_config['database']};charset={$db_config['charset']}";
+            
+            $this->conn = new PDO($dsn, $db_config['username'], $db_config['password'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$db_config['charset']}"
+            ]);
+            
         } catch (PDOException $e) {
             error_log("Database Connection Error: " . $e->getMessage());
-            die("Database connection failed");
+            throw new Exception("Database connection failed");
         }
     }
     
@@ -31,10 +31,4 @@ class Database {
     public function getConnection() {
         return $this->conn;
     }
-    
-    // Prevent cloning
-    private function __clone() {}
-    
-    // Prevent unserialization
-    private function __wakeup() {}
 } 

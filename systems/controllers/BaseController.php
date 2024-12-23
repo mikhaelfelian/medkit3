@@ -3,11 +3,18 @@ class BaseController {
     protected $model;
     protected $viewHelper;
     protected $conn;
+    protected $security;
     
     public function __construct() {
-        global $conn;
-        $this->conn = $conn;
+        // Get database connection
+        $this->conn = Database::getInstance()->getConnection();
         $this->viewHelper = new ViewHelper();
+        $this->security = BaseSecurity::getInstance();
+        
+        // Validate CSRF token for POST requests
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->security->validateRequest();
+        }
     }
     
     protected function loadModel($modelName) {
@@ -18,7 +25,7 @@ class BaseController {
             }
             
             // Check if model file exists
-            $modelFile = ROOT_PATH . '/app/models/' . $modelName . '.php';
+            $modelFile = APP_PATH . '/models/' . $modelName . '.php';
             if (!file_exists($modelFile)) {
                 throw new Exception("Model file not found: {$modelFile}");
             }
@@ -28,98 +35,59 @@ class BaseController {
                 require_once $modelFile;
             }
             
-            // Create model instance
+            // Create model instance with database connection
             $this->model = new $modelName($this->conn);
             
             return $this->model;
         } catch (Exception $e) {
-            error_log("Error loading model: " . $e->getMessage());
-            throw new Exception("Model {$modelName} not found");
+            error_log("Model Error: " . $e->getMessage());
+            throw $e;
         }
     }
     
     protected function view($view, $data = []) {
         try {
-            // Check if PengaturanModel class exists
-            if (!class_exists('PengaturanModel')) {
-                require_once ROOT_PATH . '/app/models/PengaturanModel.php';
+            // Extract data to variables
+            extract($data);
+            
+            // Start output buffering
+            ob_start();
+            
+            // Include the view file
+            $viewFile = APP_PATH . '/views/' . $view . '.php';
+            if (!file_exists($viewFile)) {
+                throw new Exception("View file not found: {$viewFile}");
             }
             
-            // Load settings for all views
-            $pengaturanModel = new PengaturanModel($this->conn);
+            include $viewFile;
             
-            // Debug connection
-            if (!$this->conn) {
-                throw new Exception("Database connection is not available");
+            // Get the view content
+            $content = ob_get_clean();
+            
+            // Include the layout
+            $layoutFile = APP_PATH . '/views/layouts/main.php';
+            if (!file_exists($layoutFile)) {
+                throw new Exception("Layout file not found: {$layoutFile}");
             }
             
-            $settings = $pengaturanModel->getSettings();
+            include $layoutFile;
             
-            // Debug settings
-            if (!$settings) {
-                error_log("Settings is null or empty");
-                $settings = new stdClass();
-                $settings->judul_app = 'NUSANTARA HMVC';
-                $settings->logo = 'theme/admin-lte-3/dist/img/AdminLTELogo.png';
-                $settings->favicon = 'theme/admin-lte-3/dist/img/AdminLTELogo.png';
-            }
-            
-            // Merge settings with view data
-            $data['settings'] = $settings;
-            
-            return $this->viewHelper->render($view, $data);
         } catch (Exception $e) {
             error_log("View Error: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
-            
-            // Show detailed error in development
-            if (defined('DEBUG_MODE') && DEBUG_MODE) {
-                die("View Error: " . $e->getMessage() . "<br>Stack trace:<pre>" . $e->getTraceAsString() . "</pre>");
-            } else {
-                die("An error occurred while loading the view. Please check the error logs.");
-            }
+            throw $e;
         }
     }
     
     protected function redirect($url) {
-        $url = BaseRouting::url($url);
-        header("Location: {$url}");
+        header('Location: ' . BASE_URL . '/' . ltrim($url, '/'));
         exit;
     }
     
-    protected function input($key, $default = null) {
-        return $_POST[$key] ?? $_GET[$key] ?? $default;
-    }
-    
-    protected function validate($rules) {
-        $errors = [];
-        
-        foreach ($rules as $field => $fieldRules) {
-            $value = $this->input($field);
-            
-            if (!is_array($fieldRules)) {
-                $fieldRules = explode('|', $fieldRules);
-            }
-            
-            foreach ($fieldRules as $rule) {
-                if ($rule === 'required' && empty($value)) {
-                    $errors[$field] = ucfirst($field) . ' is required';
-                }
-                
-                if ($rule === 'numeric' && !is_numeric($value)) {
-                    $errors[$field] = ucfirst($field) . ' must be a number';
-                }
-                
-                if (strpos($rule, 'min:') === 0) {
-                    $min = substr($rule, 4);
-                    if (strlen($value) < $min) {
-                        $errors[$field] = ucfirst($field) . " must be at least {$min} characters";
-                    }
-                }
-            }
+    protected function input($key = null, $default = null) {
+        if ($key === null) {
+            return array_merge($_GET, $_POST);
         }
-        
-        return empty($errors) ? true : $errors;
+        return $_POST[$key] ?? $_GET[$key] ?? $default;
     }
 }
 ?> 
