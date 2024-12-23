@@ -1,136 +1,76 @@
 <?php
 class GenerateNoRM {
-    protected static $instance = null;
-    protected $prefix = 'RM';
-    protected $yearFormat = 'y';
-    protected $monthFormat = 'm';
-    protected $sequenceLength = 4;
-    protected $separator = '-';
+    private $conn;
+    private $prefix;
     
-    private function __construct() {
-        // Private constructor to prevent direct creation
+    public function __construct() {
+        global $conn;
+        $this->conn = $conn;
+        $this->prefix = date('ym');
     }
     
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-    
-    /**
-     * Generate new medical record number
-     * Format: RM-YYMM-XXXX (e.g., RM-2403-0001)
-     */
     public function generate() {
         try {
-            // Get current date components
-            $year = date($this->yearFormat);
-            $month = date($this->monthFormat);
-            $yearMonth = $year . $month;
+            // Get last number for current prefix
+            $lastNumber = $this->getLastNumber($this->prefix);
             
-            // Get last sequence number from database
-            $lastNumber = $this->getLastNumber($yearMonth);
-            $nextNumber = $lastNumber + 1;
+            // Generate new number
+            $newNumber = $lastNumber + 1;
             
-            // Format sequence number with leading zeros
-            $sequence = str_pad($nextNumber, $this->sequenceLength, '0', STR_PAD_LEFT);
+            // Format number to 4 digits
+            $formattedNumber = str_pad($newNumber, 4, '0', STR_PAD_LEFT);
             
-            // Combine all parts
-            return implode($this->separator, [
-                $this->prefix,
-                $yearMonth,
-                $sequence
-            ]);
+            // Combine prefix and number
+            return $this->prefix . $formattedNumber;
+            
         } catch (Exception $e) {
-            if (DEBUG_MODE) {
-                throw $e;
+            error_log("Error generating RM number: " . $e->getMessage());
+            throw new Exception("Gagal generate nomor RM");
+        }
+    }
+    
+    private function getLastNumber($prefix) {
+        try {
+            // Get the last RM number with current prefix
+            $sql = "SELECT kode FROM pasien 
+                   WHERE kode LIKE :prefix 
+                   ORDER BY kode DESC LIMIT 1";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':prefix', $prefix . '%');
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if ($result) {
+                // Extract number part from RM
+                $lastNumber = (int) substr($result->kode, -4);
+                return $lastNumber;
             }
-            // Fallback format if error occurs
-            return $this->generateFallback();
+            
+            // If no existing number found, start from 0
+            return 0;
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in getLastNumber: " . $e->getMessage());
+            throw new Exception("Gagal mendapatkan nomor RM terakhir");
         }
     }
     
-    /**
-     * Get last sequence number for given year and month
-     */
-    protected function getLastNumber($yearMonth) {
-        global $conn;
-        
-        $sql = "SELECT MAX(SUBSTRING_INDEX(kode, '-', -1)) as last_number 
-                FROM tbl_m_pasien 
-                WHERE kode LIKE ?";
-        
-        $pattern = "{$this->prefix}-{$yearMonth}-%";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('s', $pattern);
-        $stmt->execute();
-        
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        
-        return intval($row['last_number'] ?? 0);
-    }
-    
-    /**
-     * Generate fallback number if normal generation fails
-     */
-    protected function generateFallback() {
-        $timestamp = time();
-        $random = mt_rand(1000, 9999);
-        return "{$this->prefix}-{$timestamp}-{$random}";
-    }
-    
-    /**
-     * Validate medical record number format
-     */
-    public function isValid($number) {
-        $pattern = "/^{$this->prefix}{$this->separator}\d{4}{$this->separator}\d{4}$/";
-        return preg_match($pattern, $number);
-    }
-    
-    /**
-     * Extract date from medical record number
-     */
-    public function extractDate($number) {
-        $parts = explode($this->separator, $number);
-        if (count($parts) !== 3) {
-            return null;
+    public function validate($rm) {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM pasien WHERE kode = :rm";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':rm', $rm);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            return $result->count > 0;
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in validate: " . $e->getMessage());
+            throw new Exception("Gagal validasi nomor RM");
         }
-        
-        $yearMonth = $parts[1];
-        $year = '20' . substr($yearMonth, 0, 2);
-        $month = substr($yearMonth, 2, 2);
-        
-        return [
-            'year' => $year,
-            'month' => $month,
-            'full' => "{$year}-{$month}-01"
-        ];
-    }
-    
-    /**
-     * Set custom prefix
-     */
-    public function setPrefix($prefix) {
-        $this->prefix = $prefix;
-        return $this;
-    }
-    
-    /**
-     * Set custom sequence length
-     */
-    public function setSequenceLength($length) {
-        $this->sequenceLength = $length;
-        return $this;
-    }
-    
-    /**
-     * Set custom separator
-     */
-    public function setSeparator($separator) {
-        $this->separator = $separator;
-        return $this;
     }
 }
 ?> 

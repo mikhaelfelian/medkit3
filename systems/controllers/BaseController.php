@@ -11,25 +11,73 @@ class BaseController {
     }
     
     protected function loadModel($modelName) {
-        if (class_exists($modelName)) {
+        try {
+            // Add 'Model' suffix if not present
+            if (substr($modelName, -5) !== 'Model') {
+                $modelName .= 'Model';
+            }
+            
+            // Check if model file exists
+            $modelFile = ROOT_PATH . '/app/models/' . $modelName . '.php';
+            if (!file_exists($modelFile)) {
+                throw new Exception("Model file not found: {$modelFile}");
+            }
+            
+            // Load model file if not already loaded
+            if (!class_exists($modelName)) {
+                require_once $modelFile;
+            }
+            
+            // Create model instance
             $this->model = new $modelName($this->conn);
-        } else {
+            
+            return $this->model;
+        } catch (Exception $e) {
+            error_log("Error loading model: " . $e->getMessage());
             throw new Exception("Model {$modelName} not found");
         }
     }
     
     protected function view($view, $data = []) {
         try {
+            // Check if PengaturanModel class exists
+            if (!class_exists('PengaturanModel')) {
+                require_once ROOT_PATH . '/app/models/PengaturanModel.php';
+            }
+            
             // Load settings for all views
             $pengaturanModel = new PengaturanModel($this->conn);
-            $settings = $pengaturanModel->findOne();
+            
+            // Debug connection
+            if (!$this->conn) {
+                throw new Exception("Database connection is not available");
+            }
+            
+            $settings = $pengaturanModel->getSettings();
+            
+            // Debug settings
+            if (!$settings) {
+                error_log("Settings is null or empty");
+                $settings = new stdClass();
+                $settings->judul_app = 'NUSANTARA HMVC';
+                $settings->logo = 'theme/admin-lte-3/dist/img/AdminLTELogo.png';
+                $settings->favicon = 'theme/admin-lte-3/dist/img/AdminLTELogo.png';
+            }
             
             // Merge settings with view data
             $data['settings'] = $settings;
             
             return $this->viewHelper->render($view, $data);
         } catch (Exception $e) {
-            die("An error occurred while loading the view: " . $e->getMessage());
+            error_log("View Error: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            
+            // Show detailed error in development
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                die("View Error: " . $e->getMessage() . "<br>Stack trace:<pre>" . $e->getTraceAsString() . "</pre>");
+            } else {
+                die("An error occurred while loading the view. Please check the error logs.");
+            }
         }
     }
     

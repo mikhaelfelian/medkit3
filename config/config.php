@@ -1,91 +1,58 @@
 <?php
-// Skip if ROOT_PATH is already defined
-if (!defined('ROOT_PATH')) {
-    define('ROOT_PATH', dirname(dirname(__FILE__)));
-}
-
-// Define environment
-if (!defined('ENVIRONMENT')) {
-    define('ENVIRONMENT', 'development');
-}
-
-// Define base URL
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'];
-$folder_path = dirname($_SERVER['SCRIPT_NAME']);
-$base_path = rtrim($folder_path, '/');
-if ($base_path == '\\' || $base_path == '/') {
-    $base_path = '';
-}
-define('BASE_URL', $protocol . '://' . $host . $base_path);
-
 // Database Configuration
-$db_config = [
-    'development' => [
-        'hostname' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => 'db_medkit3',
-        'charset'  => 'utf8',
-        'dbcollat' => 'utf8_general_ci'
-    ],
-    'production' => [
-        'hostname' => 'localhost',
-        'username' => 'prod_user',
-        'password' => 'prod_password',
-        'database' => 'db_medkit3',
-        'charset'  => 'utf8',
-        'dbcollat' => 'utf8_general_ci'
-    ]
-];
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'db_medkit3');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 // Application Configuration
-$config = [
-    'development' => [
-        'app_name' => 'Sistem Pasien Dev',
-        'app_version' => '1.0.0',
-        'timezone' => 'Asia/Jakarta',
-        'language' => 'id',
-        'debug_mode' => false,
-        'encryption_key' => '12345678901234567890123456789012',
-        'encryption_method' => 'AES-256-CBC',
-        'db_prefix' => 'tbl_',  // Table prefix for development
-        'db_charset' => 'utf8mb4',
-        'db_collation' => 'utf8mb4_unicode_ci'
-    ],
-    'production' => [
-        'app_name' => 'Sistem Pasien',
-        'app_version' => '1.0.0',
-        'timezone' => 'Asia/Jakarta',
-        'language' => 'id',
-        'debug_mode' => false,
-        'encryption_key' => getenv('APP_ENCRYPTION_KEY'),
-        'encryption_method' => 'AES-256-CBC',
-        'db_prefix' => 'tbl_',  // Table prefix for production
-        'db_charset' => 'utf8mb4',
-        'db_collation' => 'utf8mb4_unicode_ci'
-    ]
+define('BASE_URL', 'http://localhost/medkit3');
+
+// Define ROOT_PATH only if not already defined
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', dirname(__DIR__));
+}
+
+// Debug Mode
+define('DEBUG_MODE', true);
+
+// Time Zone
+date_default_timezone_set('Asia/Jakarta');
+
+// Error Reporting
+if (DEBUG_MODE) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
+
+// Session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Define helper paths
+define('HELPER_PATH', ROOT_PATH . '/systems/helpers');
+
+// Load required files only if they exist
+$required_files = [
+    HELPER_PATH . '/functions.php',
+    HELPER_PATH . '/Notification.php',
+    HELPER_PATH . '/BaseSecurity.php',
+    HELPER_PATH . '/Settings.php',
+    ROOT_PATH . '/app/helpers/GenerateNoRM.php'
 ];
 
-// Set global configurations
-$GLOBALS['db_config'] = $db_config;
-$GLOBALS['app_config'] = $config[ENVIRONMENT];
-
-// Define constants
-define('APP_NAME', $config[ENVIRONMENT]['app_name']);
-define('APP_VERSION', $config[ENVIRONMENT]['app_version']);
-define('DEBUG_MODE', $config[ENVIRONMENT]['debug_mode']);
-
-// Set timezone
-date_default_timezone_set($config[ENVIRONMENT]['timezone']);
-
-// Autoloader function
-spl_autoload_register(function ($class_name) {
-    if (strpos($class_name, 'Model') !== false) {
-        $file = ROOT_PATH . '/app/models/' . $class_name . '.php';
-        if (file_exists($file)) {
-            require_once $file;
+foreach ($required_files as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+    } else {
+        error_log("Required file not found: " . $file);
+        if (DEBUG_MODE) {
+            die("Required file not found: " . $file);
         }
     }
-});
+}
 ?> 

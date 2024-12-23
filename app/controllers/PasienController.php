@@ -1,48 +1,30 @@
 <?php
 class PasienController extends BaseController {
-    protected $paginate;
-    
     public function __construct() {
         parent::__construct();
-        $this->loadModel('TblMPasienModel');
+        $this->loadModel('Pasien');
     }
     
     /**
      * Display a listing of patients
      */
     public function index() {
-        $page = $this->input('page', 1);
+        $page = (int) $this->input('page', 1);
+        $perPage = 10;
         $search = $this->input('search');
         
-
-        try {
-            if ($search) {
-                $pagination = $this->model->searchPasien($search, $page, 10);
-            } else {
-                $pagination = $this->model->paginate($page, 10, 'created_at DESC');
-            }
-            
-            if (DEBUG_MODE) {
-                debug("Pagination data:");
-                debug($pagination);
-            }
-            
-            return $this->view('pasien/index', [
-                'title' => 'Data Pasien',
-                'pagination' => $pagination,
-                'result' => $pagination['data'],
-                'search' => $search
-            ]);
-            
-        } catch (Exception $e) {
-            Notification::error(DEBUG_MODE ? $e->getMessage() : 'Error loading data');
-            return $this->view('pasien/index', [
-                'title' => 'Data Pasien',
-                'pagination' => ['current_page' => 1, 'total' => 0, 'last_page' => 1],
-                'result' => null,
-                'search' => $search
-            ]);
+        // Get paginated data
+        if ($search) {
+            $data = $this->model->search([], $search, $page, $perPage);
+        } else {
+            $data = $this->model->paginate($page, $perPage, 'id DESC');
         }
+        
+        return $this->view('pasien/index', [
+            'title' => 'Data Pasien',
+            'data' => $data,
+            'search' => $search
+        ]);
     }
     
     /**
@@ -58,17 +40,15 @@ class PasienController extends BaseController {
      * Store a newly created patient
      */
     public function store() {
-        $security = BaseSecurity::getInstance();
-        $form = BaseForm::getInstance();
-        
         try {
             // Verify CSRF token
+            $form = BaseForm::getInstance();
             $token = $_POST['csrf_token'] ?? null;
             if (!$form->verifyCsrfToken($token)) {
                 throw new Exception("Invalid CSRF token");
             }
             
-            // Set old input for form repopulation
+            // Set old input
             $form->setOld($_POST);
             
             // Validate input
@@ -79,36 +59,29 @@ class PasienController extends BaseController {
             ]);
             
             if ($validation !== true) {
-                // Convert validation errors to proper format
-                $errors = [];
-                foreach ($validation as $field => $error) {
-                    $errors[$field] = is_array($error) ? implode(', ', $error) : $error;
-                }
-                
-                $form->setErrors($errors);
-                return $this->view('pasien/create', [
-                    'title' => 'Tambah Pasien'
-                ]);
+                $form->setErrors($validation);
+                return $this->view('pasien/create');
             }
             
-            // Generate medical record number
-            $noRM = GenerateNoRM::getInstance()->generate();
+            // Generate RM number
+            $rmGenerator = new GenerateNoRM();
+            $kode = $rmGenerator->generate();
             
-            // Sanitize and prepare data
+            // Prepare data
             $data = [
-                'kode' => $noRM,
-                'nik' => $security->sanitizeInput($this->input('nik')),
-                'nama' => $security->sanitizeInput($this->input('nama')),
-                'nama_pgl' => $security->sanitizeInput($this->input('nama_pgl')),
-                'no_hp' => $security->sanitizeInput($this->input('no_hp')),
-                'alamat' => $security->sanitizeInput($this->input('alamat')),
-                'alamat_domisili' => $security->sanitizeInput($this->input('alamat_domisili')),
-                'rt' => $security->sanitizeInput($this->input('rt')),
-                'rw' => $security->sanitizeInput($this->input('rw')),
-                'kelurahan' => $security->sanitizeInput($this->input('kelurahan')),
-                'kecamatan' => $security->sanitizeInput($this->input('kecamatan')),
-                'kota' => $security->sanitizeInput($this->input('kota')),
-                'pekerjaan' => $security->sanitizeInput($this->input('pekerjaan'))
+                'kode' => $kode,
+                'nik' => $this->input('nik'),
+                'nama' => $this->input('nama'),
+                'nama_pgl' => $this->input('nama_pgl'),
+                'no_hp' => $this->input('no_hp'),
+                'alamat' => $this->input('alamat'),
+                'alamat_domisili' => $this->input('alamat_domisili'),
+                'rt' => $this->input('rt'),
+                'rw' => $this->input('rw'),
+                'kelurahan' => $this->input('kelurahan'),
+                'kecamatan' => $this->input('kecamatan'),
+                'kota' => $this->input('kota'),
+                'pekerjaan' => $this->input('pekerjaan')
             ];
             
             // Save data
@@ -120,10 +93,9 @@ class PasienController extends BaseController {
             throw new Exception("Failed to save data");
             
         } catch (Exception $e) {
+            error_log("Error in store: " . $e->getMessage());
             Notification::error(DEBUG_MODE ? $e->getMessage() : 'Gagal menyimpan data');
-            return $this->view('pasien/create', [
-                'title' => 'Tambah Pasien'
-            ]);
+            return $this->view('pasien/create');
         }
     }
     

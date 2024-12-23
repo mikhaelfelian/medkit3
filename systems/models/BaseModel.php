@@ -21,68 +21,70 @@ class BaseModel {
     }
 
     public function find($id) {
-        $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        try {
+            $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id");
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in BaseModel::find - " . $e->getMessage());
+            return null;
+        }
     }
 
     public function create($data) {
-        $data = $this->filterFillable($data);
-        
-        if ($this->timestamps) {
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['updated_at'] = date('Y-m-d H:i:s');
-        }
-
-        $columns = implode(', ', array_keys($data));
-        $values = ':' . implode(', :', array_keys($data));
-        
-        $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$values})";
-        
         try {
+            $fields = array_intersect_key($data, array_flip($this->fillable));
+            
+            $columns = implode(', ', array_keys($fields));
+            $values = ':' . implode(', :', array_keys($fields));
+            
+            $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$values})";
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute($data);
-            return $this->conn->lastInsertId();
+            
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(":{$key}", $value);
+            }
+            
+            return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in BaseModel::create - " . $e->getMessage());
+            throw new Exception("Failed to create record");
         }
     }
 
     public function update($id, $data) {
-        $data = $this->filterFillable($data);
-        
-        if ($this->timestamps) {
-            $data['updated_at'] = date('Y-m-d H:i:s');
-        }
-
-        $sets = [];
-        foreach ($data as $column => $value) {
-            $sets[] = "{$column} = :{$column}";
-        }
-        
-        $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . 
-               " WHERE {$this->primaryKey} = :id";
-        
         try {
+            $fields = array_intersect_key($data, array_flip($this->fillable));
+            
+            $set = [];
+            foreach (array_keys($fields) as $field) {
+                $set[] = "{$field} = :{$field}";
+            }
+            
+            $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . " WHERE {$this->primaryKey} = :id";
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute(array_merge($data, ['id' => $id]));
-            return true;
+            
+            $stmt->bindValue(':id', $id);
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(":{$key}", $value);
+            }
+            
+            return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in BaseModel::update - " . $e->getMessage());
+            throw new Exception("Failed to update record");
         }
     }
 
     public function delete($id) {
-        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
         try {
-            $stmt = $this->conn->prepare($sql);
-            return $stmt->execute(['id' => $id]);
+            $stmt = $this->conn->prepare("DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id");
+            $stmt->bindValue(':id', $id);
+            return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in BaseModel::delete - " . $e->getMessage());
+            throw new Exception("Failed to delete record");
         }
     }
 

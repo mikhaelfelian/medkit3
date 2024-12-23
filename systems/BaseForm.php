@@ -1,14 +1,12 @@
 <?php
 class BaseForm {
     private static $instance = null;
-    private $old = [];
     private $errors = [];
+    private $old = [];
+    private $csrf_token;
     
     private function __construct() {
-        // Initialize session if not started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        $this->csrf_token = $this->generateCsrfToken();
     }
     
     public static function getInstance() {
@@ -18,106 +16,79 @@ class BaseForm {
         return self::$instance;
     }
     
-    /**
-     * Get input value (from POST, GET, or old input)
-     */
-    public function input($key, $default = '') {
-        // First check old input
-        if (isset($this->old[$key])) {
-            return $this->old[$key];
-        }
-        
-        // Then check POST
-        if (isset($_POST[$key])) {
-            return $_POST[$key];
-        }
-        
-        // Then check GET
-        if (isset($_GET[$key])) {
-            return $_GET[$key];
-        }
-        
-        // Finally return default
-        return $default;
+    public function csrf() {
+        return '<input type="hidden" name="csrf_token" value="' . $this->csrf_token . '">';
     }
     
-    /**
-     * Generate CSRF token field
-     */
-    public function csrf() {
+    public function csrfField() {
+        return $this->csrf();
+    }
+    
+    private function generateCsrfToken() {
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        
-        return '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">';
+        return $_SESSION['csrf_token'];
     }
-
-    /**
-     * Verify CSRF token
-     */
+    
     public function verifyCsrfToken($token) {
-        if (empty($_SESSION['csrf_token']) || empty($token)) {
-            return false;
-        }
-        
-        $valid = hash_equals($_SESSION['csrf_token'], $token);
-        
-        // Generate new token after verification
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        
-        return $valid;
+        return hash_equals($_SESSION['csrf_token'], $token);
     }
     
-    /**
-     * Set old input data for form repopulation
-     */
-    public function setOld($data) {
-        $this->old = $data;
-    }
-    
-    /**
-     * Get old input value
-     */
-    public function old($key, $default = '') {
-        return $this->old[$key] ?? $default;
-    }
-    
-    /**
-     * Set validation errors
-     */
     public function setErrors($errors) {
         $this->errors = $errors;
     }
     
-    /**
-     * Get error message for a field with AdminLTE styling
-     */
     public function error($field) {
-        if (isset($this->errors[$field])) {
-            return '<div class="invalid-feedback d-block">' . $this->errors[$field] . '</div>';
-        }
-        return '';
+        return $this->errors[$field] ?? '';
     }
     
-    /**
-     * Check if field has error
-     */
     public function hasError($field) {
         return isset($this->errors[$field]);
     }
     
-    /**
-     * Get all errors
-     */
-    public function getErrors() {
-        return $this->errors;
+    public function setOld($data) {
+        $this->old = $data;
+    }
+    
+    public function old($field, $default = '') {
+        return $this->old[$field] ?? $default;
+    }
+    
+    public function input($field, $default = '') {
+        return $_POST[$field] ?? $_GET[$field] ?? $this->old($field, $default);
+    }
+    
+    public function inputClass($field, $defaultClass = '') {
+        return $this->hasError($field) 
+            ? trim($defaultClass . ' is-invalid')
+            : $defaultClass;
     }
     
     /**
-     * Get input class with validation state
+     * Create a text input
      */
-    public function inputClass($field, $defaultClass = 'form-control') {
-        return $defaultClass . (isset($this->errors[$field]) ? ' is-invalid' : '');
+    public function text($name, $value = '', $attributes = []) {
+        $attrs = '';
+        foreach ($attributes as $key => $val) {
+            $attrs .= " {$key}=\"{$val}\"";
+        }
+        
+        $value = $this->input($name, $value);
+        return "<input type=\"text\" name=\"{$name}\" value=\"{$value}\"{$attrs}>";
+    }
+    
+    /**
+     * Create a textarea input
+     */
+    public function textarea($name, $value = '', $attributes = []) {
+        $attrs = '';
+        foreach ($attributes as $key => $val) {
+            $attrs .= " {$key}=\"{$val}\"";
+        }
+        
+        $value = $this->input($name, $value);
+        return "<textarea name=\"{$name}\"{$attrs}>{$value}</textarea>";
     }
     
     /**
@@ -141,19 +112,6 @@ class BaseForm {
     }
     
     /**
-     * Create a text input
-     */
-    public function text($name, $value = '', $attributes = []) {
-        $attrs = '';
-        foreach ($attributes as $key => $val) {
-            $attrs .= " {$key}=\"{$val}\"";
-        }
-        
-        $value = $this->input($name, $value);
-        return "<input type=\"text\" name=\"{$name}\" value=\"{$value}\"{$attrs}>";
-    }
-    
-    /**
      * Create a hidden input
      */
     public function hidden($name, $value = '', $attributes = []) {
@@ -164,6 +122,48 @@ class BaseForm {
         
         $value = $this->input($name, $value);
         return "<input type=\"hidden\" name=\"{$name}\" value=\"{$value}\"{$attrs}>";
+    }
+    
+    /**
+     * Create a password input
+     */
+    public function password($name, $attributes = []) {
+        $attrs = '';
+        foreach ($attributes as $key => $val) {
+            $attrs .= " {$key}=\"{$val}\"";
+        }
+        
+        return "<input type=\"password\" name=\"{$name}\"{$attrs}>";
+    }
+    
+    /**
+     * Create an email input
+     */
+    public function email($name, $value = '', $attributes = []) {
+        $attrs = '';
+        foreach ($attributes as $key => $val) {
+            $attrs .= " {$key}=\"{$val}\"";
+        }
+        
+        $value = $this->input($name, $value);
+        return "<input type=\"email\" name=\"{$name}\" value=\"{$value}\"{$attrs}>";
+    }
+    
+    /**
+     * Get error message for a field with AdminLTE styling
+     */
+    public function getError($field) {
+        if (isset($this->errors[$field])) {
+            return '<div class="invalid-feedback d-block">' . $this->errors[$field] . '</div>';
+        }
+        return '';
+    }
+    
+    /**
+     * Get input class with validation state
+     */
+    public function getInputClass($field, $defaultClass = 'form-control') {
+        return $defaultClass . (isset($this->errors[$field]) ? ' is-invalid' : '');
     }
 }
 ?> 
