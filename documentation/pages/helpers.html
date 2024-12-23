@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpers - NUSANTARA HMVC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Helper Functions</h1>
+            <p>NUSANTARA HMVC provides several helper functions to make common tasks easier.</p>
+
+            <h2>Array Helper</h2>
+            <pre><code class="language-php">// Get value from array using dot notation
+array_get($array, 'user.name', 'default');
+
+// Set value in array using dot notation
+array_set($array, 'user.settings.theme', 'dark');
+
+// Check if array has key using dot notation
+array_has($array, 'user.settings.theme');
+
+// Remove item from array using dot notation
+array_forget($array, 'user.settings.theme');</code></pre>
+
+            <h2>String Helper</h2>
+            <pre><code class="language-php">// Generate random string
+str_random($length = 16);
+
+// Create URL friendly slug
+str_slug('Hello World'); // outputs: hello-world
+
+// Limit string length with ellipsis
+str_limit($text, $limit = 100);
+
+// Convert string to title case
+str_title('hello world'); // outputs: Hello World
+
+// Check if string contains substring
+str_contains('Hello World', 'World'); // returns: true</code></pre>
+
+            <h2>URL Helper</h2>
+            <pre><code class="language-php">// Generate URL
+url('controller/method/param');
+
+// Get current URL
+current_url();
+
+// Get base URL
+base_url();
+
+// Get asset URL
+asset('css/style.css');
+
+// Get segment from URL
+url_segment(1);</code></pre>
+
+            <h2>Form Helper</h2>
+            <pre><code class="language-php">// Create form open tag
+form_open('user/store', ['class' => 'form-horizontal']);
+
+// Create input field
+form_input('name', '', ['class' => 'form-control']);
+
+// Create select dropdown
+form_select('status', $options, 'active');
+
+// Create CSRF field
+csrf_field();
+
+// Create file upload field
+form_file('document');</code></pre>
+
+            <h2>Date Helper</h2>
+            <pre><code class="language-php">// Format date
+format_date('2024-01-01', 'd/m/Y');
+
+// Convert to local time
+to_local_time($utcTime);
+
+// Get readable time difference
+time_ago('2024-01-01 10:00:00');
+
+// Check if date is past
+is_past('2024-01-01');
+
+// Get date range
+date_range('2024-01-01', '2024-01-31');</code></pre>
+
+            <h2>Number Helper</h2>
+            <pre><code class="language-php">// Format number to currency
+format_currency(1000000, 'IDR');
+
+// Format number with decimal
+format_number(1000.50, 2);
+
+// Convert number to roman
+to_roman(2024);
+
+// Convert number to words
+number_to_words(1234);</code></pre>
+
+            <h2>File Helper</h2>
+            <pre><code class="language-php">// Get file extension
+get_file_ext('document.pdf');
+
+// Get file size in readable format
+format_size(1048576); // outputs: 1 MB
+
+// Create directory recursively
+create_dir('path/to/directory');
+
+// Check if file is image
+is_image('file.jpg');
+
+// Get mime type
+get_mime_type('file.pdf');</code></pre>
+
+            <h2>HTML Helper</h2>
+            <pre><code class="language-php">// Create HTML link
+html_link('Click here', 'https://example.com', ['class' => 'btn']);
+
+// Create image tag
+html_image('logo.png', 'Logo', ['class' => 'img-fluid']);
+
+// Create script tag
+html_script('js/app.js');
+
+// Create style tag
+html_style('css/style.css');</code></pre>
+
+            <h2>Security Helper</h2>
+            <pre><code class="language-php">// Escape HTML
+html_escape($string);
+
+// Sanitize input
+sanitize_input($input);
+
+// Generate token
+generate_token();
+
+// Hash password
+hash_password($password);</code></pre>
+
+            <h2>Debug Helper</h2>
+            <pre><code class="language-php">// Debug variable
+dd($variable);
+
+// Log message
+log_message('error', 'Something went wrong');
+
+// Get execution time
+execution_time();
+
+// Get memory usage
+memory_usage();</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html> 

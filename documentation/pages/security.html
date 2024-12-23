@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security - NUSANTARA HMVC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Security Features</h1>
+            <p>NUSANTARA HMVC includes comprehensive security features to protect your application.</p>
+
+            <h2>CSRF Protection</h2>
+            <pre><code class="language-php">// In your form
+$form = BaseForm::getInstance();
+
+// Automatically adds CSRF token
+echo $form->open('user/store', 'POST');
+
+// Manual CSRF token
+echo $security->csrfField();
+
+// Validate token in controller
+if (!$this->security->validateRequest()) {
+    throw new SecurityException('Invalid CSRF token');
+}</code></pre>
+
+            <h2>XSS Prevention</h2>
+            <pre><code class="language-php">// In views, auto-escape output
+&lt;?= $this->escape($data) ?&gt;
+
+// Or use the security helper
+echo $security->escapeHtml($data);
+
+// For JSON data
+echo $security->escapeJson($data);</code></pre>
+
+            <h2>SQL Injection Prevention</h2>
+            <pre><code class="language-php">// Use query builder (recommended)
+$result = $this->model
+    ->where('status', $status)
+    ->whereIn('category', $categories)
+    ->get();
+
+// Or prepared statements
+$sql = "SELECT * FROM users WHERE id = :id";
+$result = $this->query($sql, [':id' => $id]);</code></pre>
+
+            <h2>Password Security</h2>
+            <pre><code class="language-php">// Hash password
+$hashedPassword = password_hash($password, PASSWORD_DEFAULT, [
+    'cost' => 12
+]);
+
+// Verify password
+if (password_verify($password, $hashedPassword)) {
+    // Password is correct
+}</code></pre>
+
+            <h2>Session Security</h2>
+            <pre><code class="language-php">// Secure session configuration
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_secure', 1);
+
+// Session handling
+session_regenerate_id(true);
+$_SESSION['user_id'] = $user->id;
+
+// Session encryption
+$encrypted = $security->encrypt($data);
+$decrypted = $security->decrypt($encrypted);</code></pre>
+
+            <h2>Input Sanitization</h2>
+            <pre><code class="language-php">// Sanitize single input
+$clean = $security->sanitizeInput($_POST['name']);
+
+// Sanitize array of inputs
+$data = $security->sanitizeInputs($_POST);
+
+// Custom sanitization
+$clean = $security->sanitize($input, [
+    'trim',
+    'strip_tags',
+    'htmlspecialchars'
+]);</code></pre>
+
+            <h2>File Upload Security</h2>
+            <pre><code class="language-php">// Validate file upload
+$upload = new FileUpload($_FILES['document']);
+
+$upload->setAllowedTypes(['jpg', 'png', 'pdf'])
+       ->setMaxSize(2048) // 2MB
+       ->setUploadPath('uploads/')
+       ->setSanitizeFilename(true);
+
+if ($upload->save()) {
+    $filename = $upload->getFilename();
+} else {
+    $errors = $upload->getErrors();
+}</code></pre>
+
+            <h2>Security Headers</h2>
+            <pre><code class="language-php">// Automatically set in BaseSecurity
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Content-Security-Policy: default-src \'self\'');</code></pre>
+
+            <h2>Authentication</h2>
+            <pre><code class="language-php">// Check authentication
+if (!$this->auth->isAuthenticated()) {
+    return $this->redirect('login');
+}
+
+// Check permissions
+if (!$this->auth->hasPermission('admin')) {
+    throw new AuthException('Unauthorized access');
+}
+
+// Role-based access
+if ($this->auth->hasRole(['admin', 'manager'])) {
+    // Allow access
+}</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html> 

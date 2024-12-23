@@ -1,1 +1,147 @@
- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing - NUSANTARA HMVC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Routing</h1>
+            <p>NUSANTARA HMVC uses a simple and intuitive routing system based on URL segments.</p>
+
+            <h2>Basic Routing</h2>
+            <pre><code class="language-plaintext">URL Pattern: http://your-app/controller/method/param1/param2
+
+Examples:
+http://your-app/pasien                 // PasienController->index()
+http://your-app/pasien/create         // PasienController->create()
+http://your-app/pasien/edit/1         // PasienController->edit($id)
+http://your-app/pasien/delete/1       // PasienController->delete($id)</code></pre>
+
+            <h2>Route Configuration</h2>
+            <pre><code class="language-php">// config/routes.php
+$routes = [
+    // Default route
+    'default_controller' => 'Home',
+    'default_method' => 'index',
+    
+    // Custom routes
+    'login' => 'Auth/login',
+    'register' => 'Auth/register',
+    'logout' => 'Auth/logout',
+    
+    // Route with parameters
+    'pasien/(:num)' => 'Pasien/show/$1',
+    'pasien/edit/(:num)' => 'Pasien/edit/$1',
+    
+    // Route with multiple parameters
+    'rekam-medis/(:num)/(:num)' => 'RekamMedis/show/$1/$2'
+];</code></pre>
+
+            <h2>Route Parameters</h2>
+            <pre><code class="language-php">// Parameter types
+(:any)      // Matches any character
+(:num)      // Matches numeric values
+(:alpha)    // Matches alphabetic characters
+(:alphanum) // Matches alphanumeric characters
+
+// Example in controller
+public function show($id) {
+    $data = $this->model->find($id);
+    return $this->view('pasien/show', ['data' => $data]);
+}</code></pre>
+
+            <h2>URL Helper Methods</h2>
+            <pre><code class="language-php">// Generate URL
+BaseRouting::url('pasien/edit/1');  // Returns: /pasien/edit/1
+
+// Get current URL
+BaseRouting::currentUrl();  // Returns current URL path
+
+// Get URL segment
+BaseRouting::segment(1);  // Returns first segment
+BaseRouting::segment(2);  // Returns second segment
+
+// Generate asset URL
+BaseRouting::asset('css/style.css');  // Returns: /assets/css/style.css</code></pre>
+
+            <h2>Route Protection</h2>
+            <pre><code class="language-php">// In BaseController or specific controller
+public function __construct() {
+    parent::__construct();
+    
+    // Check authentication
+    if (!$this->isAuthenticated()) {
+        return $this->redirect('login');
+    }
+    
+    // Check permissions
+    if (!$this->hasPermission('admin')) {
+        return $this->redirect('dashboard');
+    }
+}</code></pre>
+
+            <h2>Route Redirects</h2>
+            <pre><code class="language-php">// Simple redirect
+return $this->redirect('pasien');
+
+// Redirect with flash message
+return $this->redirect('pasien/create')
+            ->with('error', 'Data tidak valid');
+
+// Redirect with input
+return $this->redirect('pasien/create')
+            ->withInput()
+            ->withErrors($validation);</code></pre>
+
+            <h2>Route Groups</h2>
+            <pre><code class="language-php">// Group routes by module
+$routes['admin'] = [
+    'dashboard' => 'Admin/Dashboard/index',
+    'users' => 'Admin/Users/index',
+    'users/create' => 'Admin/Users/create',
+    'users/edit/(:num)' => 'Admin/Users/edit/$1'
+];
+
+// Access: http://your-app/admin/dashboard</code></pre>
+
+            <h2>Route Filters</h2>
+            <pre><code class="language-php">// Define filter in config/filters.php
+$filters = [
+    'auth' => [
+        'excluded' => ['login', 'register', 'forgot-password'],
+        'handler' => function() {
+            if (!isLoggedIn()) {
+                redirect('login');
+            }
+        }
+    ]
+];</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

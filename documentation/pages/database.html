@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database - NUSANTARA HMVC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Database</h1>
+            <p>NUSANTARA HMVC provides a robust database abstraction layer using PDO for secure and efficient database operations.</p>
+
+            <h2>Configuration</h2>
+            <pre><code class="language-php">// config/database.php
+$db_config = [
+    'development' => [
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'your_database',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'port' => '3306'
+    ],
+    'production' => [
+        'hostname' => 'DB_HOST',
+        'username' => 'DB_USER',
+        'password' => 'DB_PASS',
+        'database' => 'DB_NAME',
+        'charset' => 'utf8mb4'
+    ]
+];</code></pre>
+
+            <h2>Model Definition</h2>
+            <pre><code class="language-php">// app/models/PasienModel.php
+class PasienModel extends BaseModel {
+    protected $table = 'tbl_m_pasien';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'kode', 'nik', 'nama', 'nama_pgl',
+        'no_hp', 'alamat', 'alamat_domisili'
+    ];
+    
+    // Optional: Define relationships
+    public function riwayat() {
+        return $this->hasMany('RiwayatModel', 'pasien_id');
+    }
+}</code></pre>
+
+            <h2>Basic CRUD Operations</h2>
+            <pre><code class="language-php">// Create new record
+$data = [
+    'nama' => 'John Doe',
+    'nik' => '1234567890',
+    'no_hp' => '081234567890'
+];
+$id = $this->model->create($data);
+
+// Read record by ID
+$pasien = $this->model->find(1);
+
+// Update record
+$this->model->update(1, [
+    'nama' => 'Jane Doe',
+    'no_hp' => '089876543210'
+]);
+
+// Delete record
+$this->model->delete(1);</code></pre>
+
+            <h2>Query Builder</h2>
+            <pre><code class="language-php">// Select with conditions
+$result = $this->model
+    ->select('id, nama, created_at')
+    ->where('status', 'active')
+    ->orderBy('nama', 'ASC')
+    ->limit(10)
+    ->get();
+
+// Complex queries
+$result = $this->model
+    ->select('p.*, r.tanggal')
+    ->join('tbl_riwayat r', 'r.pasien_id = p.id', 'LEFT')
+    ->where('p.status', 'active')
+    ->whereLike('p.nama', '%john%')
+    ->whereIn('p.kategori', ['A', 'B'])
+    ->groupBy('p.id')
+    ->having('COUNT(r.id) > 0')
+    ->orderBy('p.created_at', 'DESC')
+    ->get();</code></pre>
+
+            <h2>Raw Queries</h2>
+            <pre><code class="language-php">// Execute raw query with parameters
+$sql = "SELECT * FROM users WHERE status = ? AND role = ?";
+$result = $this->query($sql, ['active', 'admin']);
+
+// Named parameters
+$sql = "SELECT * FROM users WHERE status = :status";
+$result = $this->query($sql, [':status' => 'active']);</code></pre>
+
+            <h2>Relationships</h2>
+            <pre><code class="language-php">// One to Many relationship
+public function riwayat() {
+    return $this->hasMany('RiwayatModel', 'pasien_id');
+}
+
+// Many to One relationship
+public function dokter() {
+    return $this->belongsTo('DokterModel', 'dokter_id');
+}
+
+// Many to Many relationship
+public function layanan() {
+    return $this->belongsToMany('LayananModel', 'tbl_pasien_layanan', 
+        'pasien_id', 'layanan_id');
+}</code></pre>
+
+            <h2>Transactions</h2>
+            <pre><code class="language-php">try {
+    $this->beginTransaction();
+    
+    // Multiple database operations
+    $pasienId = $this->model->create($pasienData);
+    $this->riwayatModel->create([
+        'pasien_id' => $pasienId,
+        'tanggal' => date('Y-m-d'),
+        'keterangan' => 'Pemeriksaan awal'
+    ]);
+    
+    $this->commit();
+    return true;
+} catch (Exception $e) {
+    $this->rollback();
+    throw $e;
+}</code></pre>
+
+            <h2>Advanced Queries</h2>
+            <pre><code class="language-php">// Subqueries
+$result = $this->model
+    ->select('*')
+    ->whereIn('id', function($query) {
+        $query->select('pasien_id')
+              ->from('tbl_riwayat')
+              ->where('tanggal', date('Y-m-d'));
+    })
+    ->get();
+
+// Aggregates
+$stats = $this->model
+    ->select([
+        'COUNT(*) as total',
+        'AVG(umur) as rata_umur',
+        'MAX(created_at) as terakhir_daftar'
+    ])
+    ->where('status', 'active')
+    ->first();</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html> 
