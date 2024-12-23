@@ -2,9 +2,7 @@
 class AssetHelper {
     private static $instance = null;
     
-    private function __construct() {
-        // Private constructor
-    }
+    private function __construct() {}
     
     public static function getInstance() {
         if (self::$instance === null) {
@@ -13,46 +11,28 @@ class AssetHelper {
         return self::$instance;
     }
     
-    /**
-     * Generate URL for assets
-     */
-    public static function url($path) {
-        // Remove leading slash if exists
-        $path = ltrim($path, '/');
-        // Fix directory separators for Windows
-        $path = str_replace('\\', '/', $path);
-        return BASE_URL . '/public/assets/' . $path;
-    }
-    
-    /**
-     * Generate theme asset URL
-     */
     public static function theme($path) {
-        return self::url('theme/admin-lte-3/' . ltrim($path, '/'));
+        return BaseRouting::asset('theme/admin-lte-3/' . ltrim($path, '/'));
     }
     
-    /**
-     * Generate URL for custom assets
-     */
     public static function custom($path) {
-        return self::url('custom/' . ltrim($path, '/'));
+        return BaseRouting::asset(ltrim($path, '/'));
     }
     
-    /**
-     * Check if asset file exists
-     */
     public static function exists($path) {
-        $fullPath = self::getFullPath($path);
-        return file_exists($fullPath) && is_readable($fullPath);
+        return file_exists(ROOT_PATH . '/public/assets/' . ltrim($path, '/'));
     }
     
-    /**
-     * Get full server path for asset
-     */
-    public static function getFullPath($path) {
-        // Fix directory separators for Windows
-        $path = str_replace('/', DIRECTORY_SEPARATOR, ltrim($path, '/'));
-        return ROOT_PATH . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . $path;
+    public static function logo() {
+        $settings = Settings::getInstance();
+        
+        // Check if custom logo exists
+        if (!empty($settings->logo) && self::exists('images/' . $settings->logo)) {
+            return self::custom('images/' . $settings->logo);
+        }
+        
+        // Return default AdminLTE logo
+        return self::theme('dist/img/AdminLTELogo.png');
     }
 }
 ?> 

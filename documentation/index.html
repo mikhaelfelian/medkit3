@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEDKIT3 Documentation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
     <style>
         .sidebar {
             position: fixed;
@@ -27,9 +28,15 @@
         }
         .nav-link {
             color: #333;
+            padding: .25rem 0;
         }
         .nav-link:hover {
             color: #0d6efd;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -38,17 +45,17 @@
         <h5 class="mb-3">Contents</h5>
         <nav class="nav flex-column">
             <a class="nav-link" href="#introduction">Introduction</a>
-            <a class="nav-link" href="#structure">Project Structure</a>
             <a class="nav-link" href="#installation">Installation</a>
-            <a class="nav-link" href="#configuration">Configuration</a>
+            <a class="nav-link" href="#structure">Project Structure</a>
             <a class="nav-link" href="#routing">Routing System</a>
-            <a class="nav-link" href="#mvc">MVC Architecture</a>
             <a class="nav-link" href="#models">Models</a>
             <a class="nav-link" href="#views">Views</a>
             <a class="nav-link" href="#controllers">Controllers</a>
+            <a class="nav-link" href="#assets">Asset Management</a>
             <a class="nav-link" href="#helpers">Helpers</a>
             <a class="nav-link" href="#database">Database</a>
             <a class="nav-link" href="#security">Security</a>
+            <a class="nav-link" href="#configuration">Configuration</a>
         </nav>
     </div>
 
@@ -60,16 +67,26 @@
             <p>MEDKIT3 is a PHP-based HMVC framework designed for medical record systems. It provides a robust foundation for building scalable and maintainable web applications.</p>
         </section>
 
+        <section id="installation">
+            <h2>Installation</h2>
+            <ol>
+                <li>Clone the repository</li>
+                <li>Import database.sql</li>
+                <li>Configure config/config.php</li>
+                <li>Set proper permissions</li>
+                <li>Access via web browser</li>
+            </ol>
+        </section>
+
         <section id="structure">
             <h2>Project Structure</h2>
-            <pre>
+            <pre><code class="language-plaintext">
 medkit3/
 ├── app/
 │   ├── controllers/    # Application controllers
 │   ├── models/        # Database models
 │   ├── views/         # View templates
-│   ├── helpers/       # Custom helper functions
-│   └── migrations/    # Database migrations
+│   └── helpers/       # Custom helper functions
 ├── systems/
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
@@ -77,28 +94,122 @@ medkit3/
 │   └── helpers/       # Core helper functions
 ├── public/
 │   └── assets/        # Public assets (CSS, JS, images)
-├── config/
-│   ├── config.php     # Main configuration
-│   └── database.php   # Database configuration
-└── documentation/     # Project documentation
-            </pre>
+└── config/           # Configuration files
+            </code></pre>
         </section>
 
-        <section id="installation">
-            <h2>Installation</h2>
-            <ol>
-                <li>Clone the repository</li>
-                <li>Configure your web server to point to the public directory</li>
-                <li>Copy config/config.example.php to config/config.php and adjust settings</li>
-                <li>Import the database schema</li>
-                <li>Run composer install (if using dependencies)</li>
-            </ol>
+        <section id="routing">
+            <h2>Routing System</h2>
+            <p>The routing system follows a simple pattern: controller/method/parameters</p>
+            <pre><code class="language-php">
+// Example URLs:
+http://localhost/medkit3/pasien           # PasienController->index()
+http://localhost/medkit3/pasien/create    # PasienController->create()
+http://localhost/medkit3/pasien/edit/1    # PasienController->edit(1)
+            </code></pre>
+        </section>
+
+        <section id="models">
+            <h2>Models</h2>
+            <p>Models extend BaseModel and handle database operations:</p>
+            <pre><code class="language-php">
+class PasienModel extends BaseModel {
+    protected $table = 'tbl_m_pasien';
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'kode', 'nik', 'nama', 'nama_pgl', 'no_hp',
+        'alamat', 'alamat_domisili', 'rt', 'rw',
+        'kelurahan', 'kecamatan', 'kota', 'pekerjaan'
+    ];
+}
+            </code></pre>
+        </section>
+
+        <section id="views">
+            <h2>Views</h2>
+            <p>Views use PHP templates with AdminLTE 3 integration:</p>
+            <pre><code class="language-php">
+// Loading a view from controller:
+return $this->view('pasien/index', [
+    'title' => 'Data Pasien',
+    'data' => $data
+]);
+            </code></pre>
+        </section>
+
+        <section id="controllers">
+            <h2>Controllers</h2>
+            <p>Controllers extend BaseController and handle request/response:</p>
+            <pre><code class="language-php">
+class PasienController extends BaseController {
+    public function __construct() {
+        parent::__construct();
+        $this->loadModel('Pasien');
+    }
+    
+    public function index() {
+        // Controller logic here
+    }
+}
+            </code></pre>
+        </section>
+
+        <section id="assets">
+            <h2>Asset Management</h2>
+            <p>Assets are managed through the AssetHelper class:</p>
+            <pre><code class="language-php">
+// Using assets in views:
+<img src="<?php echo AssetHelper::logo(); ?>" alt="Logo">
+<link href="<?php echo AssetHelper::theme('css/style.css'); ?>" rel="stylesheet">
+            </code></pre>
+        </section>
+
+        <section id="helpers">
+            <h2>Helpers</h2>
+            <p>Available helpers include:</p>
+            <ul>
+                <li>AssetHelper: Manages assets and themes</li>
+                <li>ViewHelper: Handles view rendering</li>
+                <li>FormHelper: Handles form generation and validation</li>
+                <li>SecurityHelper: Handles security features</li>
+            </ul>
+        </section>
+
+        <section id="database">
+            <h2>Database</h2>
+            <p>The system uses PDO for database operations:</p>
+            <pre><code class="language-php">
+// Example model method:
+public function find($id) {
+    try {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE id = :id");
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+        error_log("Database Error: " . $e->getMessage());
+        return null;
+    }
+}
+            </code></pre>
+        </section>
+
+        <section id="security">
+            <h2>Security</h2>
+            <p>Security features include:</p>
+            <ul>
+                <li>CSRF Protection</li>
+                <li>XSS Prevention</li>
+                <li>SQL Injection Protection</li>
+                <li>Input Validation</li>
+                <li>Secure Session Handling</li>
+            </ul>
         </section>
 
         <section id="configuration">
             <h2>Configuration</h2>
-            <p>Main configuration settings are stored in config/config.php:</p>
-            <pre>
+            <p>Main configuration settings in config/config.php:</p>
+            <pre><code class="language-php">
 // Database Configuration
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'db_medkit3');
@@ -109,107 +220,12 @@ define('DB_PASS', '');
 define('BASE_URL', 'http://localhost/medkit3');
 define('ROOT_PATH', dirname(__DIR__));
 define('DEBUG_MODE', true);
-            </pre>
-        </section>
-
-        <section id="routing">
-            <h2>Routing System</h2>
-            <p>The routing system follows a simple pattern: controller/method/parameters</p>
-            <pre>
-// Example URLs:
-http://localhost/medkit3/pasien           # PasienController->index()
-http://localhost/medkit3/pasien/create    # PasienController->create()
-http://localhost/medkit3/pasien/edit/1    # PasienController->edit(1)
-            </pre>
-        </section>
-
-        <section id="mvc">
-            <h2>MVC Architecture</h2>
-            <p>The framework follows the Model-View-Controller pattern:</p>
-            <ul>
-                <li>Models: Handle data and business logic</li>
-                <li>Views: Present data to users</li>
-                <li>Controllers: Process user input and coordinate between models and views</li>
-            </ul>
-        </section>
-
-        <section id="models">
-            <h2>Models</h2>
-            <p>Models extend BaseModel and handle database operations:</p>
-            <pre>
-class PasienModel extends BaseModel {
-    protected $table = 'tbl_m_pasien';
-    protected $primaryKey = 'id';
-    protected $fillable = [
-        'kode', 'nik', 'nama', 'nama_pgl', 'no_hp',
-        'alamat', 'alamat_domisili', 'rt', 'rw',
-        'kelurahan', 'kecamatan', 'kota', 'pekerjaan'
-    ];
-}
-            </pre>
-        </section>
-
-        <section id="views">
-            <h2>Views</h2>
-            <p>Views use PHP templates with the AdminLTE 3 theme:</p>
-            <pre>
-// Loading a view from controller:
-return $this->view('pasien/index', [
-    'title' => 'Data Pasien',
-    'data' => $data
-]);
-            </pre>
-        </section>
-
-        <section id="controllers">
-            <h2>Controllers</h2>
-            <p>Controllers extend BaseController and handle request/response:</p>
-            <pre>
-class PasienController extends BaseController {
-    public function __construct() {
-        parent::__construct();
-        $this->loadModel('Pasien');
-    }
-
-    public function index() {
-        // Controller logic here
-    }
-}
-            </pre>
-        </section>
-
-        <section id="helpers">
-            <h2>Helpers</h2>
-            <p>Available helpers include:</p>
-            <ul>
-                <li>ViewHelper: Handles view rendering</li>
-                <li>BaseSecurity: Handles security features</li>
-                <li>Notification: Handles flash messages</li>
-                <li>GenerateNoRM: Generates medical record numbers</li>
-            </ul>
-        </section>
-
-        <section id="database">
-            <h2>Database</h2>
-            <p>The system uses PDO for database operations. Tables include:</p>
-            <ul>
-                <li>tbl_m_pasien: Patient records</li>
-                <li>tbl_pengaturan: System settings</li>
-            </ul>
-        </section>
-
-        <section id="security">
-            <h2>Security</h2>
-            <p>Security features include:</p>
-            <ul>
-                <li>CSRF Protection</li>
-                <li>Input Sanitization</li>
-                <li>PDO Prepared Statements</li>
-                <li>XSS Prevention</li>
-            </ul>
+            </code></pre>
         </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-php.min.js"></script>
 </body>
 </html> 

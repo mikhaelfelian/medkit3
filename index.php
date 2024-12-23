@@ -13,6 +13,7 @@ if (file_exists($publicPath) && is_file($publicPath)) {
     return false;
 } else {
     // Forward to public/index.php
+    define('ROOT_PATH', __DIR__);
     require_once __DIR__ . '/public/index.php';
 }
 ?>

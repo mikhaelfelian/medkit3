@@ -5,8 +5,8 @@ $settings = Settings::getInstance();
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="<?php echo BaseRouting::url(''); ?>" class="brand-link">
-        <img src="<?php echo BaseRouting::asset('theme/admin-lte-3/dist/img/AdminLTELogo.png'); ?>" 
-             alt="AdminLTE Logo" 
+        <img src="<?php echo AssetHelper::logo(); ?>" 
+             alt="<?php echo $settings->judul_app ?? 'AdminLTE Logo'; ?>" 
              class="brand-image img-circle elevation-3" 
              style="opacity: .8">
         <span class="brand-text font-weight-light"><?php echo $settings->judul_app ?? 'NUSANTARA HMVC'; ?></span>
