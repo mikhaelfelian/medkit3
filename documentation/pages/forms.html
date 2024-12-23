@@ -3,40 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forms & Validation - MEDKIT3</title>
+    <title>Forms & Validation - NUSANTARA HMVC</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
 </head>
 <body>
-    <h1>Forms & Validation</h1>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Forms & Validation</h1>
+            <p>NUSANTARA HMVC provides a robust form handling and validation system.</p>
 
-    <h2>Form Helper</h2>
-    <p>The BaseForm class provides methods for form creation and handling:</p>
-    <ul>
-        <li>input() - Create input fields</li>
-        <li>select() - Create select dropdowns</li>
-        <li>textarea() - Create textarea fields</li>
-        <li>csrf() - Add CSRF protection</li>
-        <li>validation - Handle form validation</li>
-    </ul>
-
-    <h2>Example Usage</h2>
-    <pre><code>
+            <h2>Form Creation</h2>
+            <pre><code class="language-php">// In your view
 $form = BaseForm::getInstance();
 
 // Open form
-echo $form->open('pasien/store', 'POST');
+echo $form->open('pasien/store', 'POST', ['class' => 'form-horizontal']);
 
-// Create input
-echo $form->input('text', 'nama', '', ['required' => true]);
+// Create input field
+echo $form->input('text', 'nama', '', [
+    'class' => 'form-control',
+    'required' => true,
+    'placeholder' => 'Nama Lengkap'
+]);
 
-// Create select
+// Create select dropdown
 echo $form->select('status', [
     'active' => 'Active',
     'inactive' => 'Inactive'
+], 'active', ['class' => 'form-control']);
+
+// Create textarea
+echo $form->textarea('alamat', '', [
+    'class' => 'form-control',
+    'rows' => 3
 ]);
 
+// Add CSRF protection
+echo $form->csrf();
+
 // Close form
-echo $form->close();
-    </code></pre>
+echo $form->close();</code></pre>
+
+            <h2>Form Validation</h2>
+            <pre><code class="language-php">// In your controller
+public function store() {
+    $validation = $this->validate([
+        'nama' => ['required', 'min:3', 'max:100'],
+        'email' => ['required', 'email', 'unique:users'],
+        'password' => ['required', 'min:8'],
+        'confirm_password' => ['required', 'matches:password']
+    ]);
+
+    if (!$validation) {
+        // Validation failed
+        return $this->redirect('user/create')
+                    ->withInput()
+                    ->withErrors($validation);
+    }
+
+    // Process valid data...
+}</code></pre>
+
+            <h2>Available Validation Rules</h2>
+            <ul>
+                <li><strong>required</strong> - Field must not be empty</li>
+                <li><strong>email</strong> - Must be valid email format</li>
+                <li><strong>min:length</strong> - Minimum length requirement</li>
+                <li><strong>max:length</strong> - Maximum length requirement</li>
+                <li><strong>matches:field</strong> - Must match another field</li>
+                <li><strong>unique:table,column</strong> - Must be unique in database</li>
+                <li><strong>numeric</strong> - Must be numeric value</li>
+                <li><strong>alpha</strong> - Only alphabetic characters</li>
+                <li><strong>alpha_numeric</strong> - Alphanumeric characters only</li>
+                <li><strong>date</strong> - Must be valid date</li>
+            </ul>
+
+            <h2>Displaying Validation Errors</h2>
+            <pre><code class="language-php">// In your view
+&lt;div class="form-group"&gt;
+    &lt;label&gt;Nama&lt;/label&gt;
+    &lt;input type="text" name="nama" class="&lt;?= $form->inputClass('nama') ?&gt;" 
+           value="&lt;?= $form->oldInput('nama') ?&gt;"&gt;
+    &lt;?= $form->error('nama') ?&gt;
+&lt;/div&gt;</code></pre>
+
+            <h2>Custom Validation Messages</h2>
+            <pre><code class="language-php">// In your controller
+$messages = [
+    'nama.required' => 'Nama harus diisi',
+    'nama.min' => 'Nama minimal 3 karakter',
+    'email.email' => 'Format email tidak valid',
+    'password.min' => 'Password minimal 8 karakter'
+];
+
+$validation = $this->validate($rules, $messages);</code></pre>
+
+            <h2>File Upload Validation</h2>
+            <pre><code class="language-php">// Form with file upload
+echo $form->open('dokumen/upload', 'POST', ['enctype' => 'multipart/form-data']);
+echo $form->file('dokumen');
+
+// Validation rules
+$rules = [
+    'dokumen' => [
+        'required',
+        'file',
+        'max_size:2048', // 2MB
+        'mime:pdf,doc,docx'
+    ]
+];</code></pre>
+
+            <h2>Array Input Validation</h2>
+            <pre><code class="language-php">// Form with array inputs
+echo $form->input('text', 'items[]', '');
+echo $form->input('text', 'items[]', '');
+
+// Validation rules
+$rules = [
+    'items.*' => ['required', 'min:3'],
+    'items' => ['array', 'min_items:2']
+];</code></pre>
+
+            <h2>Conditional Validation</h2>
+            <pre><code class="language-php">// Validate based on conditions
+$rules = [
+    'password' => [
+        'required_if:action,create',
+        'min:8'
+    ],
+    'photo' => [
+        'required_if:has_photo,1',
+        'image'
+    ]
+];</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
 </body>
-</html> 
+</html>

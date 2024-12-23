@@ -3,32 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting Started - MEDKIT3</title>
+    <title>Getting Started - NUSANTARA HMVC</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
 </head>
 <body>
-    <h1>Getting Started</h1>
-    
-    <h2>Requirements</h2>
-    <ul>
-        <li>PHP 7.4 or higher</li>
-        <li>MySQL 5.7 or higher</li>
-        <li>Apache/Nginx web server</li>
-        <li>mod_rewrite enabled</li>
-    </ul>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Getting Started</h1>
+            <p>Welcome to NUSANTARA HMVC! This guide will help you get up and running quickly.</p>
 
-    <h2>Installation</h2>
-    <ol>
-        <li>Clone the repository:
-            <pre><code>git clone https://github.com/yourusername/medkit3.git</code></pre>
-        </li>
-        <li>Configure your web server to point to the public directory</li>
-        <li>Copy config/config.example.php to config/config.php and update settings</li>
-        <li>Import the database schema from database/schema.sql</li>
-        <li>Set proper permissions:
-            <pre><code>chmod -R 755 public/
-chmod -R 755 app/logs/</code></pre>
-        </li>
-    </ol>
+            <h2>System Requirements</h2>
+            <ul>
+                <li>PHP 7.4 or higher</li>
+                <li>MySQL 5.7 or higher</li>
+                <li>Apache/Nginx web server</li>
+                <li>mod_rewrite enabled</li>
+                <li>PDO PHP Extension</li>
+                <li>JSON PHP Extension</li>
+                <li>OpenSSL PHP Extension</li>
+                <li>Mbstring PHP Extension</li>
+            </ul>
+
+            <h2>Installation</h2>
+            <h3>1. Download Framework</h3>
+            <pre><code class="language-bash"># Clone repository
+git clone https://github.com/yourusername/nusantara-hmvc.git
+
+# Navigate to project directory
+cd nusantara-hmvc</code></pre>
+
+            <h3>2. Configure Web Server</h3>
+            <p>For Apache (.htaccess):</p>
+            <pre><code class="language-apache">RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]</code></pre>
+
+            <p>For Nginx:</p>
+            <pre><code class="language-nginx">location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}</code></pre>
+
+            <h3>3. Configure Application</h3>
+            <pre><code class="language-php">// config/config.php
+$config = [
+    'app_name' => 'Your Application',
+    'base_url' => 'http://localhost/your-app',
+    'timezone' => 'Asia/Jakarta',
+    'charset' => 'UTF-8',
+    'debug_mode' => true,
+    'encryption_key' => 'your-32-char-key',
+    'session_handler' => 'files', // files, database
+    'maintenance_mode' => false
+];
+
+// Database configuration
+$db_config = [
+    'development' => [
+        'hostname' => 'localhost',
+        'username' => 'root',
+        'password' => '',
+        'database' => 'your_database',
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci'
+    ]
+];</code></pre>
+
+            <h3>4. Set Directory Permissions</h3>
+            <pre><code class="language-bash"># Set write permissions
+chmod -R 755 public/
+chmod -R 755 app/logs/
+chmod -R 755 app/cache/</code></pre>
+
+            <h2>Creating Your First Page</h2>
+            <h3>1. Create Controller</h3>
+            <pre><code class="language-php">// app/controllers/HomeController.php
+class HomeController extends BaseController {
+    public function __construct() {
+        parent::__construct();
+    }
+    
+    public function index() {
+        return $this->view('home/index', [
+            'title' => 'Welcome to NUSANTARA HMVC'
+        ]);
+    }
+}</code></pre>
+
+            <h3>2. Create View</h3>
+            <pre><code class="language-php"><!-- app/views/home/index.php -->
+&lt;div class="container"&gt;
+    &lt;h1&gt;&lt;?= $title ?&gt;&lt;/h1&gt;
+    &lt;p&gt;Your first page with NUSANTARA HMVC!&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+
+            <h3>3. Create Model (Optional)</h3>
+            <pre><code class="language-php">// app/models/UserModel.php
+class UserModel extends BaseModel {
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    protected $fillable = ['name', 'email'];
+}</code></pre>
+
+            <h2>Basic Usage</h2>
+            <h3>Routing</h3>
+            <pre><code class="language-plaintext">URL Pattern: http://your-app/controller/method/param1/param2
+
+Examples:
+http://your-app/home            // HomeController->index()
+http://your-app/users/show/1    // UsersController->show($id)</code></pre>
+
+            <h3>Database Operations</h3>
+            <pre><code class="language-php">// In your controller
+$this->loadModel('User');
+
+// Create
+$this->model->create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+]);
+
+// Read
+$user = $this->model->find(1);
+
+// Update
+$this->model->update(1, ['name' => 'Jane Doe']);
+
+// Delete
+$this->model->delete(1);</code></pre>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li>Learn about the <a href="./structure.html">Project Structure</a></li>
+                <li>Understand <a href="./mvc.html">MVC Architecture</a></li>
+                <li>Explore <a href="./routing.html">Routing</a></li>
+                <li>Work with <a href="./database.html">Database</a></li>
+            </ul>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html> 

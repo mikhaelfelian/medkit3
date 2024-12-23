@@ -3,40 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MVC Architecture - MEDKIT3</title>
+    <title>MVC Architecture - NUSANTARA HMVC</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
 </head>
 <body>
-    <h1>MVC Architecture</h1>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>MVC Architecture</h1>
+            <p>NUSANTARA HMVC follows the Model-View-Controller (MVC) pattern with Hierarchical organization.</p>
 
-    <h2>Controllers</h2>
-    <p>Controllers handle user requests and manage application logic.</p>
-    <pre><code>
-class PasienController extends BaseController {
-    public function index() {
-        // Handle request
-        // Load model
-        // Return view
+            <h2>Controllers</h2>
+            <p>Controllers handle user requests and manage application logic.</p>
+            <pre><code class="language-php">// app/controllers/PengaturanController.php
+class PengaturanController extends BaseController {
+    public function __construct() {
+        parent::__construct();
+        $this->loadModel('Pengaturan');
     }
-}
-    </code></pre>
+    
+    public function index() {
+        try {
+            $data = $this->model->getSettings();
+            return $this->view('pengaturan/index', [
+                'title' => 'Pengaturan Aplikasi',
+                'data' => $data
+            ]);
+        } catch (Exception $e) {
+            Notification::error('Gagal memuat pengaturan');
+            return $this->redirect('');
+        }
+    }
 
-    <h2>Models</h2>
-    <p>Models handle data and business logic.</p>
-    <pre><code>
+    public function update() {
+        try {
+            $data = $this->input();
+            if ($this->model->updateSettings($data)) {
+                Notification::success('Pengaturan berhasil diupdate');
+            }
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+        }
+        return $this->redirect('pengaturan');
+    }
+}</code></pre>
+
+            <h2>Models</h2>
+            <p>Models handle data and business logic.</p>
+            <pre><code class="language-php">// app/models/PasienModel.php
 class PasienModel extends BaseModel {
     protected $table = 'tbl_m_pasien';
-    protected $fillable = ['kode', 'nama', 'nik'];
-}
-    </code></pre>
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'kode', 'nik', 'nama', 'nama_pgl', 
+        'no_hp', 'alamat', 'alamat_domisili'
+    ];
 
-    <h2>Views</h2>
-    <p>Views handle the presentation layer.</p>
-    <pre><code>
+    public function searchPaginate($search = '', $page = 1, $perPage = 10) {
+        try {
+            $offset = ($page - 1) * $perPage;
+            $conditions = [];
+            $params = [];
+
+            if (!empty($search)) {
+                $conditions[] = "(nama LIKE :search OR nik LIKE :search)";
+                $params[':search'] = "%{$search}%";
+            }
+
+            $where = empty($conditions) ? "" : "WHERE " . implode(' AND ', $conditions);
+            
+            // Get total and paginated data
+            return [
+                'data' => $this->query($sql, $params)->fetchAll(),
+                'total' => $total
+            ];
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch records");
+        }
+    }
+}</code></pre>
+
+            <h2>Views</h2>
+            <p>Views handle the presentation layer.</p>
+            <pre><code class="language-php"><!-- app/views/pengaturan/index.php -->
+&lt;?php $form = BaseForm::getInstance(); ?&gt;
+
 &lt;div class="content-wrapper"&gt;
-    &lt;h1&gt;<?= $title ?>&lt;/h1&gt;
-    &lt;!-- Content here --&gt;
-&lt;/div&gt;
-    </code></pre>
+    &lt;section class="content-header"&gt;
+        &lt;div class="container-fluid"&gt;
+            &lt;div class="row mb-2"&gt;
+                &lt;div class="col-sm-6"&gt;
+                    &lt;h1&gt;Pengaturan Aplikasi&lt;/h1&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section class="content"&gt;
+        &lt;div class="container-fluid"&gt;
+            &lt;?= Notification::render() ?&gt;
+            &lt;div class="card"&gt;
+                &lt;?= $form->open(BaseRouting::url('pengaturan/update'), 'POST') ?&gt;
+                    &lt;div class="card-body"&gt;
+                        &lt;!-- Form fields here --&gt;
+                    &lt;/div&gt;
+                    &lt;div class="card-footer"&gt;
+                        &lt;button type="submit" class="btn btn-primary"&gt;Simpan&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;?= $form->close() ?&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+&lt;/div&gt;</code></pre>
+
+            <h2>HMVC Structure</h2>
+            <p>The Hierarchical Model-View-Controller pattern allows for modular organization of your application.</p>
+            <pre><code class="language-plaintext">app/
+├── modules/
+│   ├── admin/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   └── views/
+│   └── user/
+│       ├── controllers/
+│       ├── models/
+│       └── views/
+└── core/
+    ├── Controller.php
+    ├── Model.php
+    └── View.php</code></pre>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html> 

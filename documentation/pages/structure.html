@@ -3,39 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Structure - MEDKIT3</title>
+    <title>Project Structure - NUSANTARA HMVC</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
 </head>
 <body>
-    <h1>Project Structure</h1>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="./getting-started.html">Getting Started</a></li>
+                <li><a href="./structure.html">Project Structure</a></li>
+                <li><a href="./mvc.html">MVC Architecture</a></li>
+                <li><a href="./routing.html">Routing</a></li>
+                <li><a href="./database.html">Database</a></li>
+                <li><a href="./forms.html">Forms & Validation</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <h1>Project Structure</h1>
+            <p>NUSANTARA HMVC follows a clear and organized directory structure to maintain code modularity and separation of concerns.</p>
 
-    <h2>Directory Layout</h2>
-    <pre><code>
-medkit3/
-├── app/                    # Application-specific code
+            <h2>Directory Layout</h2>
+            <pre><code class="language-plaintext">project/
+├── app/                    # Application code
 │   ├── controllers/       # Application controllers
 │   ├── models/           # Database models
 │   ├── views/            # View templates
-│   ├── helpers/          # Application helpers
-│   └── migrations/       # Database migrations
-├── systems/               # Core framework files
-│   ├── controllers/      # Base controllers
-│   ├── models/          # Base models
-│   ├── routing/         # Routing system
+│   ├── helpers/          # Custom helper functions
+│   └── modules/          # HMVC modules
+│
+├── systems/               # Framework core
+│   ├── core/            # Core classes
 │   ├── database/        # Database handlers
-│   ├── security/        # Security components
-│   └── helpers/         # Core helpers
-├── public/               # Publicly accessible files
+│   ├── helpers/         # System helpers
+│   ├── libraries/       # Third-party libraries
+│   └── security/        # Security components
+│
+├── public/               # Public directory
+│   ├── assets/          # CSS, JS, images
+│   ├── uploads/         # User uploads
+│   └── index.php        # Entry point
+│
 ├── config/              # Configuration files
-└── documentation/       # Documentation files
-    </code></pre>
+│   ├── config.php       # Main configuration
+│   ├── database.php     # Database settings
+│   └── routes.php       # Custom routes
+│
+└── documentation/       # Framework documentation</code></pre>
 
-    <h2>Key Components</h2>
-    <ul>
-        <li><strong>app/</strong> - Contains application-specific code</li>
-        <li><strong>systems/</strong> - Contains the framework's core files</li>
-        <li><strong>public/</strong> - Web server document root</li>
-        <li><strong>config/</strong> - Configuration files</li>
-    </ul>
+            <h2>Key Directories</h2>
+
+            <h3>app/</h3>
+            <p>Contains your application-specific code:</p>
+            <ul>
+                <li><strong>controllers/</strong> - Application controllers</li>
+                <li><strong>models/</strong> - Database models</li>
+                <li><strong>views/</strong> - View templates</li>
+                <li><strong>helpers/</strong> - Custom helper functions</li>
+                <li><strong>modules/</strong> - HMVC modules for larger applications</li>
+            </ul>
+
+            <h3>systems/</h3>
+            <p>Contains the framework's core files:</p>
+            <ul>
+                <li><strong>core/</strong> - Base classes (Controller, Model, View)</li>
+                <li><strong>database/</strong> - Database connection and query builders</li>
+                <li><strong>helpers/</strong> - Common helper functions</li>
+                <li><strong>libraries/</strong> - Third-party libraries</li>
+                <li><strong>security/</strong> - Security components</li>
+            </ul>
+
+            <h3>public/</h3>
+            <p>The only directory that should be publicly accessible:</p>
+            <ul>
+                <li><strong>assets/</strong> - Static files (CSS, JavaScript, images)</li>
+                <li><strong>uploads/</strong> - User uploaded files</li>
+                <li><strong>index.php</strong> - Application entry point</li>
+            </ul>
+
+            <h3>config/</h3>
+            <p>Configuration files:</p>
+            <pre><code class="language-php">// config/config.php
+$config = [
+    'app_name' => 'Your App Name',
+    'base_url' => 'http://localhost/your-app',
+    'timezone' => 'Asia/Jakarta',
+    'charset' => 'UTF-8',
+    'debug_mode' => true
+];
+
+// config/database.php
+$db_config = [
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'your_database'
+];</code></pre>
+
+            <h2>Module Structure</h2>
+            <p>For larger applications, you can organize code into modules:</p>
+            <pre><code class="language-plaintext">app/modules/admin/
+├── controllers/
+│   ├── DashboardController.php
+│   └── UsersController.php
+├── models/
+│   └── AdminModel.php
+└── views/
+    ├── dashboard/
+    └── users/
+
+app/modules/user/
+├── controllers/
+├── models/
+└── views/</code></pre>
+
+            <h2>Naming Conventions</h2>
+            <ul>
+                <li>Controllers: PascalCase with "Controller" suffix (e.g., UserController.php)</li>
+                <li>Models: PascalCase with "Model" suffix (e.g., UserModel.php)</li>
+                <li>Views: lowercase with underscores (e.g., user_profile.php)</li>
+                <li>Config files: lowercase (e.g., database.php)</li>
+                <li>Helper files: lowercase with "_helper" suffix (e.g., form_helper.php)</li>
+            </ul>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
 </body>
-</html> 
+</html>
