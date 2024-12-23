@@ -1,5 +1,34 @@
 # NUSANTARA HMVC 1.0 - Beta
 
+## Created By
+
+**Mikhael Felian Waskito**
+Semarang, 23 December 2024
+
+### About the Creator
+
+As a developer with a passion for healthcare systems and Indonesian technological advancement, I created NUSANTARA HMVC to bridge the gap between modern web development and Indonesian healthcare needs. This framework represents not just code, but a vision of empowering Indonesian developers to create world-class healthcare solutions.
+
+### Why NUSANTARA?
+
+NUSANTARA, meaning "archipelago" in ancient Javanese, was chosen to represent:
+
+1. **Unity in Diversity**: Like Indonesia's motto "Bhinneka Tunggal Ika", this framework unifies various components while maintaining their independence.
+
+2. **Local Wisdom**: Incorporating Indonesian technological advancement while maintaining our cultural identity.
+
+3. **Modular Architecture**: Just as Nusantara consists of thousands of islands working together as one nation, this HMVC framework consists of modular components working together as one system.
+
+4. **Scalability**: Like the vast archipelago, this framework is designed to scale from small to enterprise applications.
+
+### Vision
+
+This framework embodies my commitment to:
+- Advancing Indonesian healthcare technology
+- Empowering local developers
+- Creating globally competitive solutions
+- Maintaining our cultural identity in technology
+
 ## About NUSANTARA
 
 NUSANTARA, derived from the ancient Javanese term "Nusantara" meaning "archipelago", represents the vast Indonesian archipelago. This name was chosen to reflect:
@@ -125,9 +154,10 @@ Semarang, 23 December 2024
 
 MIT License
 
-## Creator's Note
-
-This framework represents my vision of creating a healthcare system framework that embodies Indonesian values while meeting international standards. The name "NUSANTARA" was chosen to inspire Indonesian developers to create solutions that are both locally relevant and globally competitive.
+---
+*"From Indonesia, For Indonesia"*
+- Mikhael Felian Waskito
+  Semarang, 23 December 2024
 ```
 
 This README focuses on:
