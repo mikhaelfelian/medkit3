@@ -24,4 +24,5 @@ class Migration_pengaturan {
         $tables = new BaseTables();
         $tables->drop('pengaturan');
     }
-} 
+}
+?>
