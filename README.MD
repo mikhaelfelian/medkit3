@@ -50,7 +50,7 @@ A lightweight HMVC (Hierarchical Model-View-Controller) PHP framework with Admin
 - Apache/Nginx
 - mod_rewrite enabled
 
-## Installation
+## Quick Installation
 
 1. Clone repository:
 ```bash
@@ -87,6 +87,41 @@ chmod -R 755 app/logs/
 5. Access the application:
 ```
 http://localhost/medkit3
+```
+
+Default login:
+```
+Username: admin
+Password: admin123
+```
+
+## Development Setup
+
+For local development:
+
+1. Configure your Apache virtual host or use PHP's built-in server:
+```bash
+php -S localhost:8000 -t public/
+```
+
+2. Enable error reporting in development:
+```php
+// config/config.php
+'debug_mode' => true
+```
+
+3. Install development dependencies:
+```bash
+composer install --dev
+```
+
+## Updating
+
+To update the framework:
+```bash
+git pull origin main
+composer update
+php migrate.php
 ```
 
 ## Framework Structure
