@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing - NUSANTARA HMVC</title>
+</head>
+<body>
+    <h1>Routing</h1>
+
+    <h2>Basic Routing</h2>
+    <pre><code>// config/routes.php
+BaseRouting::get('example', 'Example@index');
+BaseRouting::post('example/store', 'Example@store');
+BaseRouting::get('example/edit/{id}', 'Example@edit');
+BaseRouting::post('example/update/{id}', 'Example@update');
+BaseRouting::get('example/delete/{id}', 'Example@delete');</code></pre>
+
+    <h2>Route Parameters</h2>
+    <pre><code>// Route with parameter
+BaseRouting::get('user/{id}', 'User@show');
+
+// In controller
+public function show($id) {
+    // $id is automatically passed
+    $user = $this->model->find($id);
+    return $this->view('user/show', ['user' => $user]);
+}</code></pre>
+
+    <h2>Default Routes</h2>
+    <pre><code>// Set default controller and method
+BaseRouting::setDefaults('Home', 'index');
+
+// 404 handler
+BaseRouting::notFound(function() {
+    require_once ROOT_PATH . '/app/views/errors/404.php';
+});</code></pre>
+
+    <h2>Route Groups</h2>
+    <pre><code>// Admin routes
+if (isAdmin()) {
+    BaseRouting::get('admin/dashboard', 'Admin@dashboard');
+    BaseRouting::get('admin/users', 'Admin@users');
+}
+
+// API routes
+BaseRouting::get('api/users', 'Api@users');
+BaseRouting::post('api/users', 'Api@store');</code></pre>
+</body>
+</html> 

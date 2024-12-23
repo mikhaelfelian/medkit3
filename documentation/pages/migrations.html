@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Migrations - NUSANTARA HMVC</title>
+</head>
+<body>
+    <h1>Database Migrations</h1>
+
+    <h2>Creating Migrations</h2>
+    <p>Create a new migration file in app/migrations/ with timestamp format:</p>
+    <pre><code>// app/migrations/20240315123456-users-migration.php
+class Migration_users {
+    public function up() {
+        $tables = new BaseTables();
+        
+        $tables->create('users', function($table) {
+            $table->increments('id');
+            $table->string('username', 50)->notNull()->unique('username');
+            $table->string('email', 100)->notNull()->unique('email');
+            $table->string('password', 255)->notNull();
+            $table->string('name', 100)->notNull();
+            $table->text('address')->nullable();
+            $table->timestamp('created_at')->notNull()->default('CURRENT_TIMESTAMP');
+            $table->timestamp('updated_at')->nullable();
+        });
+    }
+    
+    public function down() {
+        $tables = new BaseTables();
+        $tables->drop('users');
+    }
+}</code></pre>
+
+    <h2>Running Migrations</h2>
+    <p>Access the migration controller to run migrations:</p>
+    <pre><code>// In development environment
+http://your-site/migration/run
+
+// Or programmatically
+$runner = new MigrationRunner();
+$runner->run();</code></pre>
+
+    <h2>Available Column Types</h2>
+    <ul>
+        <li><code>increments('id')</code> - Auto-incrementing ID</li>
+        <li><code>string('name', length)</code> - VARCHAR column</li>
+        <li><code>text('description')</code> - TEXT column</li>
+        <li><code>int('count')</code> - INTEGER column</li>
+        <li><code>decimal('amount', 10, 2)</code> - DECIMAL column</li>
+        <li><code>datetime('published_at')</code> - DATETIME column</li>
+        <li><code>timestamp('created_at')</code> - TIMESTAMP column</li>
+        <li><code>boolean('is_active')</code> - BOOLEAN column</li>
+    </ul>
+
+    <h2>Column Modifiers</h2>
+    <ul>
+        <li><code>notNull()</code> - Make column NOT NULL</li>
+        <li><code>nullable()</code> - Make column nullable</li>
+        <li><code>default(value)</code> - Set default value</li>
+        <li><code>unique(name)</code> - Add unique constraint</li>
+        <li><code>index(name)</code> - Add index</li>
+    </ul>
+</body>
+</html> 

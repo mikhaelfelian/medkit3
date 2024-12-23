@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVC Pattern - NUSANTARA HMVC</title>
+</head>
+<body>
+    <h1>MVC Pattern</h1>
+
+    <h2>Controllers</h2>
+    <pre><code>// app/controllers/ExampleController.php
+class ExampleController extends BaseController {
+    public function __construct() {
+        parent::__construct();
+        $this->loadModel('ExampleModel');
+    }
+
+    public function index() {
+        return $this->view('example/index', [
+            'title' => 'Example Page',
+            'data' => $this->model->getAll()
+        ]);
+    }
+}</code></pre>
+
+    <h2>Models</h2>
+    <pre><code>// app/models/ExampleModel.php
+class ExampleModel extends BaseModel {
+    protected $table = 'examples';
+    protected $primaryKey = 'id';
+    protected $fillable = ['name', 'description'];
+
+    public function __construct($conn) {
+        parent::__construct($conn, $this->table);
+    }
+}</code></pre>
+
+    <h2>Views</h2>
+    <pre><code><!-- app/views/example/index.php -->
+&lt;div class="content-wrapper"&gt;
+    &lt;section class="content-header"&gt;
+        &lt;h1&gt;&lt;?= $title ?&gt;&lt;/h1&gt;
+    &lt;/section&gt;
+    
+    &lt;section class="content"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="card-body"&gt;
+                &lt;!-- Your content here --&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/section&gt;
+&lt;/div&gt;</code></pre>
+</body>
+</html> 
