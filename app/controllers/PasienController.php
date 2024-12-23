@@ -139,5 +139,4 @@ class PasienController extends BaseController {
         }
     }
 }
-?> 
-?> 
+?>
