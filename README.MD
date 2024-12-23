@@ -2,6 +2,22 @@
 
 A PHP-based HMVC framework designed for medical record systems. Built with modern PHP practices and a clean architecture.
 
+## About NUSANTARA - HMVC 1.0 Beta
+
+NUSANTARA - HMVC is a lightweight PHP framework that embodies the spirit of Indonesian archipelago (Nusantara). Just as Nusantara represents the unity of diverse islands, this framework unifies various components into a cohesive system while maintaining their independence.
+
+The name "NUSANTARA" comes from two Sanskrit words:
+- **Nusa**: Island
+- **Antara**: Between/Across
+
+This reflects our framework's philosophy:
+- **Modularity**: Like islands connected by sea
+- **Flexibility**: Adaptable to different needs
+- **Independence**: Each component can stand alone
+- **Unity**: Working together as one system
+
+Version 1.0 Beta represents our commitment to continuous improvement and community feedback.
+
 ## Features
 
 - HMVC Architecture
