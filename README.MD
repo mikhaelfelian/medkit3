@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ├── routing/       # URL routing and dispatching
+│   ���── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -178,5 +178,13 @@ This README focuses on:
 - Implemented secure session handling
 - Added input validation
 - Documentation updates
+
+### v1.0.2 (2024-03-19)
+- Enhanced file upload functionality:
+  - Added automatic upload directory creation
+  - Fixed file path handling in database storage
+  - Updated file access permissions via .htaccess
+  - Implemented secure file upload directory structure
+  - Standardized upload paths to use assets/uploads/
 
 Note: All dates are in YYYY-MM-DD format
