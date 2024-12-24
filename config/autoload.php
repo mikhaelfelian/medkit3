@@ -18,6 +18,7 @@ return [
         'view',        // Will load ViewHelper.php
         'notification', // Will load NotificationHelper.php
         'tanggalan',   // Will load Tanggalan.php
+        'angka',       // Will load Angka.php
     ],
     
     // Libraries to autoload
