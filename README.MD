@@ -49,18 +49,28 @@ Version 1.0 Beta represents our commitment to continuous improvement and communi
 ```
 medkit3/
 ├── app/
-│   ├── controllers/
-│   ├── models/
-│   ├── views/
-│   └── helpers/
+│   ├── controllers/    # Application-specific controllers
+│   ├── models/         # Database models and business logic
+│   ├── views/          # Template files and UI components
+│   ├── helpers/        # Utility functions and helpers
+│   └── modules/        # HMVC modules
 ├── systems/
-│   ├── controllers/
-│   ├── models/
-│   ├── routing/
-│   └── helpers/
+│   ├── core/          # Framework core components
+│   ├── controllers/   # Base controller classes
+│   ├── models/        # Base model classes
+│   ├── routing/       # URL routing and dispatching
+│   ├── database/      # Database abstraction layer
+│   ├── security/      # Security components
+│   └── helpers/       # System-wide helper functions
 ├── public/
-│   └── assets/
-└── config/
+│   ├── assets/        # CSS, JavaScript, and images
+│   ├── uploads/       # User uploaded files
+│   └── index.php      # Entry point
+├── config/
+│   ├── config.php     # Main configuration
+│   ├── database.php   # Database settings
+│   └── routes.php     # Custom routes
+└── vendor/            # Third-party dependencies
 ```
 
 ## Configuration
