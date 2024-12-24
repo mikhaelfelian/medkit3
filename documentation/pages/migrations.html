@@ -32,63 +32,42 @@
         <main class="content">
             <section id="migrations">
                 <h1>Database Migrations</h1>
-                <p>NUSANTARA HMVC provides a simple migration system to help you manage database schema changes.</p>
+                <p>NUSANTARA HMVC provides a simple migration system to manage database schema changes.</p>
 
                 <h2>Migration Files</h2>
-                <p>Migration files are stored in <code>databases/migrations/</code> directory with SQL format:</p>
+                <p>Migration files are stored in the <code>databases/migrations/</code> directory:</p>
                 <pre><code class="language-plaintext">databases/migrations/
-├── 001_create_tbl_m_items.sql
-├── 002_create_some_other_table.sql
-└── ...</code></pre>
+├── create_tbl_m_items.sql
+└── create_migrations.sql</code></pre>
 
                 <h2>Running Migrations</h2>
-                <p>You can run migrations using the CLI command:</p>
+                <p>To run migrations, use the command line:</p>
                 <pre><code class="language-bash">cd /path/to/medkit3
 php migrate.php</code></pre>
 
-                <h2>Migration Class</h2>
-                <p>The migration system is handled by <code>migrate.php</code> in the root directory:</p>
-                <pre><code class="language-php">class Migrate {
-    private $conn;
-    private $migrations = [];
-    
-    public function __construct() {
-        try {
-            $this->conn = Database::getInstance()->getConnection();
-            $this->createMigrationsTable();
-            $this->loadMigrations();
-        } catch (Exception $e) {
-            die("Migration Error: " . $e->getMessage() . "\n");
-        }
-    }
-    
-    // ... other methods
-}</code></pre>
-
-                <h2>Creating Migrations</h2>
-                <p>Create a new SQL file in the migrations directory following this pattern:</p>
+                <h2>Migration Structure</h2>
+                <p>Each migration file should follow SQL standard format:</p>
                 <pre><code class="language-sql">CREATE TABLE `table_name` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `field_name` VARCHAR(255) NULL DEFAULT NULL,
-    `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 COLLATE='utf8mb3_general_ci';</code></pre>
 
                 <h2>Migration Tracking</h2>
-                <p>The system tracks executed migrations in the <code>migrations</code> table:</p>
+                <p>The system automatically tracks executed migrations in a <code>migrations</code> table:</p>
                 <pre><code class="language-sql">CREATE TABLE migrations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     migration VARCHAR(255),
     executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );</code></pre>
 
-                <h2>Features</h2>
+                <h2>Key Features</h2>
                 <ul>
-                    <li>Automatic migration tracking</li>
-                    <li>Only runs new migrations</li>
-                    <li>SQL-based migrations</li>
+                    <li>Simple SQL-based migrations</li>
+                    <li>Automatic tracking of executed migrations</li>
                     <li>Command-line interface</li>
                     <li>Error handling and logging</li>
+                    <li>Database version control</li>
                 </ul>
             </section>
         </main>

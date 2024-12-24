@@ -32,81 +32,36 @@
             <p>NUSANTARA HMVC follows a clear and organized directory structure to maintain code modularity and separation of concerns.</p>
 
             <h2>Directory Layout</h2>
-            <pre><code class="language-plaintext">project/
-├── app/                    # Application code
-│   ├── controllers/       # Application controllers
-│   ├── models/           # Database models
-│   ├── views/            # View templates
-│   ├── helpers/          # Custom helper functions
-│   └── modules/          # HMVC modules
-│
-├── systems/               # Framework core
-│   ├── core/            # Core classes
-│   ├── database/        # Database handlers
-│   ├── helpers/         # System helpers
-│   ├── libraries/       # Third-party libraries
-│   └── security/        # Security components
-│
-├── public/               # Public directory
-│   ├── assets/          # CSS, JS, images
-│   ├── uploads/         # User uploads
-│   └── index.php        # Entry point
-│
-├── config/              # Configuration files
-│   ├── config.php       # Main configuration
-│   ├── database.php     # Database settings
-│   └── routes.php       # Custom routes
-│
-└── documentation/       # Framework documentation</code></pre>
+            <pre><code class="language-plaintext">medkit3/
+├── app/
+│   ├── controllers/     # Application controllers
+│   ├── core/           # Core application files
+│   ├── models/         # Application models
+│   └── views/          # View templates
+├── config/             # Configuration files
+├── databases/          # Database files
+│   └── migrations/     # SQL migration files
+├── documentation/      # Framework documentation
+├── public/            # Publicly accessible files
+│   ├── assets/        # Public assets (CSS, JS, images)
+│   └── index.php      # Front controller
+├── systems/           # Framework core files
+│   ├── controllers/   # Base controller classes
+│   ├── models/        # Base model classes
+│   ├── routing/       # Routing system
+│   └── security/      # Security features
+├── migrate.php        # Migration CLI script
+└── index.php          # Application entry point</code></pre>
 
             <h2>Key Directories</h2>
-
-            <h3>app/</h3>
-            <p>Contains your application-specific code:</p>
             <ul>
-                <li><strong>controllers/</strong> - Application controllers</li>
-                <li><strong>models/</strong> - Database models</li>
-                <li><strong>views/</strong> - View templates</li>
-                <li><strong>helpers/</strong> - Custom helper functions</li>
-                <li><strong>modules/</strong> - HMVC modules for larger applications</li>
+                <li><code>app/</code> - Application-specific code</li>
+                <li><code>config/</code> - Configuration files</li>
+                <li><code>databases/</code> - Database migrations and seeds</li>
+                <li><code>documentation/</code> - Framework documentation</li>
+                <li><code>public/</code> - Publicly accessible files</li>
+                <li><code>systems/</code> - Core framework files</li>
             </ul>
-
-            <h3>systems/</h3>
-            <p>Contains the framework's core files:</p>
-            <ul>
-                <li><strong>core/</strong> - Base classes (Controller, Model, View)</li>
-                <li><strong>database/</strong> - Database connection and query builders</li>
-                <li><strong>helpers/</strong> - Common helper functions</li>
-                <li><strong>libraries/</strong> - Third-party libraries</li>
-                <li><strong>security/</strong> - Security components</li>
-            </ul>
-
-            <h3>public/</h3>
-            <p>The only directory that should be publicly accessible:</p>
-            <ul>
-                <li><strong>assets/</strong> - Static files (CSS, JavaScript, images)</li>
-                <li><strong>uploads/</strong> - User uploaded files</li>
-                <li><strong>index.php</strong> - Application entry point</li>
-            </ul>
-
-            <h3>config/</h3>
-            <p>Configuration files:</p>
-            <pre><code class="language-php">// config/config.php
-$config = [
-    'app_name' => 'Your App Name',
-    'base_url' => 'http://localhost/your-app',
-    'timezone' => 'Asia/Jakarta',
-    'charset' => 'UTF-8',
-    'debug_mode' => true
-];
-
-// config/database.php
-$db_config = [
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => '',
-    'database' => 'your_database'
-];</code></pre>
 
             <h2>Module Structure</h2>
             <p>For larger applications, you can organize code into modules:</p>
