@@ -91,9 +91,10 @@ $form = BaseForm::getInstance();
                                 <div class="custom-file">
                                     <?= $form->input('file', 'logo', '', [
                                         'class' => 'custom-file-input',
-                                        'accept' => 'image/*'
+                                        'accept' => '.jpg,.jpeg,.png',
+                                        'id' => 'logo'
                                     ]) ?>
-                                    <label class="custom-file-label">Choose file</label>
+                                    <label class="custom-file-label" for="logo">Choose file</label>
                                 </div>
                                 <?php if (!empty($data->logo)): ?>
                                     <img src="<?= BaseRouting::url($data->logo) ?>" alt="Current Logo" class="mt-2" style="max-height: 50px;">
@@ -105,9 +106,10 @@ $form = BaseForm::getInstance();
                                 <div class="custom-file">
                                     <?= $form->input('file', 'favicon', '', [
                                         'class' => 'custom-file-input',
-                                        'accept' => 'image/*'
+                                        'accept' => '.ico,.png',
+                                        'id' => 'favicon'
                                     ]) ?>
-                                    <label class="custom-file-label">Choose file</label>
+                                    <label class="custom-file-label" for="favicon">Choose file</label>
                                 </div>
                                 <?php if (!empty($data->favicon)): ?>
                                     <img src="<?= BaseRouting::url($data->favicon) ?>" alt="Current Favicon" class="mt-2" style="max-height: 32px;">

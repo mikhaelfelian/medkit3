@@ -34,7 +34,7 @@ class PengaturanController extends BaseController {
             
             // Handle logo upload
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleFileUpload('logo', ['jpg', 'jpeg', 'png', 'gif']);
+                $logoPath = $this->handleFileUpload('logo', ['jpg', 'jpeg', 'png']);
                 if ($logoPath) {
                     $data['logo'] = $logoPath;
                     
@@ -105,7 +105,8 @@ class PengaturanController extends BaseController {
                 throw new Exception("Failed to move uploaded file");
             }
             
-            return 'file/app/' . $filename;
+            // Return path to store in database
+            return 'public/file/app/' . $filename;
             
         } catch (Exception $e) {
             error_log("File upload error: " . $e->getMessage());
@@ -114,6 +115,8 @@ class PengaturanController extends BaseController {
     }
     
     protected function deleteOldFile($path) {
+        // Remove 'public/' prefix if exists
+        $path = str_replace('public/', '', $path);
         $fullPath = PUBLIC_PATH . '/' . $path;
         if (file_exists($fullPath)) {
             unlink($fullPath);
