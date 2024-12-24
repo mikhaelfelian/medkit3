@@ -6,11 +6,8 @@ class BaseModel {
     protected $fillable = [];
     protected $timestamps = true;
     
-    public function __construct($conn) {
-        if (!$conn) {
-            throw new Exception("Database connection is required");
-        }
-        $this->conn = $conn;
+    public function __construct($conn = null) {
+        $this->conn = $conn ?? Database::getInstance()->getConnection();
         
         // If table is not set in child class, use class name
         if (empty($this->table)) {
@@ -20,6 +17,18 @@ class BaseModel {
             $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
             $this->table = 'tbl_' . $tableName;
         }
+    }
+    
+    public static function loadModel($model) {
+        $modelClass = ucfirst($model) . 'Model';
+        $modelPath = APPPATH . 'models/' . $modelClass . '.php';
+        
+        if (file_exists($modelPath)) {
+            require_once $modelPath;
+            return new $modelClass();
+        }
+        
+        throw new Exception("Model {$modelClass} not found");
     }
     
     public function getAll($orderBy = null) {

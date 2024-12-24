@@ -6,6 +6,7 @@ class PasienController extends BaseController {
     }
     
     public function index() {
+
         try {
             $search = $this->input('search');
             $page = max(1, intval($this->input('page', 1)));
