@@ -16,7 +16,8 @@ return [
     'helpers' => [
         'asset',       // Will load AssetHelper.php
         'view',        // Will load ViewHelper.php
-        'notification' // Will load NotificationHelper.php
+        'notification', // Will load NotificationHelper.php
+        'tanggalan',   // Will load Tanggalan.php
     ],
     
     // Libraries to autoload
