@@ -34,9 +34,13 @@ class BaseForm {
         return $this->old[$key] ?? $default;
     }
     
+    public function inputClass($field, $defaultClass = 'form-control') {
+        return $defaultClass . ($this->hasError($field) ? ' is-invalid' : '');
+    }
+    
     public function input($type, $name, $value = '', $attributes = []) {
         $value = $this->old($name, $value);
-        $class = 'form-control' . ($this->hasError($name) ? ' is-invalid' : '');
+        $class = $this->inputClass($name);
         $attrs = $this->buildAttributes(array_merge(['class' => $class], $attributes));
         
         return sprintf(
@@ -50,7 +54,7 @@ class BaseForm {
     
     public function textarea($name, $value = '', $attributes = []) {
         $value = $this->old($name, $value);
-        $class = 'form-control' . ($this->hasError($name) ? ' is-invalid' : '');
+        $class = $this->inputClass($name);
         $attrs = $this->buildAttributes(array_merge(['class' => $class], $attributes));
         
         return sprintf(
@@ -63,7 +67,7 @@ class BaseForm {
     
     public function select($name, $options, $selected = '', $attributes = []) {
         $selected = $this->old($name, $selected);
-        $class = 'form-control' . ($this->hasError($name) ? ' is-invalid' : '');
+        $class = $this->inputClass($name);
         $attrs = $this->buildAttributes(array_merge(['class' => $class], $attributes));
         
         $html = sprintf('<select name="%s"%s>', $name, $attrs);

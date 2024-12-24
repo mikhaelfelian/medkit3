@@ -19,18 +19,6 @@ class BaseModel {
         }
     }
     
-    public static function loadModel($model) {
-        $modelClass = ucfirst($model) . 'Model';
-        $modelPath = APPPATH . 'models/' . $modelClass . '.php';
-        
-        if (file_exists($modelPath)) {
-            require_once $modelPath;
-            return new $modelClass();
-        }
-        
-        throw new Exception("Model {$modelClass} not found");
-    }
-    
     public function getAll($orderBy = null) {
         $sql = "SELECT * FROM {$this->table}";
         if ($orderBy) {
@@ -102,65 +90,40 @@ class BaseModel {
                 $stmt->bindValue(":{$key}", $value);
             }
             
-            $stmt->execute();
-            return $this->conn->lastInsertId();
+            return $stmt->execute();
             
         } catch (PDOException $e) {
-            error_log("Database Error in BaseModel::create - " . $e->getMessage());
-            throw new Exception("Failed to create record");
+            error_log("Database Error: " . $e->getMessage());
+            return false;
         }
     }
     
     public function update($id, $data) {
         try {
-            // Filter data based on fillable fields
             $fields = array_intersect_key($data, array_flip($this->fillable));
             
-            if (empty($fields)) {
-                throw new Exception("No valid fields to update");
-            }
-            
-            // Add timestamps if enabled
             if ($this->timestamps) {
                 $fields['updated_at'] = date('Y-m-d H:i:s');
             }
             
-            // Build SET clause
             $set = [];
-            foreach (array_keys($fields) as $field) {
-                $set[] = "{$field} = :{$field}";
+            foreach ($fields as $key => $value) {
+                $set[] = "{$key} = :{$key}";
             }
             
-            // Prepare SQL
             $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . " WHERE {$this->primaryKey} = :id";
-            
-            // Log the query and data for debugging
-            error_log("Update SQL: " . $sql);
-            error_log("Update Data: " . json_encode($fields));
-            
-            // Prepare and execute
             $stmt = $this->conn->prepare($sql);
             
-            // Bind ID
             $stmt->bindValue(':id', $id);
-            
-            // Bind field values
             foreach ($fields as $key => $value) {
                 $stmt->bindValue(":{$key}", $value);
             }
             
-            // Execute and check result
-            $result = $stmt->execute();
-            
-            if (!$result) {
-                throw new Exception("Database update failed: " . implode(", ", $stmt->errorInfo()));
-            }
-            
-            return $result;
+            return $stmt->execute();
             
         } catch (PDOException $e) {
-            error_log("Database Error in BaseModel::update - " . $e->getMessage());
-            throw new Exception("Failed to update record: " . $e->getMessage());
+            error_log("Database Error: " . $e->getMessage());
+            return false;
         }
     }
     
@@ -170,8 +133,19 @@ class BaseModel {
             $stmt->bindValue(':id', $id);
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database Error in BaseModel::delete - " . $e->getMessage());
-            throw new Exception("Failed to delete record");
+            error_log("Database Error: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    public function count() {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table}";
+            $stmt = $this->conn->query($sql);
+            return $stmt->fetch(PDO::FETCH_OBJ)->total;
+        } catch (PDOException $e) {
+            error_log("Database Error: " . $e->getMessage());
+            return 0;
         }
     }
     
@@ -215,17 +189,6 @@ class BaseModel {
                 'current_page' => 1,
                 'last_page' => 1
             ];
-        }
-    }
-    
-    public function count() {
-        try {
-            $sql = "SELECT COUNT(*) as total FROM {$this->table}";
-            $stmt = $this->conn->query($sql);
-            return $stmt->fetch(PDO::FETCH_OBJ)->total;
-        } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return 0;
         }
     }
 }
