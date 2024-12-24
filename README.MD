@@ -158,3 +158,24 @@ This README focuses on:
 8. Credits and licensing
 9. URL routing
 10. System configuration
+
+## Changelog
+
+### v1.0.0 (2024-12-23)
+- Initial release
+- Core features implementation:
+  - Patient data management
+  - Dashboard analytics
+  - User authentication
+  - Database integration
+  - Security implementations
+
+### v1.0.1 (2024-12-23)
+- Added CSRF protection
+- Enhanced XSS prevention
+- Improved SQL injection protection
+- Implemented secure session handling
+- Added input validation
+- Documentation updates
+
+Note: All dates are in YYYY-MM-DD format
