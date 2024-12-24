@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoloading - NUSANTARA HMVC</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>NUSANTARA HMVC</h2>
+                <p>Version 1.0 - Beta</p>
+                <small>A Lightweight PHP HMVC Framework</small>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="../index.html">Overview</a></li>
+                <li><a href="getting-started.html">Getting Started</a></li>
+                <li><a href="structure.html">Project Structure</a></li>
+                <li><a href="mvc.html">MVC Architecture</a></li>
+                <li><a href="autoload.html" class="active">Autoloading</a></li>
+                <li><a href="routing.html">Routing</a></li>
+                <li><a href="database.html">Database</a></li>
+                <li><a href="forms.html">Forms & Validation</a></li>
+                <li><a href="security.html">Security</a></li>
+                <li><a href="helpers.html">Helpers</a></li>
+            </ul>
+        </nav>
+        <main class="content">
+            <section id="autoload">
+                <h1>Autoloading System</h1>
+                <p>The autoloading system in NUSANTARA HMVC provides automatic loading of models, helpers, and libraries based on configuration.</p>
+
+                <h2>Configuration</h2>
+                <p>Configure your autoload components in <code>config/autoload.php</code>:</p>
+                <pre><code class="language-php">return [
+    // Models to autoload
+    'models' => [
+        'pengaturan',  // Will load PengaturanModel
+        'pasien',      // Will load PasienModel
+    ],
+    
+    // Helpers to autoload
+    'helpers' => [
+        'asset',       // Will load AssetHelper.php
+        'view',        // Will load ViewHelper.php
+        'notification' // Will load NotificationHelper.php
+    ],
+    
+    // Libraries to autoload
+    'libraries' => [
+        'session',     // Will load Session.php
+        'security',    // Will load Security.php
+        'form'         // Will load Form.php
+    ]
+];</code></pre>
+
+                <h2>File Naming Conventions</h2>
+                <ul>
+                    <li><strong>Models:</strong> {Name}Model.php (e.g., PengaturanModel.php)</li>
+                    <li><strong>Helpers:</strong> {Name}Helper.php (e.g., AssetHelper.php)</li>
+                    <li><strong>Libraries:</strong> {Name}.php (e.g., Session.php)</li>
+                </ul>
+
+                <h2>Directory Structure</h2>
+                <pre><code class="language-plaintext">app/
+├── models/          # Application models
+└── helpers/         # Custom helpers
+
+systems/
+├── helpers/         # System helpers
+└── libraries/       # System libraries</code></pre>
+
+                <h2>Usage Examples</h2>
+
+                <h3>Loading Models</h3>
+                <pre><code class="language-php">class SomeController extends BaseController {
+    public function __construct() {
+        parent::__construct();
+        $this->model = $this->loadModel('Pengaturan');
+    }
+}</code></pre>
+
+                <h3>Using Helpers</h3>
+                <pre><code class="language-php">// Using AssetHelper
+AssetHelper::theme('css/style.css');
+
+// Using NotificationHelper
+Notification::success('Operation successful');</code></pre>
+
+                <h3>Using Libraries</h3>
+                <pre><code class="language-php">// Get library instances
+$form = Form::getInstance();
+$security = Security::getInstance();</code></pre>
+
+                <h2>Custom Autoloading</h2>
+                <p>You can extend the autoloading system by adding your own paths in <code>systems/BaseAutoload.php</code>:</p>
+                <pre><code class="language-php">private function loadModels() {
+    if (!empty($this->config['models'])) {
+        foreach ($this->config['models'] as $model) {
+            $modelClass = ucfirst($model) . 'Model';
+            $modelFile = APP_PATH . '/models/' . $modelClass . '.php';
+            
+            if (file_exists($modelFile)) {
+                require_once $modelFile;
+                $this->models[strtolower($model)] = new $modelClass(
+                    Database::getInstance()->getConnection()
+                );
+            }
+        }
+    }
+}</code></pre>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html> 
