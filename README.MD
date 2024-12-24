@@ -69,16 +69,15 @@ Edit config/config.php to match your environment:
 
 ```php
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'db_medkit3');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('BASE_URL', 'http://localhost/medkit3');
+define('DB_NAME', 'your-db-name');
+define('DB_USER', 'your-db-username');
+define('DB_PASS', 'your-db-password');
+define('BASE_URL', 'your-url-app');
 ```
 
 ## Usage
-
-Access the application through:
-http://localhost/medkit3
+On demo program, Access the application through:
+https://medkit3.tigerasoft.com
 
 Default routes:
 - Dashboard: /
