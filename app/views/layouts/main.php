@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php 
+    $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
+    $faviconPath = !empty($settings->favicon) ? BaseRouting::url($settings->favicon) : BaseRouting::asset('theme/admin-lte-3/dist/img/AdminLTELogo.png');
+    ?>
+    <link rel="icon" type="image/x-icon" href="<?= $faviconPath ?>">
     <title><?php echo $title ?? 'Dashboard'; ?> | <?php echo $settings->judul_app ?? 'NUSANTARA HMVC'; ?></title>
 
     <!-- Google Font: Source Sans Pro -->

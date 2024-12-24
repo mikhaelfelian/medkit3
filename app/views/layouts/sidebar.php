@@ -5,8 +5,12 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="<?php echo BaseRouting::url(''); ?>" class="brand-link">
-        <?php try { ?>
-            <img src="<?php echo AssetHelper::logo(); ?>" 
+        <?php 
+        try {
+            $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
+            $logoPath = !empty($settings->logo) ? $settings->logo : 'assets/theme/admin-lte-3/dist/img/AdminLTELogo.png';
+        ?>
+            <img src="<?php echo BaseRouting::url($logoPath); ?>" 
                  alt="<?php echo $settings->judul_app ?? 'AdminLTE Logo'; ?>" 
                  class="brand-image img-circle elevation-3" 
                  style="opacity: .8">
