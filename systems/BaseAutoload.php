@@ -2,15 +2,13 @@
 class BaseAutoload {
     private static $instance = null;
     private $models = [];
-    private $helpers = [];
-    private $libraries = [];
     private $config;
     
     private function __construct() {
         // Load autoload configuration
         $this->config = require ROOT_PATH . '/config/autoload.php';
         
-        // Initialize autoloaded items
+        // Load components
         $this->loadModels();
         $this->loadHelpers();
         $this->loadLibraries();
@@ -23,53 +21,50 @@ class BaseAutoload {
         return self::$instance;
     }
     
-    public function loadModels() {
+    private function loadModels() {
         if (!empty($this->config['models'])) {
             foreach ($this->config['models'] as $model) {
                 $modelClass = ucfirst($model) . 'Model';
-                $modelPath = APP_PATH . '/models/' . $modelClass . '.php';
+                $modelFile = APP_PATH . '/models/' . $modelClass . '.php';
                 
-                if (file_exists($modelPath)) {
-                    require_once $modelPath;
-                    $this->models[$model] = new $modelClass(Database::getInstance()->getConnection());
+                if (file_exists($modelFile)) {
+                    require_once $modelFile;
+                    $this->models[strtolower($model)] = new $modelClass(Database::getInstance()->getConnection());
                 } else {
-                    error_log("Warning: Model not found - {$modelPath}");
+                    error_log("Model file not found: {$modelFile}");
                 }
             }
         }
-        return $this->models;
     }
     
-    public function loadHelpers() {
+    private function loadHelpers() {
         if (!empty($this->config['helpers'])) {
             foreach ($this->config['helpers'] as $helper) {
-                $helperPath = SYSTEM_PATH . '/helpers/' . $helper . '_helper.php';
-                
-                if (file_exists($helperPath)) {
-                    require_once $helperPath;
+                $helperFile = SYSTEM_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
+                if (file_exists($helperFile)) {
+                    require_once $helperFile;
                 } else {
-                    error_log("Warning: Helper not found - {$helperPath}");
+                    error_log("Helper file not found: {$helperFile}");
                 }
             }
         }
     }
     
-    public function loadLibraries() {
+    private function loadLibraries() {
         if (!empty($this->config['libraries'])) {
             foreach ($this->config['libraries'] as $library) {
-                $libraryPath = SYSTEM_PATH . '/libraries/' . $library . '.php';
-                
-                if (file_exists($libraryPath)) {
-                    require_once $libraryPath;
+                $libraryFile = SYSTEM_PATH . '/libraries/' . ucfirst($library) . '.php';
+                if (file_exists($libraryFile)) {
+                    require_once $libraryFile;
                 } else {
-                    error_log("Warning: Library not found - {$libraryPath}");
+                    error_log("Library file not found: {$libraryFile}");
                 }
             }
         }
     }
     
-    public function getModel($name) {
-        return $this->models[$name] ?? null;
+    public function getModel($model) {
+        return $this->models[strtolower($model)] ?? null;
     }
     
     public function getModels() {
