@@ -25,6 +25,11 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Daftar Obat</h3>
+                    <div class="card-tools">
+                        <a href="<?= BaseRouting::url('obat/add') ?>" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus"></i> Tambah Data
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-striped">

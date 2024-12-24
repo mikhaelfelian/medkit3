@@ -46,4 +46,6 @@ class ObatModel extends BaseModel {
         'so',
         'status'
     ];
+
+    protected $timestamps = false;
 } 
