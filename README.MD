@@ -159,8 +159,8 @@ This README focuses on:
 9. URL routing
 10. System configuration
 
-````````
-Changelog
+```
+## Changelog:
 
 ### v1.0.0 (2024-12-23)
 - Initial release
