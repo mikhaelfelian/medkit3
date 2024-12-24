@@ -19,13 +19,16 @@ class BaseModel {
         }
     }
     
-    public function getAll($orderBy = null) {
-        $sql = "SELECT * FROM {$this->table}";
-        if ($orderBy) {
-            $sql .= " ORDER BY {$orderBy}";
+    public function get() {
+        try {
+            $sql = "SELECT * FROM {$this->table}";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error: " . $e->getMessage());
+            throw new Exception("Failed to fetch data");
         }
-        $stmt = $this->conn->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function find($id) {

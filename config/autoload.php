@@ -9,6 +9,7 @@ return [
     'models' => [
         'pengaturan',  // Will load PengaturanModel
         'pasien',      // Will load PasienModel
+        'obat',        // Will load ObatModel
     ],
     
     // Helpers to autoload

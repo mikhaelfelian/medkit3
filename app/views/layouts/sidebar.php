@@ -34,8 +34,8 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 </li>
 
                 <!-- Master Data -->
-                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
-                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-database"></i>
                         <p>
                             Master Data
@@ -48,6 +48,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Pasien</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('obat'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Obat</p>
                             </a>
                         </li>
                     </ul>
