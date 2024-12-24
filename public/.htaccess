@@ -1,12 +1,12 @@
 RewriteEngine On
 RewriteBase /medkit3/public/
 
-# Allow direct access to assets
+# Allow direct access to files
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Redirect all other requests to main index.php
+# Route all other requests to index.php
 RewriteRule ^(.*)$ ../index.php [QSA,L]
 
 # Cache control for assets
