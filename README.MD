@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ���── routing/       # URL routing and dispatching
+│   ├── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -185,6 +185,17 @@ This README focuses on:
   - Fixed file path handling in database storage
   - Updated file access permissions via .htaccess
   - Implemented secure file upload directory structure
-  - Standardized upload paths to use assets/uploads/
+  - Standardized upload paths to use public/file/app/
+
+### v1.0.3 (2024-03-19)
+- Improved application settings:
+  - Added logo and favicon management
+  - Enhanced file type validation for uploads
+  - Implemented file cleanup on update
+  - Added support for JPG, JPEG, PNG for logo
+  - Added support for ICO, PNG for favicon
+  - Updated layout to use dynamic logo/favicon
+  - Improved file access security
+  - Added fallback to default theme assets
 
 Note: All dates are in YYYY-MM-DD format
