@@ -69,7 +69,8 @@ medkit3/
 ├── config/
 │   ├── config.php     # Main configuration
 │   ├── database.php   # Database settings
-│   └── routes.php     # Custom routes
+│   ├── routes.php     # Custom routes
+│   └── autoload.php   # Autoloader configuration
 └── vendor/            # Third-party dependencies
 ```
 
