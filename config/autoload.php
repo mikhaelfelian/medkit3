@@ -13,14 +13,15 @@ return [
     
     // Helpers to autoload
     'helpers' => [
-        'url',         // Will load url_helper.php
-        'form',        // Will load form_helper.php
-        'asset',       // Will load asset_helper.php
+        'asset',       // Will load AssetHelper.php
+        'view',        // Will load ViewHelper.php
+        'notification' // Will load NotificationHelper.php
     ],
     
     // Libraries to autoload
     'libraries' => [
         'session',     // Will load Session.php
         'security',    // Will load Security.php
+        'form'         // Will load Form.php
     ]
 ]; 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $title ?? APP_NAME ?></title>
+    <title><?= isset($title) ? $title . ' - ' . ($settings['judul_app'] ?? 'NUSANTARA HMVC') : 'NUSANTARA HMVC' ?></title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -20,13 +20,12 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <?php include ROOT_PATH . '/app/views/template/navbar.php'; ?>
-        <?php include ROOT_PATH . '/app/views/template/sidebar.php'; ?>
+        <?php require APP_PATH . '/views/layouts/navbar.php'; ?>
+        <?php require APP_PATH . '/views/layouts/sidebar.php'; ?>
         
-        <!-- Content -->
         <?= $content ?>
         
-        <?php include ROOT_PATH . '/app/views/template/footer.php'; ?>
+        <?php require APP_PATH . '/views/layouts/footer.php'; ?>
     </div>
 
     <!-- jQuery -->
@@ -41,11 +40,5 @@
     <?php endif; ?>
     
     <?= $this->yield('scripts') ?>
-    <script src="<?= AssetHelper::theme('plugins/bs-custom-file-input/bs-custom-file-input.min.js') ?>"></script>
-    <script>
-    $(document).ready(function () {
-        bsCustomFileInput.init();
-    });
-    </script>
 </body>
 </html> 
