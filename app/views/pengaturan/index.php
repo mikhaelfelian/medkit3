@@ -96,7 +96,7 @@ $form = BaseForm::getInstance();
                                     <label class="custom-file-label">Choose file</label>
                                 </div>
                                 <?php if (!empty($data->logo)): ?>
-                                    <img src="<?= BaseRouting::asset($data->logo) ?>" alt="Current Logo" class="mt-2" style="max-height: 50px;">
+                                    <img src="<?= BaseRouting::url($data->logo) ?>" alt="Current Logo" class="mt-2" style="max-height: 50px;">
                                 <?php endif; ?>
                             </div>
 
@@ -110,7 +110,7 @@ $form = BaseForm::getInstance();
                                     <label class="custom-file-label">Choose file</label>
                                 </div>
                                 <?php if (!empty($data->favicon)): ?>
-                                    <img src="<?= BaseRouting::asset($data->favicon) ?>" alt="Current Favicon" class="mt-2" style="max-height: 32px;">
+                                    <img src="<?= BaseRouting::url($data->favicon) ?>" alt="Current Favicon" class="mt-2" style="max-height: 32px;">
                                 <?php endif; ?>
                             </div>
                         </div>

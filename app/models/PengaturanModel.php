@@ -10,7 +10,9 @@ class PengaturanModel extends BaseModel {
         'kota',
         'url',
         'theme',
-        'pagination_limit'
+        'pagination_limit',
+        'logo',
+        'favicon'
     ];
     
     public function getSettings() {
@@ -49,6 +51,38 @@ class PengaturanModel extends BaseModel {
             
         } catch (Exception $e) {
             error_log("Failed to update settings: " . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    protected function uploadFile($file, $type) {
+        try {
+            $uploadDir = ROOT_PATH . '/public/file/app/';
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/x-icon'];
+            
+            if (!in_array($file['type'], $allowedTypes)) {
+                throw new Exception('Invalid file type: ' . $file['type']);
+            }
+
+            // Create directory if it doesn't exist
+            if (!is_dir($uploadDir)) {
+                if (!mkdir($uploadDir, 0755, true)) {
+                    throw new Exception("Failed to create upload directory");
+                }
+            }
+
+            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $filename = $type . '_' . time() . '.' . $extension;
+            $targetPath = $uploadDir . $filename;
+
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                throw new Exception('Failed to move uploaded file');
+            }
+
+            return 'file/app/' . $filename;
+            
+        } catch (Exception $e) {
+            error_log("File upload error: " . $e->getMessage());
             throw $e;
         }
     }

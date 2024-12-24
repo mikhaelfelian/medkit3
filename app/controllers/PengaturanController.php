@@ -34,12 +34,30 @@ class PengaturanController extends BaseController {
             
             // Handle logo upload
             if (!empty($_FILES['logo']['name'])) {
-                $data['logo'] = $this->uploadFile('logo', 'images/');
+                $logoPath = $this->handleFileUpload('logo', ['jpg', 'jpeg', 'png', 'gif']);
+                if ($logoPath) {
+                    $data['logo'] = $logoPath;
+                    
+                    // Delete old logo if exists
+                    $oldSettings = $this->model->getSettings();
+                    if (!empty($oldSettings->logo)) {
+                        $this->deleteOldFile($oldSettings->logo);
+                    }
+                }
             }
             
             // Handle favicon upload
             if (!empty($_FILES['favicon']['name'])) {
-                $data['favicon'] = $this->uploadFile('favicon', 'images/');
+                $faviconPath = $this->handleFileUpload('favicon', ['ico', 'png']);
+                if ($faviconPath) {
+                    $data['favicon'] = $faviconPath;
+                    
+                    // Delete old favicon if exists
+                    $oldSettings = $this->model->getSettings();
+                    if (!empty($oldSettings->favicon)) {
+                        $this->deleteOldFile($oldSettings->favicon);
+                    }
+                }
             }
             
             if ($this->model->updateSettings($data)) {
@@ -55,29 +73,51 @@ class PengaturanController extends BaseController {
         return $this->redirect('pengaturan');
     }
     
-    protected function uploadFile($field, $path) {
-        if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
-            return false;
-        }
-        
-        $file = $_FILES[$field];
-        $filename = time() . '_' . basename($file['name']);
-        $upload_path = PUBLIC_PATH . '/assets/' . $path;
-        
-        // Create directory if it doesn't exist
-        if (!is_dir($upload_path)) {
-            if (!mkdir($upload_path, 0755, true)) {
-                throw new Exception("Failed to create upload directory");
+    protected function handleFileUpload($field, $allowedExtensions = []) {
+        try {
+            if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+                return false;
             }
+            
+            $file = $_FILES[$field];
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            
+            // Validate extension
+            if (!in_array($extension, $allowedExtensions)) {
+                throw new Exception("Invalid file type. Allowed: " . implode(', ', $allowedExtensions));
+            }
+            
+            // Generate unique filename
+            $filename = $field . '_' . time() . '.' . $extension;
+            $uploadDir = PUBLIC_PATH . '/file/app/';
+            
+            // Create directory if not exists
+            if (!file_exists($uploadDir)) {
+                if (!mkdir($uploadDir, 0755, true)) {
+                    throw new Exception("Failed to create upload directory");
+                }
+            }
+            
+            $targetPath = $uploadDir . $filename;
+            
+            // Move uploaded file
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                throw new Exception("Failed to move uploaded file");
+            }
+            
+            return 'file/app/' . $filename;
+            
+        } catch (Exception $e) {
+            error_log("File upload error: " . $e->getMessage());
+            throw $e;
         }
-        
-        $filepath = $upload_path . $filename;
-        
-        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-            throw new Exception("Failed to move uploaded file");
+    }
+    
+    protected function deleteOldFile($path) {
+        $fullPath = PUBLIC_PATH . '/' . $path;
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
         }
-        
-        return $path . $filename;
     }
 }
 ?> 
