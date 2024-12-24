@@ -187,7 +187,7 @@ This README focuses on:
   - Implemented secure file upload directory structure
   - Standardized upload paths to use public/file/app/
 
-### v1.0.3 (2024-03-19)
+### v1.0.3 (2024-12-25)
 - Improved application settings:
   - Added logo and favicon management
   - Enhanced file type validation for uploads
