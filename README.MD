@@ -39,10 +39,45 @@ Version 1.0 Beta represents our commitment to continuous improvement and communi
 ## Installation
 
 1. Clone the repository
-2. Import database.sql
-3. Configure config/config.php
+```bash
+git clone https://github.com/mikhaelfelian/medkit3.git
+cd medkit3
+```
+
+2. Create and setup the database
+```bash
+# Create MySQL database
+mysql -u root -p
+CREATE DATABASE medkit3;
+exit;
+
+# Import initial schema
+mysql -u root -p medkit3 < databases/migrations/schema.sql
+
+# Run migrations
+php systems/cli/migrate.php
+```
+
+3. Configure your application
+```bash
+# Copy sample config file
+cp config/config.sample.php config/config.php
+
+# Edit configuration with your settings
+nano config/config.php
+```
+
 4. Set proper permissions
+```bash
+chmod 755 -R ./
+chmod 777 -R ./public/uploads/
+chmod 777 -R ./public/assets/cache/
+```
+
 5. Access via web browser
+```
+http://localhost/medkit3/
+```
 
 ## Directory Structure
 
