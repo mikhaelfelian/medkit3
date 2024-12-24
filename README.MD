@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ├── routing/       # URL routing and dispatching
+│   ���── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -197,5 +197,14 @@ This README focuses on:
   - Updated layout to use dynamic logo/favicon
   - Improved file access security
   - Added fallback to default theme assets
+
+### v1.0.4 (2024-12-25)
+- Added Indonesian date formatting:
+  - Added Tanggalan helper for date localization
+  - Support for multiple date formats (dd/mm/yy, dd/mm/yyyy)
+  - Added Indonesian month names (full and abbreviated)
+  - Support for formatted dates (25 Desember 2024, 23 Des 2024)
+  - Added hyphenated date formats (25-12-2024, 25-12-24)
+  - Integrated with autoloader configuration
 
 Note: All dates are in YYYY-MM-DD format
