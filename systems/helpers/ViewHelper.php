@@ -7,7 +7,7 @@ class ViewHelper {
         
         if (!isset(self::$models[$key])) {
             $modelClass = ucfirst($model) . 'Model';
-            $modelPath = ROOT_PATH . '/app/models/' . $modelClass . '.php';
+            $modelPath = APP_PATH . '/models/' . $modelClass . '.php';
             
             if (file_exists($modelPath)) {
                 require_once $modelPath;

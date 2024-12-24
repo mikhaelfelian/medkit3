@@ -42,22 +42,14 @@ $app_config = [
 
 // Load environment-specific configuration
 $current_config = $app_config[ENVIRONMENT];
-$current_db = $db_config[ENVIRONMENT];
 
-// Define constants only if not already defined
-if (!defined('ROOT_PATH')) {
-    define('ROOT_PATH', dirname(__DIR__));
-}
-if (!defined('BASE_URL')) {
-    define('BASE_URL', $current_config['base_url']);
-}
-if (!defined('DEBUG_MODE')) {
-    define('DEBUG_MODE', $current_config['debug_mode']);
-}
-
-define('APP_PATH', ROOT_PATH . '/app');
-define('SYSTEM_PATH', ROOT_PATH . '/systems');
-define('PUBLIC_PATH', ROOT_PATH . '/public');
+// Define paths
+defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__));
+defined('APP_PATH') or define('APP_PATH', ROOT_PATH . '/app');
+defined('SYSTEM_PATH') or define('SYSTEM_PATH', ROOT_PATH . '/systems');
+defined('PUBLIC_PATH') or define('PUBLIC_PATH', ROOT_PATH . '/public');
+defined('BASE_URL') or define('BASE_URL', $current_config['base_url']);
+defined('DEBUG_MODE') or define('DEBUG_MODE', $current_config['debug_mode']);
 define('APP_NAME', 'MEDKIT3');
 define('APP_VERSION', '1.0.0');
 
@@ -66,5 +58,5 @@ date_default_timezone_set($current_config['timezone']);
 
 // Make configurations globally available
 $GLOBALS['app_config'] = $current_config;
-$GLOBALS['db_config'] = $current_db;
+$GLOBALS['db_config'] = $db_config[ENVIRONMENT];
 ?> 
