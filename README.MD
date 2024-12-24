@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ���── routing/       # URL routing and dispatching
+│   ├── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -205,6 +205,15 @@ This README focuses on:
   - Added Indonesian month names (full and abbreviated)
   - Support for formatted dates (25 Desember 2024, 23 Des 2024)
   - Added hyphenated date formats (25-12-2024, 25-12-24)
+  - Integrated with autoloader configuration
+
+### v1.0.5 (2024-12-25)
+- Added Indonesian number formatting:
+  - Added Angka helper for number localization
+  - Support for thousand separators (23.000.000)
+  - Support for currency format (15.000,-)
+  - Support for decimal format (18.000.000,00)
+  - Added number unformatting functionality
   - Integrated with autoloader configuration
 
 Note: All dates are in YYYY-MM-DD format
