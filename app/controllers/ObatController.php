@@ -25,34 +25,35 @@ class ObatController extends BaseController {
                 }
 
                 $data = [
-                    'kode' => $_POST['kode'],
-                    'barcode' => $_POST['barcode'],
-                    'item' => $_POST['item'],
-                    'jml' => $_POST['jml'],
-                    'harga_jual' => $_POST['harga_jual'],
-                    'status' => 4,
-                    'tgl_simpan' => date('Y-m-d H:i:s'),
-                    'id_user' => $_SESSION['user_id'] ?? 0,
                     'id_satuan' => 7,
                     'id_kategori' => 0,
-                    // Set default values for required fields
                     'id_kategori_lab' => 0,
                     'id_kategori_gol' => 0,
                     'id_lokasi' => 0,
                     'id_merk' => 0,
-                    'jml_display' => 0,
+                    'id_user' => $_SESSION['user_id'] ?? 0,
+                    'tgl_simpan' => date('Y-m-d H:i:s'),
+                    'kode' => $_POST['kode'],
+                    'barcode' => $_POST['barcode'],
+                    'item' => $_POST['item'],
+                    'item_alias' => $_POST['item_alias'],
+                    'item_kand' => $_POST['item_kand'],
+                    'item_kand2' => null,
+                    'jml' => 0,
                     'jml_limit' => 0,
-                    'status_promo' => '0',
-                    'status_subt' => '0',
-                    'status_lab' => '0',
-                    'status_brg_dep' => '0',
+                    'harga_beli' => str_replace('.', '', $_POST['harga_beli']),
+                    'harga_jual' => str_replace('.', '', $_POST['harga_jual']),
+                    'remun_tipe' => '0',
+                    'remun_perc' => 0.00,
+                    'remun_nom' => 0.00,
+                    'apres_tipe' => '0',
+                    'apres_perc' => 0.00,
+                    'apres_nom' => 0.00,
+                    'status' => '0',
                     'status_stok' => '0',
                     'status_racikan' => '0',
-                    'status_etiket' => '0',
                     'status_hps' => '0',
-                    'sl' => '0',
-                    'sp' => '0',
-                    'so' => '0'
+                    'status_obat' => $_POST['status_obat']
                 ];
 
                 if (!$this->model->create($data)) {
@@ -62,7 +63,7 @@ class ObatController extends BaseController {
                 Notification::success('Data obat berhasil ditambahkan');
                 return $this->redirect('obat');
             }
-            
+
             return $this->view('obat/form', [
                 'title' => 'Tambah Data Obat',
                 'data' => null,
@@ -82,8 +83,10 @@ class ObatController extends BaseController {
                     'kode' => $_POST['kode'],
                     'barcode' => $_POST['barcode'],
                     'item' => $_POST['item'],
-                    'jml' => $_POST['jml'],
-                    'harga_jual' => $_POST['harga_jual'],
+                    'item_alias' => $_POST['item_alias'],
+                    'item_kand' => $_POST['item_kand'],
+                    'harga_beli' => str_replace('.', '', $_POST['harga_beli']),
+                    'harga_jual' => str_replace('.', '', $_POST['harga_jual']),
                     'tgl_modif' => date('Y-m-d H:i:s')
                 ];
 

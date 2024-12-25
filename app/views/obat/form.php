@@ -29,46 +29,59 @@
                 </div>
                 <form action="" method="POST">
                     <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                    <input type="hidden" name="status_obat" value="1">
                     
                     <div class="card-body">
                         <div class="form-group">
                             <label for="kode">Kode Obat</label>
                             <input type="text" class="form-control rounded-0" id="kode" name="kode" 
+                                   placeholder="Masukkan kode obat"
                                    value="<?= $data ? htmlspecialchars($data->kode) : '' ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="barcode">Barcode</label>
                             <input type="text" class="form-control rounded-0" id="barcode" name="barcode"
+                                   placeholder="Masukkan barcode"
                                    value="<?= $data ? htmlspecialchars($data->barcode) : '' ?>">
                         </div>
                         <div class="form-group">
                             <label for="item">Nama Obat</label>
                             <input type="text" class="form-control rounded-0" id="item" name="item"
+                                   placeholder="Masukkan nama obat"
                                    value="<?= $data ? htmlspecialchars($data->item) : '' ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="item_alias">Nama Alias</label>
                             <input type="text" class="form-control rounded-0" id="item_alias" name="item_alias"
+                                   placeholder="Masukkan nama alias"
                                    value="<?= $data ? htmlspecialchars($data->item_alias) : '' ?>">
                         </div>
                         <div class="form-group">
                             <label for="item_kand">Kandungan</label>
-                            <textarea class="form-control rounded-0" id="item_kand" name="item_kand" rows="3"><?= $data ? htmlspecialchars($data->item_kand) : '' ?></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="jml">Stok</label>
-                            <input type="number" class="form-control rounded-0" id="jml" name="jml"
-                                   value="<?= $data ? htmlspecialchars($data->jml) : '0' ?>" required>
+                            <textarea class="form-control rounded-0" id="item_kand" name="item_kand" rows="3"
+                                    placeholder="Masukkan kandungan obat"><?= $data ? htmlspecialchars($data->item_kand) : '' ?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="harga_beli">Harga Beli</label>
-                            <input type="number" class="form-control rounded-0" id="harga_beli" name="harga_beli"
-                                   value="<?= $data ? htmlspecialchars($data->harga_beli) : '0' ?>" required>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="text" class="form-control rounded-0 currency-input" id="harga_beli" name="harga_beli"
+                                       placeholder="Masukkan harga beli"
+                                       value="<?= $data ? number_format($data->harga_beli, 0, ',', '.') : '0' ?>" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="harga_jual">Harga Jual</label>
-                            <input type="number" class="form-control rounded-0" id="harga_jual" name="harga_jual"
-                                   value="<?= $data ? htmlspecialchars($data->harga_jual) : '0' ?>" required>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="text" class="form-control rounded-0 currency-input" id="harga_jual" name="harga_jual"
+                                       placeholder="Masukkan harga jual"
+                                       value="<?= $data ? number_format($data->harga_jual, 0, ',', '.') : '0' ?>" required>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -83,4 +96,40 @@
             </div>
         </div>
     </section>
-</div> 
+</div>
+
+<!-- First, add jQuery if not already included -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Then add our currency formatting script -->
+<script>
+jQuery(document).ready(function($) {
+    // Function to format currency
+    function formatCurrency(input) {
+        // Remove non-numeric characters
+        let value = input.val().replace(/[^\d]/g, '');
+        
+        // Format the number with thousand separators
+        if (value !== '') {
+            value = parseInt(value);
+            input.val(value.toLocaleString('id-ID'));
+        }
+    }
+
+    // Format on page load
+    formatCurrency($('#harga_beli'));
+    formatCurrency($('#harga_jual'));
+
+    // Format on keyup
+    $('#harga_beli, #harga_jual').on('input', function() {
+        formatCurrency($(this));
+    });
+
+    // Clean up before form submission
+    $('form').on('submit', function() {
+        $('#harga_beli, #harga_jual').each(function() {
+            $(this).val($(this).val().replace(/[^\d]/g, ''));
+        });
+    });
+});
+</script> 
