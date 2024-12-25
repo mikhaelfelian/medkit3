@@ -169,6 +169,7 @@ This README focuses on:
 - Added search functionality
 - Added pagination system
 
+### [1.0.0] - 2024-12-20
 #### Changed
 - Updated asset paths to use BaseRouting::asset()
 - Improved error handling
@@ -181,6 +182,7 @@ This README focuses on:
 - Enhanced code organization
 - Standardized coding patterns
 
+### [1.0.0] - 2024-12-25
 #### Fixed
 - Fixed notification rendering
 - Fixed session initialization
