@@ -25,6 +25,8 @@ return [
     'libraries' => [
         'session',     // Will load Session.php
         'security',    // Will load Security.php
-        'form'         // Will load Form.php
+        'form',         // Will load Form.php
+        'input',       // Will load Input.php
+        'inputsanitizer',
     ]
 ]; 

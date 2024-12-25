@@ -4,16 +4,18 @@ class BaseController {
     protected $viewHelper;
     protected $conn;
     protected $security;
+    protected $input;
     
     public function __construct() {
         // Get database connection
         $this->conn = Database::getInstance()->getConnection();
         $this->viewHelper = new ViewHelper();
         $this->security = BaseSecurity::getInstance();
+        $this->input = Input::getInstance();
         
-        // Validate CSRF token for POST requests
+        // Sanitize POST data automatically
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->security->validateRequest();
+            $_POST = InputSanitizer::sanitize($_POST);
         }
     }
     

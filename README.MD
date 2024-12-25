@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ���── routing/       # URL routing and dispatching
+│   ├── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -228,5 +228,16 @@ This README focuses on:
   - Integrated with existing security features
   - Added proper input validation and sanitization
   - Maintained consistent UI/UX with AdminLTE theme
+
+### v1.0.7 (2024-03-20)
+- Enhanced input security:
+  - Added Input library for POST/GET handling
+  - Added InputSanitizer library for data cleaning
+  - Integrated automatic input sanitization
+  - Protected against SQL injection attempts
+  - Added HTML entity encoding
+  - Implemented whitespace trimming
+  - Added support for array sanitization
+  - Maintained existing security patterns
 
 Note: All dates are in YYYY-MM-DD format
