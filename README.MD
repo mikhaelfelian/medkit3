@@ -160,6 +160,7 @@ This README focuses on:
 10. System configuration
 
 ```
+
 ## Changelog:
 
 ### v1.0.0 (2024-12-23)
@@ -216,29 +217,16 @@ This README focuses on:
   - Added number unformatting functionality
   - Integrated with autoloader configuration
 
+### v1.0.6 (2024-03-20)
+- Added master data obat management:
+  - Added form input data obat with currency formatting
+  - Added list data obat with thousand separators
+  - Added edit and delete functionality
+  - Added migration for tbl_m_items:
+    - Added status_obat column with types (1=obat, 2=racikan, etc)
+    - Modified status column to ENUM('0','1')
+  - Integrated with existing security features
+  - Added proper input validation and sanitization
+  - Maintained consistent UI/UX with AdminLTE theme
+
 Note: All dates are in YYYY-MM-DD format
-
-```
-
-# MEDKIT3
-
-Medical Kit v3
-
-## Changelog
-
-### [1.0.1] - 2024-03-20
-#### Added
-- Master data obat (tbl_m_items)
-  - Form input data obat
-  - List data obat
-  - Edit data obat
-  - Delete data obat
-- Migration for altering tbl_m_items table
-  - Added status_obat column (1=obat;2=racikan;3=tindakan;4=lab;5=radiologi;6=bhp)
-  - Modified status column to ENUM('0','1')
-
-### [1.0.0] - Initial Release
-- Base framework structure
-- Authentication system
-- Basic CRUD functionality
-- Admin LTE 3 integration
