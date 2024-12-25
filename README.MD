@@ -93,7 +93,7 @@ medkit3/
 │   ├── core/          # Framework core components
 │   ├── controllers/   # Base controller classes
 │   ├── models/        # Base model classes
-│   ├── routing/       # URL routing and dispatching
+│   ���── routing/       # URL routing and dispatching
 │   ├── database/      # Database abstraction layer
 │   ├── security/      # Security components
 │   └── helpers/       # System-wide helper functions
@@ -217,3 +217,28 @@ This README focuses on:
   - Integrated with autoloader configuration
 
 Note: All dates are in YYYY-MM-DD format
+
+```
+
+# MEDKIT3
+
+Medical Kit v3
+
+## Changelog
+
+### [1.0.1] - 2024-03-20
+#### Added
+- Master data obat (tbl_m_items)
+  - Form input data obat
+  - List data obat
+  - Edit data obat
+  - Delete data obat
+- Migration for altering tbl_m_items table
+  - Added status_obat column (1=obat;2=racikan;3=tindakan;4=lab;5=radiologi;6=bhp)
+  - Modified status column to ENUM('0','1')
+
+### [1.0.0] - Initial Release
+- Base framework structure
+- Authentication system
+- Basic CRUD functionality
+- Admin LTE 3 integration
