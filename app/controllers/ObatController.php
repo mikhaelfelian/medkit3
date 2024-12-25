@@ -20,7 +20,7 @@ class ObatController extends BaseController {
     public function add() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (!$this->security->validateCSRFToken($_POST['csrf_token'])) {
+                if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
                     throw new Exception('Invalid security token');
                 }
 
@@ -33,16 +33,16 @@ class ObatController extends BaseController {
                     'id_merk' => 0,
                     'id_user' => $_SESSION['user_id'] ?? 0,
                     'tgl_simpan' => date('Y-m-d H:i:s'),
-                    'kode' => $_POST['kode'],
-                    'barcode' => $_POST['barcode'],
-                    'item' => $_POST['item'],
-                    'item_alias' => $_POST['item_alias'],
-                    'item_kand' => $_POST['item_kand'],
+                    'kode' => $this->input->post('kode'),
+                    'barcode' => $this->input->post('barcode'),
+                    'item' => $this->input->post('item'),
+                    'item_alias' => $this->input->post('item_alias'),
+                    'item_kand' => $this->input->post('item_kand'),
                     'item_kand2' => null,
                     'jml' => 0,
                     'jml_limit' => 0,
-                    'harga_beli' => str_replace('.', '', $_POST['harga_beli']),
-                    'harga_jual' => str_replace('.', '', $_POST['harga_jual']),
+                    'harga_beli' => str_replace('.', '', $this->input->post('harga_beli')),
+                    'harga_jual' => str_replace('.', '', $this->input->post('harga_jual')),
                     'remun_tipe' => '0',
                     'remun_perc' => 0.00,
                     'remun_nom' => 0.00,
@@ -53,7 +53,7 @@ class ObatController extends BaseController {
                     'status_stok' => '0',
                     'status_racikan' => '0',
                     'status_hps' => '0',
-                    'status_obat' => $_POST['status_obat']
+                    'status_obat' => $this->input->post('status_obat')
                 ];
 
                 if (!$this->model->create($data)) {
