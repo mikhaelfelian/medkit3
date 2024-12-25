@@ -1,6 +1,6 @@
 <?php
 class PengaturanModel extends BaseModel {
-    protected $table = 'tbl_pengaturan';
+    protected $table = 'tbl_pengaturans';
     protected $primaryKey = 'id';
     protected $fillable = [
         'judul',

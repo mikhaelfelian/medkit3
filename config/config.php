@@ -10,7 +10,8 @@ $db_config = [
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci'
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => 'tbl_'
     ],
     'production' => [
         'hostname' => 'localhost',
@@ -18,7 +19,8 @@ $db_config = [
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci'
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => 'tbl_'
     ]
 ];
 
@@ -32,7 +34,7 @@ $app_config = [
         'encryption_method' => 'AES-256-CBC'
     ],
     'production' => [
-        'base_url' => 'https://your-domain.com',
+        'base_url' => 'http://localhost/medkit3',
         'debug_mode' => false,
         'timezone' => 'Asia/Jakarta',
         'encryption_key' => 'production-32-char-key',

@@ -1,125 +1,52 @@
 <?php
 class PengaturanController extends BaseController {
+    protected $model;
+    
     public function __construct() {
         parent::__construct();
-        $this->loadModel('Pengaturan');
+        $this->model = new PengaturanModel();
     }
     
     public function index() {
         try {
-            $data = $this->model->getSettings();
-            return $this->view('pengaturan/index', [
-                'title' => 'Pengaturan Aplikasi',
-                'data' => $data
-            ]);
-        } catch (Exception $e) {
-            Notification::error('Gagal memuat pengaturan');
-            return $this->redirect('');
-        }
-    }
-    
-    public function update() {
-        try {
-            // Get form data
             $data = [
-                'judul' => $this->input('judul'),
-                'judul_app' => $this->input('judul_app'),
-                'alamat' => $this->input('alamat'),
-                'deskripsi' => $this->input('deskripsi'),
-                'kota' => $this->input('kota'),
-                'url' => $this->input('url'),
-                'theme' => $this->input('theme'),
-                'pagination_limit' => $this->input('pagination_limit')
+                'title' => 'Pengaturan Aplikasi',
+                'data' => $this->model->getSettings()
             ];
             
-            // Handle logo upload
+            return $this->view('pengaturan/index', $data);
+            
+        } catch (Exception $e) {
+            error_log("Error in PengaturanController::index - " . $e->getMessage());
+            Notification::error('Gagal memuat pengaturan');
+            return $this->redirect('dashboard');
+        }
+    }
+
+    public function update() {
+        try {
+            $data = $this->input();
+            
+            // Handle file uploads if present
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleFileUpload('logo', ['jpg', 'jpeg', 'png']);
-                if ($logoPath) {
-                    $data['logo'] = $logoPath;
-                    
-                    // Delete old logo if exists
-                    $oldSettings = $this->model->getSettings();
-                    if (!empty($oldSettings->logo)) {
-                        $this->deleteOldFile($oldSettings->logo);
-                    }
-                }
+                $data['logo'] = $this->model->uploadFile($_FILES['logo'], 'logo');
             }
             
-            // Handle favicon upload
             if (!empty($_FILES['favicon']['name'])) {
-                $faviconPath = $this->handleFileUpload('favicon', ['ico', 'png']);
-                if ($faviconPath) {
-                    $data['favicon'] = $faviconPath;
-                    
-                    // Delete old favicon if exists
-                    $oldSettings = $this->model->getSettings();
-                    if (!empty($oldSettings->favicon)) {
-                        $this->deleteOldFile($oldSettings->favicon);
-                    }
-                }
+                $data['favicon'] = $this->model->uploadFile($_FILES['favicon'], 'favicon');
             }
             
             if ($this->model->updateSettings($data)) {
                 Notification::success('Pengaturan berhasil diupdate');
-            } else {
-                throw new Exception('Gagal mengupdate pengaturan');
+                return $this->redirect('pengaturan');
             }
+            
+            throw new Exception("Failed to update settings");
             
         } catch (Exception $e) {
-            Notification::error($e->getMessage());
-        }
-        
-        return $this->redirect('pengaturan');
-    }
-    
-    protected function handleFileUpload($field, $allowedExtensions = []) {
-        try {
-            if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
-                return false;
-            }
-            
-            $file = $_FILES[$field];
-            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            
-            // Validate extension
-            if (!in_array($extension, $allowedExtensions)) {
-                throw new Exception("Invalid file type. Allowed: " . implode(', ', $allowedExtensions));
-            }
-            
-            // Generate unique filename
-            $filename = $field . '_' . time() . '.' . $extension;
-            $uploadDir = PUBLIC_PATH . '/file/app/';
-            
-            // Create directory if not exists
-            if (!file_exists($uploadDir)) {
-                if (!mkdir($uploadDir, 0755, true)) {
-                    throw new Exception("Failed to create upload directory");
-                }
-            }
-            
-            $targetPath = $uploadDir . $filename;
-            
-            // Move uploaded file
-            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-                throw new Exception("Failed to move uploaded file");
-            }
-            
-            // Return path to store in database
-            return 'public/file/app/' . $filename;
-            
-        } catch (Exception $e) {
-            error_log("File upload error: " . $e->getMessage());
-            throw $e;
-        }
-    }
-    
-    protected function deleteOldFile($path) {
-        // Remove 'public/' prefix if exists
-        $path = str_replace('public/', '', $path);
-        $fullPath = PUBLIC_PATH . '/' . $path;
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
+            error_log("Error in PengaturanController::update - " . $e->getMessage());
+            Notification::error('Gagal mengupdate pengaturan');
+            return $this->redirect('pengaturan');
         }
     }
 }
