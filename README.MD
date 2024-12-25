@@ -117,7 +117,7 @@ This README focuses on:
 
 ## Changelog
 ```
-### [1.0.0] - 2024-03-xx
+### [1.0.0] - 2024-03-11
 #### Added
 - Created base MVC structure
 - Added BaseCore for application initialization
