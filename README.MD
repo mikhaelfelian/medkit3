@@ -116,8 +116,9 @@ This README focuses on:
 ```
 
 ## Changelog
-```
+
 ### [1.0.0] - 2024-03-11
+
 #### Added
 - Created base MVC structure
 - Added BaseCore for application initialization
@@ -137,23 +138,57 @@ This README focuses on:
   - main.php
 - Added Master Data menu structure
   - Data Obat
+    - CRUD operations
+    - Stock management
+    - Price management
+    - Code generation
   - Data Pasien
+    - CRUD operations
+    - Patient information
+    - Contact details
+    - Address management
+    - Code generation
 - Added Pengaturan menu
   - Aplikasi
+    - App settings
+    - Theme configuration
+    - Logo management
+    - System preferences
 - Added notification system
 - Added migration system
 - Added tbl_pengaturans table
+- Added tbl_m_items table
+- Added tbl_m_pasiens table
 - Added PengaturanModel and Controller
+- Added ObatModel and Controller
+- Added PasienModel and Controller
 - Added ViewHelper for model loading in views
+- Added CSRF protection
+- Added form validation
+- Added error handling
+- Added search functionality
+- Added pagination system
 
 #### Changed
 - Updated asset paths to use BaseRouting::asset()
 - Improved error handling
 - Enhanced template structure
 - Optimized autoloader
+- Refined database queries
+- Enhanced security measures
+- Improved form handling
+- Updated table structures
+- Enhanced code organization
+- Standardized coding patterns
 
 #### Fixed
 - Fixed notification rendering
 - Fixed session initialization
 - Fixed asset path handling
 - Fixed layout includes
+- Fixed CSRF validation
+- Fixed form submissions
+- Fixed data validation
+- Fixed search functionality
+- Fixed pagination display
+- Fixed code generation
