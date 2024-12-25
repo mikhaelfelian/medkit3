@@ -32,13 +32,13 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Kode</th>
                                 <th>Barcode</th>
-                                <th>Nama Produk</th>
+                                <th>Item</th>
                                 <th>Stok</th>
                                 <th>Harga Jual</th>
                                 <th>Status</th>
