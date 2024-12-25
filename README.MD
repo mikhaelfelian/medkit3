@@ -113,3 +113,46 @@ This README focuses on:
 8. Credits and licensing
 9. URL routing
 10. System configuration
+
+## Changelog
+
+### [1.0.0] - 2024-03-xx
+#### Added
+- Created base MVC structure
+- Added BaseCore for application initialization
+- Added BaseController for handling views
+- Added BaseRouting for URL handling
+- Added BaseModel for database operations
+- Added layout system with AdminLTE 3 theme
+- Added helper functions (url_helper, Notification)
+- Added session handling
+- Added class autoloader
+- Added database configuration
+- Added template system with layouts
+  - header.php
+  - footer.php
+  - navbar.php
+  - sidebar.php
+  - main.php
+- Added Master Data menu structure
+  - Data Obat
+  - Data Pasien
+- Added Pengaturan menu
+  - Aplikasi
+- Added notification system
+- Added migration system
+- Added tbl_pengaturans table
+- Added PengaturanModel and Controller
+- Added ViewHelper for model loading in views
+
+#### Changed
+- Updated asset paths to use BaseRouting::asset()
+- Improved error handling
+- Enhanced template structure
+- Optimized autoloader
+
+#### Fixed
+- Fixed notification rendering
+- Fixed session initialization
+- Fixed asset path handling
+- Fixed layout includes
