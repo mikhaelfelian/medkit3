@@ -54,6 +54,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                 <p>Data Obat</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pasien'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Pasien</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -71,7 +78,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('pengaturan'); ?>" 
                                class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/pengaturan' ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Pengaturan Aplikasi</p>
+                                <p>Aplikasi</p>
                             </a>
                         </li>
                     </ul>

@@ -1,28 +1,35 @@
 <?php
-class ObatModel extends BaseModel {
-    protected $table = 'tbl_m_items';
+class PasienModel extends BaseModel {
+    protected $table = 'tbl_m_pasiens';
     protected $primaryKey = 'id';
     protected $fillable = [
         'kode',
-        'barcode',
-        'item',
-        'jml',
-        'harga_jual',
-        'status_obat'
+        'nik',
+        'nama',
+        'nama_pgl',
+        'no_hp',
+        'alamat',
+        'alamat_domisili',
+        'rt',
+        'rw',
+        'kelurahan',
+        'kecamatan',
+        'kota',
+        'pekerjaan'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = ['status_obat IN (4,6)']; // Only show Obat and Racikan
+            $conditions = [];
             $params = [];
 
             if (!empty($search)) {
-                $conditions[] = "(item LIKE :search OR kode LIKE :search OR barcode LIKE :search)";
+                $conditions[] = "(nama LIKE :search OR nik LIKE :search OR kode LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
 
-            $where = "WHERE " . implode(' AND ', $conditions);
+            $where = empty($conditions) ? "" : "WHERE " . implode(' AND ', $conditions);
 
             // Get total records
             $sqlCount = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
@@ -61,11 +68,24 @@ class ObatModel extends BaseModel {
         }
     }
 
+    public function find($id) {
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            
+            return $stmt->fetch(PDO::FETCH_OBJ);
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in find: " . $e->getMessage());
+            throw new Exception("Failed to fetch record");
+        }
+    }
+
     public function create($data) {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
-            $fields['created_at'] = date('Y-m-d H:i:s');
-            $fields['status_obat'] = 4; // Set as Obat
             
             $columns = implode(', ', array_keys($fields));
             $values = implode(', ', array_map(function($field) {
@@ -90,7 +110,6 @@ class ObatModel extends BaseModel {
     public function update($id, $data) {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
-            $fields['updated_at'] = date('Y-m-d H:i:s');
             
             $set = implode(', ', array_map(function($field) {
                 return "$field = :$field";
@@ -112,6 +131,20 @@ class ObatModel extends BaseModel {
         }
     }
 
+    public function delete($id) {
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in delete: " . $e->getMessage());
+            throw new Exception("Failed to delete record");
+        }
+    }
+
     public function generateKode() {
         try {
             $year = date('y');
@@ -120,7 +153,7 @@ class ObatModel extends BaseModel {
             // Get last number from this month
             $sql = "SELECT kode FROM {$this->table} WHERE kode LIKE :prefix ORDER BY kode DESC LIMIT 1";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':prefix', "OB{$year}{$month}%");
+            $stmt->bindValue(':prefix', "P{$year}{$month}%");
             $stmt->execute();
             
             $data = $stmt->fetch(PDO::FETCH_OBJ);
@@ -132,7 +165,7 @@ class ObatModel extends BaseModel {
                 $newNumber = 1;
             }
             
-            return 'OB' . $year . $month . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+            return 'P' . $year . $month . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
             
         } catch (PDOException $e) {
             error_log("Database Error in generateKode: " . $e->getMessage());

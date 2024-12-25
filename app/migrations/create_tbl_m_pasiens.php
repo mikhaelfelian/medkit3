@@ -4,24 +4,24 @@ class Migration_create_tbl_m_pasiens extends Migration {
         $sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('m_pasiens') . "` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `kode` VARCHAR(20) NOT NULL,
-            `nik` VARCHAR(16) NOT NULL,
+            `nik` VARCHAR(16) DEFAULT NULL,
             `nama` VARCHAR(100) NOT NULL,
-            `nama_pgl` VARCHAR(50) NULL DEFAULT NULL,
-            `no_hp` VARCHAR(15) NULL DEFAULT NULL,
-            `alamat` TEXT NULL DEFAULT NULL,
-            `alamat_domisili` TEXT NULL DEFAULT NULL,
-            `rt` VARCHAR(3) NULL DEFAULT NULL,
-            `rw` VARCHAR(3) NULL DEFAULT NULL,
-            `kelurahan` VARCHAR(50) NULL DEFAULT NULL,
-            `kecamatan` VARCHAR(50) NULL DEFAULT NULL,
-            `kota` VARCHAR(50) NULL DEFAULT NULL,
-            `pekerjaan` VARCHAR(100) NULL DEFAULT NULL,
+            `nama_pgl` VARCHAR(20) DEFAULT NULL,
+            `no_hp` VARCHAR(15) DEFAULT NULL,
+            `alamat` TEXT DEFAULT NULL,
+            `alamat_domisili` TEXT DEFAULT NULL,
+            `rt` VARCHAR(3) DEFAULT NULL,
+            `rw` VARCHAR(3) DEFAULT NULL,
+            `kelurahan` VARCHAR(50) DEFAULT NULL,
+            `kecamatan` VARCHAR(50) DEFAULT NULL,
+            `kota` VARCHAR(50) DEFAULT NULL,
+            `pekerjaan` VARCHAR(50) DEFAULT NULL,
             `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (`id`),
             UNIQUE KEY `kode` (`kode`),
-            UNIQUE KEY `nik` (`nik`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+            KEY `nik` (`nik`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         return $sql;
     }
