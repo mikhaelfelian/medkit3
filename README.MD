@@ -113,9 +113,10 @@ This README focuses on:
 8. Credits and licensing
 9. URL routing
 10. System configuration
+```
 
 ## Changelog
-
+```
 ### [1.0.0] - 2024-03-xx
 #### Added
 - Created base MVC structure
