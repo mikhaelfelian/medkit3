@@ -28,11 +28,51 @@
             </ul>
         </nav>
         <main class="content">
-            <h1>Security Features</h1>
-            <p>NUSANTARA HMVC includes comprehensive security features to protect your application.</p>
+            <section id="security">
+                <h1>Security Features</h1>
 
-            <h2>CSRF Protection</h2>
-            <pre><code class="language-php">// In your form
+                <h2>Input Sanitization</h2>
+                <p>The framework provides automatic input sanitization through the Input library.</p>
+
+                <h3>Basic Usage</h3>
+                <pre><code class="language-php">
+// Get sanitized POST data
+$name = $this->input->post('name');
+$email = $this->input->post('email');
+
+// Get sanitized GET data
+$id = $this->input->get('id');
+                </code></pre>
+
+                <h3>Security Features</h3>
+                <ul>
+                    <li>HTML Entity Encoding</li>
+                    <li>SQL Injection Prevention</li>
+                    <li>Whitespace Trimming</li>
+                    <li>Array Sanitization</li>
+                    <li>XSS Protection</li>
+                </ul>
+
+                <h3>Example in Controller</h3>
+                <pre><code class="language-php">
+public function add() {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'kode' => $this->input->post('kode'),
+                'item' => $this->input->post('item'),
+                'harga' => $this->input->post('harga')
+            ];
+            // Process sanitized data...
+        }
+    } catch (Exception $e) {
+        // Handle errors...
+    }
+}
+                </code></pre>
+
+                <h2>CSRF Protection</h2>
+                <pre><code class="language-php">// In your form
 $form = BaseForm::getInstance();
 
 // Automatically adds CSRF token
@@ -46,8 +86,8 @@ if (!$this->security->validateRequest()) {
     throw new SecurityException('Invalid CSRF token');
 }</code></pre>
 
-            <h2>XSS Prevention</h2>
-            <pre><code class="language-php">// In views, auto-escape output
+                <h2>XSS Prevention</h2>
+                <pre><code class="language-php">// In views, auto-escape output
 &lt;?= $this->escape($data) ?&gt;
 
 // Or use the security helper
@@ -56,8 +96,8 @@ echo $security->escapeHtml($data);
 // For JSON data
 echo $security->escapeJson($data);</code></pre>
 
-            <h2>SQL Injection Prevention</h2>
-            <pre><code class="language-php">// Use query builder (recommended)
+                <h2>SQL Injection Prevention</h2>
+                <pre><code class="language-php">// Use query builder (recommended)
 $result = $this->model
     ->where('status', $status)
     ->whereIn('category', $categories)
@@ -67,8 +107,8 @@ $result = $this->model
 $sql = "SELECT * FROM users WHERE id = :id";
 $result = $this->query($sql, [':id' => $id]);</code></pre>
 
-            <h2>Password Security</h2>
-            <pre><code class="language-php">// Hash password
+                <h2>Password Security</h2>
+                <pre><code class="language-php">// Hash password
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT, [
     'cost' => 12
 ]);
@@ -78,8 +118,8 @@ if (password_verify($password, $hashedPassword)) {
     // Password is correct
 }</code></pre>
 
-            <h2>Session Security</h2>
-            <pre><code class="language-php">// Secure session configuration
+                <h2>Session Security</h2>
+                <pre><code class="language-php">// Secure session configuration
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.cookie_secure', 1);
@@ -92,8 +132,8 @@ $_SESSION['user_id'] = $user->id;
 $encrypted = $security->encrypt($data);
 $decrypted = $security->decrypt($encrypted);</code></pre>
 
-            <h2>Input Sanitization</h2>
-            <pre><code class="language-php">// Sanitize single input
+                <h2>Input Sanitization</h2>
+                <pre><code class="language-php">// Sanitize single input
 $clean = $security->sanitizeInput($_POST['name']);
 
 // Sanitize array of inputs
@@ -106,8 +146,8 @@ $clean = $security->sanitize($input, [
     'htmlspecialchars'
 ]);</code></pre>
 
-            <h2>File Upload Security</h2>
-            <pre><code class="language-php">// Validate file upload
+                <h2>File Upload Security</h2>
+                <pre><code class="language-php">// Validate file upload
 $upload = new FileUpload($_FILES['document']);
 
 $upload->setAllowedTypes(['jpg', 'png', 'pdf'])
@@ -121,16 +161,16 @@ if ($upload->save()) {
     $errors = $upload->getErrors();
 }</code></pre>
 
-            <h2>Security Headers</h2>
-            <pre><code class="language-php">// Automatically set in BaseSecurity
+                <h2>Security Headers</h2>
+                <pre><code class="language-php">// Automatically set in BaseSecurity
 header('X-Frame-Options: SAMEORIGIN');
 header('X-XSS-Protection: 1; mode=block');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Content-Security-Policy: default-src \'self\'');</code></pre>
 
-            <h2>Authentication</h2>
-            <pre><code class="language-php">// Check authentication
+                <h2>Authentication</h2>
+                <pre><code class="language-php">// Check authentication
 if (!$this->auth->isAuthenticated()) {
     return $this->redirect('login');
 }
@@ -144,6 +184,7 @@ if (!$this->auth->hasPermission('admin')) {
 if ($this->auth->hasRole(['admin', 'manager'])) {
     // Allow access
 }</code></pre>
+            </section>
         </main>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
