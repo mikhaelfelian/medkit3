@@ -138,6 +138,8 @@ $controller->section('script', '
 <script src="' . BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') . '"></script>
 <!-- Bootstrap 4 -->
 <script src="' . BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') . '"></script>
+<!-- SweetAlert2 -->
+<script src="' . BaseRouting::asset('theme/admin-lte-3/plugins/sweetalert2/sweetalert2.min.js') . '"></script>
 
 <script>
 $(document).ready(function() {
@@ -145,7 +147,6 @@ $(document).ready(function() {
         const id = $(this).data("id");
         const status_gd = $(this).is(":checked") ? "1" : "0";
         const $switch = $(this);
-        const $statusText = $switch.closest("td").find(".status-text");
         
         // Disable all switches while processing
         $(".toggle-status").prop("disabled", true);
@@ -160,24 +161,13 @@ $(document).ready(function() {
             dataType: "json",
             success: function(response) {
                 if (response.success) {
-                    // Update status text
-                    $statusText.text(status_gd === "1" ? "Aktif" : "Non Aktif");
-                    
                     // If setting as primary, uncheck other switches
                     if (status_gd === "1") {
-                        $(".toggle-status").not($switch).prop("checked", false)
-                            .each(function() {
-                                $(this).closest("td").find(".status-text")
-                                    .text("Non Aktif");
-                            });
+                        $(".toggle-status").not($switch).prop("checked", false);
                     }
-                    
-                    // Show success message
-                    alert(response.message);
                 } else {
                     // Revert switch state
                     $switch.prop("checked", !$switch.prop("checked"));
-                    alert(response.message || "Gagal memperbarui status gudang utama");
                 }
             },
             error: function(xhr, status, error) {
@@ -185,7 +175,6 @@ $(document).ready(function() {
                 $switch.prop("checked", !$switch.prop("checked"));
                 console.error("AJAX Error:", error);
                 console.error("Response:", xhr.responseText);
-                alert("Gagal memperbarui status gudang utama");
             },
             complete: function() {
                 // Re-enable all switches

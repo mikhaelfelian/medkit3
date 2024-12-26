@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/fontawesome-free/css/all.min.css') ?>">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/dist/css/adminlte.min.css') ?>">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
