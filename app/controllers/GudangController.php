@@ -41,7 +41,8 @@ class GudangController extends BaseController {
                     'gudang' => $this->input->post('gudang'),
                     'keterangan' => $this->input->post('keterangan'),
                     'status' => $this->input->post('status', '1'),
-                    'status_gd' => $this->input->post('status_gd', '0')
+                    'status_gd' => $this->input->post('status_gd', '0'),
+                    'created_at' => date('Y-m-d H:i:s')
                 ];
 
                 if ($data['status_gd'] == '1') {
@@ -76,7 +77,8 @@ class GudangController extends BaseController {
                     'gudang' => $this->input->post('gudang'),
                     'keterangan' => $this->input->post('keterangan'),
                     'status' => $this->input->post('status', '1'),
-                    'status_gd' => $this->input->post('status_gd', '0')
+                    'status_gd' => $this->input->post('status_gd', '0'),
+                    'updated_at' => date('Y-m-d H:i:s')
                 ];
 
                 if ($data['status_gd'] == '1') {
@@ -173,36 +175,58 @@ class GudangController extends BaseController {
     public function set_primary() {
         header('Content-Type: application/json');
         try {
+            // Get and validate input
             $id = $this->input->post('id');
-            $status = $this->input->post('status_gd');
+            $status_gd = $this->input->post('status_gd');
             
-            if (!$id || !isset($status)) {
+            if (!$id || !isset($status_gd)) {
                 throw new Exception('Invalid parameters');
             }
             
-            // If setting as primary, unset all others first
-            if ($status === '1') {
-                $this->model->unsetAllPrimary();
-            }
+            // Get database connection from model
+            $db = $this->model->getConnection();
             
-            // Update the selected gudang
-            if (!$this->model->update($id, ['status_gd' => $status])) {
-                throw new Exception('Failed to update status');
+            try {
+                // Start transaction
+                $db->beginTransaction();
+                
+                // If setting as primary, unset all others first
+                if ($status_gd === '1') {
+                    $this->model->unsetAllPrimary();
+                }
+                
+                // Update the selected gudang
+                $result = $this->model->update($id, ['status_gd' => $status_gd]);
+                
+                if (!$result) {
+                    throw new Exception('Failed to update status');
+                }
+                
+                // Commit transaction
+                $db->commit();
+                
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Status berhasil diperbarui',
+                    'status_gd' => $status_gd
+                ]);
+                
+            } catch (Exception $e) {
+                // Rollback on error
+                if ($db->inTransaction()) {
+                    $db->rollBack();
+                }
+                throw $e;
             }
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Status berhasil diperbarui'
-            ]);
-            exit;
             
         } catch (Exception $e) {
+            error_log("Error in set_primary: " . $e->getMessage());
             http_response_code(500);
             echo json_encode([
                 'success' => false,
                 'message' => $e->getMessage()
             ]);
-            exit;
         }
+        exit;
     }
 } 

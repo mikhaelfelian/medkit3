@@ -4,9 +4,14 @@ class BaseModel {
     protected $table;
     protected $primaryKey = 'id';
     protected $fillable = [];
+    protected $timestamps = true;
     
     public function __construct() {
         $this->conn = Database::getInstance()->getConnection();
+    }
+    
+    public function getConnection() {
+        return $this->conn;
     }
     
     public function get() {
@@ -69,7 +74,12 @@ class BaseModel {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             
             if ($this->timestamps) {
-                $fields['created_at'] = date('Y-m-d H:i:s');
+                if (!isset($fields['created_at'])) {
+                    $fields['created_at'] = date('Y-m-d H:i:s');
+                }
+                if (!isset($fields['updated_at'])) {
+                    $fields['updated_at'] = date('Y-m-d H:i:s');
+                }
             }
             
             $columns = implode(', ', array_keys($fields));
@@ -88,7 +98,7 @@ class BaseModel {
             
         } catch (PDOException $e) {
             error_log("Database Error in create: " . $e->getMessage());
-            throw new Exception("Failed to create record");
+            return false;
         }
     }
     
@@ -96,7 +106,7 @@ class BaseModel {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             
-            if ($this->timestamps) {
+            if ($this->timestamps && !isset($fields['updated_at'])) {
                 $fields['updated_at'] = date('Y-m-d H:i:s');
             }
             
@@ -107,7 +117,7 @@ class BaseModel {
             $sql = "UPDATE {$this->table} SET $set WHERE {$this->primaryKey} = :id";
             $stmt = $this->conn->prepare($sql);
             
-            $stmt->bindValue(':id', $id);
+            $fields['id'] = $id;
             foreach ($fields as $key => $value) {
                 $stmt->bindValue(":$key", $value);
             }
@@ -116,7 +126,7 @@ class BaseModel {
             
         } catch (PDOException $e) {
             error_log("Database Error in update: " . $e->getMessage());
-            throw new Exception("Failed to update record");
+            return false;
         }
     }
     

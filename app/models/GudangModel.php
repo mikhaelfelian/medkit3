@@ -1,6 +1,8 @@
 <?php
 class GudangModel extends BaseModel {
     protected $table = 'tbl_m_gudangs';
+    protected $primaryKey = 'id';
+    protected $timestamps = false;
     
     protected $fillable = [
         'kode',

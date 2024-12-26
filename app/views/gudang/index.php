@@ -91,7 +91,7 @@
                                                                data-status="<?= $item->status_gd ?>"
                                                                <?= $item->status_gd == '1' ? 'checked' : '' ?>>
                                                         <label class="custom-control-label" for="primarySwitch<?= $item->id ?>">
-                                                            <span class="status-text"><?= $item->status_gd == '1' ? 'Aktif' : 'Non Aktif' ?></span>
+                                                            <!-- <span class="status-text"><?= $item->status_gd == '1' ? 'Aktif' : 'Non Aktif' ?></span> -->
                                                         </label>
                                                     </div>
                                                 </td>
@@ -145,7 +145,7 @@ $(document).ready(function() {
         const id = $(this).data("id");
         const status_gd = $(this).is(":checked") ? "1" : "0";
         const $switch = $(this);
-        const $statusText = $switch.closest(".custom-control").find(".status-text");
+        const $statusText = $switch.closest("td").find(".status-text");
         
         // Disable all switches while processing
         $(".toggle-status").prop("disabled", true);
@@ -166,13 +166,14 @@ $(document).ready(function() {
                     // If setting as primary, uncheck other switches
                     if (status_gd === "1") {
                         $(".toggle-status").not($switch).prop("checked", false)
-                            .closest(".custom-control")
-                            .find(".status-text")
-                            .text("Non Aktif");
+                            .each(function() {
+                                $(this).closest("td").find(".status-text")
+                                    .text("Non Aktif");
+                            });
                     }
                     
                     // Show success message
-                    alert(response.message || "Status gudang utama berhasil diperbarui");
+                    alert(response.message);
                 } else {
                     // Revert switch state
                     $switch.prop("checked", !$switch.prop("checked"));
@@ -183,6 +184,7 @@ $(document).ready(function() {
                 // Revert switch state
                 $switch.prop("checked", !$switch.prop("checked"));
                 console.error("AJAX Error:", error);
+                console.error("Response:", xhr.responseText);
                 alert("Gagal memperbarui status gudang utama");
             },
             complete: function() {
