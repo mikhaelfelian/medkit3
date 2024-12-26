@@ -52,14 +52,21 @@ medkit3/
 │   ├── controllers/
 │   ├── models/
 │   ├── views/
-│   └── helpers/
+│   ├── helpers/
+|   ├── libraries/
 ├── systems/
 │   ├── controllers/
+│   │   └── BaseController.php
 │   ├── models/
+│   │   └── BaseModel.php
 │   ├── routing/
+│   │   └── BaseRouting.php
 │   └── helpers/
 ├── public/
 │   └── assets/
+│       ├── css/
+│       ├── js/
+│       └── vendor/
 └── config/
 ```
 
