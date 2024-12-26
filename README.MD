@@ -123,6 +123,47 @@ This README focuses on:
 
 ## Changelog
 ```
+### v1.0.10 (2024-03-22)
+#### Added
+- Enhanced Gudang (Warehouse) management system:
+  - Added status toggle switch functionality
+  - Added AJAX-based status updates
+  - Added real-time status display
+  - Added toastr notifications for status changes
+  - Added exception handling for warehouse operations
+
+- Exception handling system:
+  - Added BaseException class
+  - Added Exception Handler
+  - Added custom error pages
+  - Added consistent error styling
+  - Added error message display
+  - Added exception logging
+
+#### Changed
+- Updated layout structure:
+  - Moved script includes to main.php
+  - Improved script management system
+  - Added script pushing functionality
+  - Enhanced BaseController with script handling
+  - Standardized script loading order
+
+#### Enhanced
+- Form improvements:
+  - Changed warehouse status to radio buttons
+  - Simplified status options (Active/Inactive)
+  - Enhanced form validation
+  - Improved user interface
+  - Added consistent styling
+
+#### Fixed
+- Fixed script loading issues
+- Fixed status toggle persistence
+- Fixed error page routing
+- Fixed exception handling
+- Fixed form validation feedback
+- Fixed status update error handling
+
 ### v1.0.8 (2024-03-21)
 #### Added
 - Master data gudang management:
