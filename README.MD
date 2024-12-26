@@ -47,7 +47,7 @@ Version 1.0 Beta represents our commitment to continuous improvement and communi
 ## Directory Structure
 
 ```
-medkit3/
+ROOT_PATH/
 ├── app/
 │   ├── controllers/
 │   ├── models/
