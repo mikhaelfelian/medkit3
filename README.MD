@@ -193,3 +193,27 @@ This README focuses on:
 - Fixed search functionality
 - Fixed pagination display
 - Fixed code generation
+
+### [1.0.8] - 2024-12-26
+#### Added
+- Enhanced error handling
+  - Added custom 404 error page
+  - Added error message display on 404 page
+  - Added proper HTTP status codes
+  - Added error logging for debugging
+  - Added routing error messages
+  - Added return to dashboard button
+
+#### Changed
+- Updated BaseRouting error handling
+- Improved error message formatting
+- Enhanced error page styling
+- Updated asset path handling in error pages
+- Standardized error display format
+
+#### Fixed
+- Fixed routing error handling
+- Fixed missing action error display
+- Fixed error page layout issues
+- Fixed asset path references
+- Fixed error message persistence

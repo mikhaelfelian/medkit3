@@ -69,10 +69,15 @@ class BaseRouting {
             
         } catch (Exception $e) {
             error_log("Routing Error: " . $e->getMessage());
-            if (DEBUG_MODE) {
-                die("Routing Error: " . $e->getMessage());
-            }
-            header("Location: " . BASE_URL);
+            
+            // Show 404 page with error message
+            http_response_code(404);
+            
+            // Store error message in session for display
+            $_SESSION['error_message'] = "Routing Error: " . $e->getMessage();
+            
+            // Include 404 page
+            include APP_PATH . '/views/errors/404.php';
             exit;
         }
     }
