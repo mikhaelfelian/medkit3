@@ -329,7 +329,7 @@ This README focuses on:
   - Refactored ObatController input handling
   - Refactored PasienController input handling
   - Refactored PengaturanController input handling
-- Improved autoloading system:
+  - Improved autoloading system:
   - Added core libraries loading
   - Added Input class to autoload
   - Enhanced library loading order
