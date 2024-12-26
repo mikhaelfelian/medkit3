@@ -127,4 +127,23 @@ class ObatController extends BaseController {
         }
         return $this->redirect('obat');
     }
+
+    public function show($id) {
+        try {
+            $data = $this->model->find($id);
+            if (!$data) {
+                throw new Exception("Record not found");
+            }
+            
+            return $this->view('obat/show', [
+                'title' => 'Detail Obat',
+                'data' => $data
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("Error in ObatController::show - " . $e->getMessage());
+            Notification::error('Data obat tidak ditemukan');
+            return $this->redirect('obat');
+        }
+    }
 } 
