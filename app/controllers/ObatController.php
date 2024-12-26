@@ -7,9 +7,19 @@ class ObatController extends BaseController {
     
     public function index() {
         try {
+            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $search = isset($_GET['search']) ? $_GET['search'] : '';
+            $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+            
+            $result = $this->model->searchPaginate($search, $page, $perPage);
+            
             return $this->view('obat/index', [
                 'title' => 'Data Obat',
-                'data' => $this->model->get()
+                'data' => $result['data'],
+                'total' => $result['total'],
+                'page' => $page,
+                'perPage' => $perPage,
+                'search' => $search
             ]);
         } catch (Exception $e) {
             Notification::error('Gagal memuat data obat');

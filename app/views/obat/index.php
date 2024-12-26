@@ -23,52 +23,80 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Daftar Obat</h3>
-                        <div class="card-tools">
-                            <a href="<?= BaseRouting::url('obat/add') ?>" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus"></i> Tambah Data
-                            </a>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Tambah button on left -->
+                                <a href="<?= BaseRouting::url('obat/add') ?>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> Tambah Data
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Search form on right -->
+                                <form action="<?= BaseRouting::url('obat') ?>" method="GET" class="float-right">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
+                                        <input type="text" class="form-control rounded-0" placeholder="Cari..."
+                                            name="search" value="<?= $search ?? '' ?>">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary rounded-0" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive mt-3">
-                            <table class="table table-striped">
+                            <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Kode</th>
-                                        <th>Barcode</th>
+                                        <th width="5%" class="text-center">No</th>
+                                        <th width="10%">Kode</th>
+                                        <th width="10%">Barcode</th>
                                         <th>Nama Produk</th>
-                                        <th>Stok</th>
-                                        <th>Harga Jual</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
+                                        <th width="10%">Stok</th>
+                                        <th width="15%">Harga Jual</th>
+                                        <th width="10%">Status</th>
+                                        <th width="12%" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($data as $i => $item): ?>
+                                    <?php if (!empty($data)): ?>
+                                        <?php foreach ($data as $i => $item): ?>
+                                            <tr>
+                                                <td class="text-center"><?= $i + 1 ?></td>
+                                                <td><?= htmlspecialchars($item->kode) ?></td>
+                                                <td><?= htmlspecialchars($item->barcode) ?></td>
+                                                <td><?= htmlspecialchars($item->item) ?></td>
+                                                <td><?= htmlspecialchars($item->jml) ?></td>
+                                                <td><?= htmlspecialchars($item->harga_jual) ?></td>
+                                                <td><?= $item->status == 4 ? 'Obat' : ($item->status == 6 ? 'Racikan' : '-') ?></td>
+                                                <td class="text-center">
+                                                    <div class="btn-group">
+                                                        <a href="<?= BaseRouting::url('obat/show/' . $item->id) ?>" 
+                                                           class="btn btn-info btn-sm" title="Detail">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="<?= BaseRouting::url('obat/edit/' . $item->id) ?>" 
+                                                           class="btn btn-warning btn-sm" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="<?= BaseRouting::url('obat/delete/' . $item->id) ?>" 
+                                                           class="btn btn-danger btn-sm" 
+                                                           onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')"
+                                                           title="Hapus">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
                                         <tr>
-                                            <td><?= $i + 1 ?></td>
-                                            <td><?= htmlspecialchars($item->kode) ?></td>
-                                            <td><?= htmlspecialchars($item->barcode) ?></td>
-                                            <td><?= htmlspecialchars($item->item) ?></td>
-                                            <td><?= htmlspecialchars($item->jml) ?></td>
-                                            <td><?= htmlspecialchars($item->harga_jual) ?></td>
-                                            <td><?= $item->status == 4 ? 'Obat' : ($item->status == 6 ? 'Racikan' : '-') ?>
-                                            </td>
-                                            <td>
-                                                <a href="<?= BaseRouting::url('obat/edit/' . $item->id) ?>"
-                                                    class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="<?= BaseRouting::url('obat/delete/' . $item->id) ?>"
-                                                    class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
+                                            <td colspan="8" class="text-center">Tidak ada data</td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

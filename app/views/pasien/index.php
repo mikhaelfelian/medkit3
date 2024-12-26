@@ -16,21 +16,17 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Data Pasien</h3>
-                        <div class="card-tools">
-                            <a href="<?= BaseRouting::url('pasien/create') ?>" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus"></i> Tambah Data
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <?php Notification::render(); ?>
-
-                        <!-- Search Form -->
                         <div class="row">
-                            <div class="col-md-3 offset-md-9">
-                                <form action="<?= BaseRouting::url('pasien') ?>" method="GET">
-                                    <div class="input-group input-group-sm">
+                            <div class="col-md-6">
+                                <!-- Tambah button on left -->
+                                <a href="<?= BaseRouting::url('pasien/create') ?>" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus"></i> Tambah Data
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Search form on right -->
+                                <form action="<?= BaseRouting::url('pasien') ?>" method="GET" class="float-right">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
                                         <input type="text" class="form-control rounded-0" placeholder="Cari..."
                                             name="search" value="<?= $search ?? '' ?>">
                                         <div class="input-group-append">
@@ -42,6 +38,9 @@
                                 </form>
                             </div>
                         </div>
+                    </div>
+                    <div class="card-body">
+                        <?php Notification::render(); ?>
 
                         <!-- Table -->
                         <div class="table-responsive mt-3">
@@ -73,15 +72,15 @@
                                                 <td class="text-center">
                                                     <div class="btn-group">
                                                         <a href="<?= BaseRouting::url('pasien/show/' . $pasien->id) ?>"
-                                                            class="btn btn-default btn-sm" title="Detail">
+                                                            class="btn btn-info btn-sm" title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <a href="<?= BaseRouting::url('pasien/edit/' . $pasien->id) ?>"
-                                                            class="btn btn-default btn-sm" title="Edit">
+                                                            class="btn btn-warning btn-sm" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <a href="<?= BaseRouting::url('pasien/delete/' . $pasien->id) ?>"
-                                                            class="btn btn-default btn-sm"
+                                                            class="btn btn-danger btn-sm"
                                                             onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')"
                                                             title="Hapus">
                                                             <i class="fas fa-trash"></i>
