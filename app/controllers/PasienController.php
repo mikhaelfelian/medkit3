@@ -2,7 +2,7 @@
 class PasienController extends BaseController {
     public function __construct() {
         parent::__construct();
-        $this->model = new PasienModel();
+        $this->model = $this->loadModel('Pasien');
     }
     
     public function index() {
@@ -15,7 +15,7 @@ class PasienController extends BaseController {
             
             return $this->view('pasien/index', [
                 'title' => 'Data Pasien',
-                'pasiens' => $result['data'],
+                'data' => $result['data'],
                 'total' => $result['total'],
                 'page' => $page,
                 'perPage' => $perPage,

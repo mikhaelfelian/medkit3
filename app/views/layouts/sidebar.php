@@ -10,8 +10,8 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
             $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
             $logoPath = !empty($settings->logo) ? $settings->logo : 'assets/theme/admin-lte-3/dist/img/AdminLTELogo.png';
         ?>
-            <img src="<?php echo BaseRouting::url($logoPath); ?>" 
-                 alt="<?php echo $settings->judul_app ?? 'AdminLTE Logo'; ?>" 
+            <img src="<?= BaseRouting::url(htmlspecialchars((string)($logoPath))) ?>" 
+                 alt="<?= htmlspecialchars((string)($settings->judul_app ?? 'AdminLTE Logo')) ?>" 
                  class="brand-image img-circle elevation-3" 
                  style="opacity: .8">
         <?php } catch (Exception $e) { ?>
@@ -20,7 +20,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                  class="brand-image img-circle elevation-3" 
                  style="opacity: .8">
         <?php } ?>
-        <span class="brand-text font-weight-light"><?php echo $settings->judul_app ?? 'NUSANTARA HMVC'; ?></span>
+        <span class="brand-text font-weight-light"><?= htmlspecialchars((string)($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>
     </a>
 
     <!-- Sidebar -->
@@ -38,8 +38,8 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 </li>
 
                 <!-- Master Data -->
-                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'menu-open' : ''; ?>">
-                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'active' : ''; ?>">
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false || strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || strpos($_SERVER['REQUEST_URI'], 'obat') !== false || strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-database"></i>
                         <p>
                             Master Data
@@ -47,6 +47,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('gudang'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Gudang</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="<?php echo BaseRouting::url('obat'); ?>" 
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'active' : ''; ?>">

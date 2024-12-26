@@ -64,11 +64,11 @@
                                             ?>
                                             <tr>
                                                 <td class="text-center"><?= $no++ ?></td>
-                                                <td><?= $pasien->kode ?? '-' ?></td>
-                                                <td><?= $pasien->nik ?? '-' ?></td>
-                                                <td><?= $pasien->nama ?? '-' ?></td>
-                                                <td><?= $pasien->no_hp ?? '-' ?></td>
-                                                <td><?= $pasien->alamat ?? '-' ?></td>
+                                                <td><?= htmlspecialchars((string)$pasien->kode) ?></td>
+                                                <td><?= htmlspecialchars((string)$pasien->nik) ?></td>
+                                                <td><?= htmlspecialchars((string)$pasien->nama) ?></td>
+                                                <td><?= htmlspecialchars((string)$pasien->no_hp) ?></td>
+                                                <td><?= htmlspecialchars((string)$pasien->alamat) ?></td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
                                                         <a href="<?= BaseRouting::url('pasien/show/' . $pasien->id) ?>"

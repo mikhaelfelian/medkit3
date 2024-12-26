@@ -36,32 +36,32 @@
                             
                             <div class="form-group">
                                 <label for="nik">NIK</label>
-                                <input type="text" class="form-control" id="nik" name="nik" value="<?= $data->nik ?>" maxlength="16">
+                                <input type="text" class="form-control rounded-0" id="nik" name="nik" value="<?= htmlspecialchars((string)$data->nik) ?>" maxlength="16">
                             </div>
                             
                             <div class="form-group">
                                 <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama" name="nama" value="<?= $data->nama ?>" required>
+                                <input type="text" class="form-control rounded-0" id="nama" name="nama" value="<?= htmlspecialchars((string)$data->nama) ?>" required>
                             </div>
                             
                             <div class="form-group">
                                 <label for="nama_pgl">Nama Panggilan</label>
-                                <input type="text" class="form-control" id="nama_pgl" name="nama_pgl" value="<?= $data->nama_pgl ?>">
+                                <input type="text" class="form-control rounded-0" id="nama_pgl" name="nama_pgl" value="<?= htmlspecialchars((string)$data->nama_pgl) ?>">
                             </div>
                             
                             <div class="form-group">
                                 <label for="no_hp">No HP</label>
-                                <input type="text" class="form-control" id="no_hp" name="no_hp" value="<?= $data->no_hp ?>">
+                                <input type="text" class="form-control rounded-0" id="no_hp" name="no_hp" value="<?= htmlspecialchars((string)$data->no_hp) ?>">
                             </div>
                             
                             <div class="form-group">
                                 <label for="alamat">Alamat</label>
-                                <textarea class="form-control" id="alamat" name="alamat" rows="3"><?= $data->alamat ?></textarea>
+                                <textarea class="form-control rounded-0" id="alamat" name="alamat" rows="3"><?= htmlspecialchars((string)$data->alamat) ?></textarea>
                             </div>
                             
                             <div class="form-group">
                                 <label for="alamat_domisili">Alamat Domisili</label>
-                                <textarea class="form-control" id="alamat_domisili" name="alamat_domisili" rows="3"><?= $data->alamat_domisili ?></textarea>
+                                <textarea class="form-control rounded-0" id="alamat_domisili" name="alamat_domisili" rows="3"><?= htmlspecialchars((string)$data->alamat_domisili) ?></textarea>
                             </div>
                             
                             <div class="row">

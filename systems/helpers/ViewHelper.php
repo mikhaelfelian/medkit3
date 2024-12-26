@@ -1,6 +1,7 @@
 <?php
 class ViewHelper {
     private static $models = [];
+    private $sections = [];
     
     public static function loadModel($model) {
         $key = strtolower($model);
@@ -18,5 +19,20 @@ class ViewHelper {
         }
         
         return self::$models[$key];
+    }
+    
+    public function push($name, $content) {
+        if (!isset($this->sections[$name])) {
+            $this->sections[$name] = [];
+        }
+        $this->sections[$name][] = $content;
+    }
+    
+    public function end() {
+        ob_end_flush();
+    }
+    
+    public function getSection($name) {
+        return isset($this->sections[$name]) ? implode("\n", $this->sections[$name]) : '';
     }
 } 

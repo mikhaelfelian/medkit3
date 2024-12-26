@@ -9,13 +9,25 @@ class BaseModel {
     public function __construct($conn = null) {
         $this->conn = $conn ?? Database::getInstance()->getConnection();
         
-        // If table is not set in child class, use class name
+        // If table is not set in child class, use pluralized class name
         if (empty($this->table)) {
             // Convert CamelCase to snake_case and remove 'Model' suffix
             $className = (new ReflectionClass($this))->getShortName();
             $className = preg_replace('/Model$/', '', $className);
             $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
-            $this->table = 'tbl_' . $tableName;
+            
+            // Add 's' for plural if it doesn't end with 's'
+            if (substr($tableName, -1) !== 's') {
+                $tableName .= 's';
+            }
+            
+            // For 'm_' prefix tables, add 'm_' after 'tbl_'
+            if (strpos($tableName, 'm_') === 0) {
+                $tableName = substr($tableName, 2); // Remove 'm_' prefix
+                $this->table = 'tbl_m_' . $tableName;
+            } else {
+                $this->table = 'tbl_' . $tableName;
+            }
         }
     }
     
@@ -80,24 +92,25 @@ class BaseModel {
             
             if ($this->timestamps) {
                 $fields['created_at'] = date('Y-m-d H:i:s');
-                $fields['updated_at'] = date('Y-m-d H:i:s');
             }
             
             $columns = implode(', ', array_keys($fields));
-            $values = ':' . implode(', :', array_keys($fields));
+            $values = implode(', ', array_map(function($field) {
+                return ":$field";
+            }, array_keys($fields)));
             
-            $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$values})";
+            $sql = "INSERT INTO {$this->table} ($columns) VALUES ($values)";
             $stmt = $this->conn->prepare($sql);
             
             foreach ($fields as $key => $value) {
-                $stmt->bindValue(":{$key}", $value);
+                $stmt->bindValue(":$key", $value);
             }
             
             return $stmt->execute();
             
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in create: " . $e->getMessage());
+            throw new Exception("Failed to create record");
         }
     }
     
@@ -109,35 +122,35 @@ class BaseModel {
                 $fields['updated_at'] = date('Y-m-d H:i:s');
             }
             
-            $set = [];
-            foreach ($fields as $key => $value) {
-                $set[] = "{$key} = :{$key}";
-            }
+            $set = implode(', ', array_map(function($field) {
+                return "$field = :$field";
+            }, array_keys($fields)));
             
-            $sql = "UPDATE {$this->table} SET " . implode(', ', $set) . " WHERE {$this->primaryKey} = :id";
+            $sql = "UPDATE {$this->table} SET $set WHERE {$this->primaryKey} = :id";
             $stmt = $this->conn->prepare($sql);
             
             $stmt->bindValue(':id', $id);
             foreach ($fields as $key => $value) {
-                $stmt->bindValue(":{$key}", $value);
+                $stmt->bindValue(":$key", $value);
             }
             
             return $stmt->execute();
             
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in update: " . $e->getMessage());
+            throw new Exception("Failed to update record");
         }
     }
     
     public function delete($id) {
         try {
-            $stmt = $this->conn->prepare("DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id");
+            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
+            $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':id', $id);
             return $stmt->execute();
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
-            return false;
+            error_log("Database Error in delete: " . $e->getMessage());
+            throw new Exception("Failed to delete record");
         }
     }
     

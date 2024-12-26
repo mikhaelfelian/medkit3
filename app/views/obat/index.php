@@ -66,11 +66,11 @@
                                         <?php foreach ($data as $i => $item): ?>
                                             <tr>
                                                 <td class="text-center"><?= $i + 1 ?></td>
-                                                <td><?= htmlspecialchars($item->kode) ?></td>
-                                                <td><?= htmlspecialchars($item->barcode) ?></td>
-                                                <td><?= htmlspecialchars($item->item) ?></td>
-                                                <td><?= htmlspecialchars($item->jml) ?></td>
-                                                <td><?= htmlspecialchars($item->harga_jual) ?></td>
+                                                <td><?= htmlspecialchars((string)$item->kode) ?></td>
+                                                <td><?= htmlspecialchars((string)$item->barcode) ?></td>
+                                                <td><?= htmlspecialchars((string)$item->item) ?></td>
+                                                <td><?= htmlspecialchars((string)$item->jml) ?></td>
+                                                <td><?= htmlspecialchars((string)$item->harga_jual) ?></td>
                                                 <td><?= $item->status == 4 ? 'Obat' : ($item->status == 6 ? 'Racikan' : '-') ?></td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
