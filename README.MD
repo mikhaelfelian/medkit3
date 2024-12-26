@@ -122,7 +122,7 @@ This README focuses on:
 ```
 
 ## Changelog
-
+```
 ### v1.0.8 (2024-03-21)
 #### Added
 - Master data gudang management:
