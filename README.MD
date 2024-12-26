@@ -68,11 +68,10 @@ medkit3/
 Edit config/config.php to match your environment:
 
 ```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'db_medkit3');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('BASE_URL', 'http://localhost/medkit3');
+define('DB_HOST', '<your-db-hosts>');
+define('DB_NAME', '<your-db-name>');
+define('DB_USER', '<your-db-user>');
+define('DB_PASS', '<your-db-pass>');
 ```
 
 ## Usage
