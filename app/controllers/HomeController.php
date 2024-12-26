@@ -2,16 +2,15 @@
 class HomeController extends BaseController {
     public function __construct() {
         parent::__construct();
+        $this->pasienModel = $this->loadModel('Pasien');
     }
     
     public function index() {
         try {
             // Get total patients count if needed
             $totalPatients = 0;
-            if (class_exists('PasienModel')) {
-                $pasienModel = new PasienModel($this->conn);
-                $totalPatients = $pasienModel->count();
-            }
+            $pasienModel = new PasienModel();
+            $totalPatients = $pasienModel->count();
             
             return $this->view('dashboard/index', [
                 'title' => 'Dashboard',
