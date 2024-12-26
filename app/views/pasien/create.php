@@ -14,11 +14,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card rounded-0">
                     <div class="card-header">
                         <h3 class="card-title">Tambah Data Pasien</h3>
                         <div class="card-tools">
-                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-tool">
+                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-tool rounded-0">
                                 <i class="fas fa-times"></i>
                             </a>
                         </div>

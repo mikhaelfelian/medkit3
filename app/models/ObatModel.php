@@ -14,49 +14,44 @@ class ObatModel extends BaseModel {
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = ['status_obat IN (4,6)']; // Only show Obat and Racikan
+            $conditions = ['status_obat = 1']; // Filter for obat only
             $params = [];
-
+            
             if (!empty($search)) {
-                $conditions[] = "(item LIKE :search OR kode LIKE :search OR barcode LIKE :search)";
+                $conditions[] = "(kode LIKE :search OR barcode LIKE :search OR item LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
-
-            $where = "WHERE " . implode(' AND ', $conditions);
-
+            
+            $where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+            
             // Get total records
-            $sqlCount = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
-            $stmtCount = $this->conn->prepare($sqlCount);
-            foreach ($params as $key => $value) {
-                $stmtCount->bindValue($key, $value);
-            }
-            $stmtCount->execute();
-            $total = $stmtCount->fetch(PDO::FETCH_OBJ)->total;
-
-            // Get paginated records
-            $sql = "SELECT * FROM {$this->table} 
-                   {$where} 
-                   ORDER BY created_at DESC 
-                   LIMIT :offset, :limit";
-            
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-            
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
             
+            // Get paginated records
+            $sql = "SELECT * FROM {$this->table} {$where} ORDER BY id DESC LIMIT {$perPage} OFFSET {$offset}";
+            $stmt = $this->conn->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_OBJ);
-
+            
             return [
                 'data' => $data,
-                'total' => $total
+                'total' => $total,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => ceil($total / $perPage)
             ];
-
+            
         } catch (PDOException $e) {
-            error_log("Database Error in searchPaginate: " . $e->getMessage());
+            error_log("Database Error: " . $e->getMessage());
             throw new Exception("Failed to fetch records");
         }
     }
@@ -65,7 +60,7 @@ class ObatModel extends BaseModel {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['created_at'] = date('Y-m-d H:i:s');
-            $fields['status_obat'] = 4; // Set as Obat
+            $fields['status_obat'] = 1; // Changed from 4 to 1 for Obat
             
             $columns = implode(', ', array_keys($fields));
             $values = implode(', ', array_map(function($field) {

@@ -38,31 +38,13 @@ class ObatController extends BaseController {
                     'kode' => $this->input->post('kode'),
                     'barcode' => $this->input->post('barcode'),
                     'item' => $this->input->post('item'),
-                    'jml' => $this->input->post('jml'),
+                    'item_alias' => $this->input->post('item_alias'),
+                    'item_kand' => $this->input->post('item_kand'),
+                    'harga_beli' => $this->input->post('harga_beli'),
                     'harga_jual' => $this->input->post('harga_jual'),
-                    'status' => 4,
-                    'tgl_simpan' => date('Y-m-d H:i:s'),
-                    'id_user' => $_SESSION['user_id'] ?? 0,
-                    'id_satuan' => 7,
-                    'id_kategori' => 0,
-                    // Set default values for required fields
-                    'id_kategori_lab' => 0,
-                    'id_kategori_gol' => 0,
-                    'id_lokasi' => 0,
-                    'id_merk' => 0,
-                    'jml_display' => 0,
-                    'jml_limit' => 0,
-                    'status_promo' => '0',
-                    'status_subt' => '0',
-                    'status_lab' => '0',
-                    'status_brg_dep' => '0',
-                    'status_stok' => '0',
-                    'status_racikan' => '0',
-                    'status_etiket' => '0',
-                    'status_hps' => '0',
-                    'sl' => '0',
-                    'sp' => '0',
-                    'so' => '0'
+                    'status_stok' => $this->input->post('status_stok', '0'),
+                    'status_obat' => 1,
+                    'status' => 1
                 ];
 
                 if (!$this->model->create($data)) {
@@ -89,12 +71,16 @@ class ObatController extends BaseController {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $data = [
-                    'kode' => $_POST['kode'],
-                    'barcode' => $_POST['barcode'],
-                    'item' => $_POST['item'],
-                    'jml' => $_POST['jml'],
-                    'harga_jual' => $_POST['harga_jual'],
-                    'tgl_modif' => date('Y-m-d H:i:s')
+                    'kode' => $this->input->post('kode'),
+                    'barcode' => $this->input->post('barcode'),
+                    'item' => $this->input->post('item'),
+                    'item_alias' => $this->input->post('item_alias'),
+                    'item_kand' => $this->input->post('item_kand'),
+                    'harga_beli' => $this->input->post('harga_beli'),
+                    'harga_jual' => $this->input->post('harga_jual'),
+                    'status_stok' => $this->input->post('status_stok', '0'),
+                    'status_obat' => 1,
+                    'status' => 1
                 ];
 
                 if ($this->model->update($id, $data)) {
