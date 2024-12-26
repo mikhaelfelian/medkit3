@@ -122,7 +122,50 @@ This README focuses on:
 ```
 
 ## Changelog
-```
+
+### v1.0.8 (2024-03-21)
+#### Added
+- Master data gudang management:
+  - Added CRUD operations for gudang data
+  - Added primary warehouse designation feature
+  - Added status toggle functionality
+  - Added warehouse code generation
+  - Added search and pagination
+  - Added form validation
+  - Added proper error handling
+
+#### Enhanced
+- Input security and validation:
+  - Added InputSanitizer library
+  - Enhanced SQL injection protection
+  - Added XSS prevention
+  - Added input sanitization
+  - Added validation rules
+  - Added error handling
+
+- Database migrations:
+  - Added migration tracking system
+  - Added migration results view
+  - Added rollback functionality
+  - Added migration logging
+  - Added automatic table prefix handling
+
+- Documentation:
+  - Added detailed code documentation
+  - Added inline code comments
+  - Added migration documentation
+  - Added security documentation
+  - Updated helper documentation
+
+#### Fixed
+- Fixed database connection handling
+- Fixed input sanitization issues
+- Fixed CSRF token validation
+- Fixed file upload security
+- Fixed migration error handling
+- Fixed form validation feedback
+- Fixed security headers implementation
+
 ### [1.0.0] - 2024-03-11
 
 #### Added
