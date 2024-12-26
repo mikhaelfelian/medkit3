@@ -1,29 +1,30 @@
 <?php
 class PasienController extends BaseController {
-    protected $model;
-    
     public function __construct() {
         parent::__construct();
         $this->model = new PasienModel();
     }
     
     public function index() {
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
-        
-        $result = $this->model->searchPaginate($search, $page, $perPage);
-        
-        $data = [
-            'title' => 'Data Pasien',
-            'pasiens' => $result['data'],
-            'total' => $result['total'],
-            'page' => $page,
-            'perPage' => $perPage,
-            'search' => $search
-        ];
-        
-        return $this->view('pasien/index', $data);
+        try {
+            $page = $this->input->get('page', 1);
+            $search = $this->input->get('search', '');
+            $perPage = $this->input->get('per_page', 10);
+            
+            $result = $this->model->searchPaginate($search, $page, $perPage);
+            
+            return $this->view('pasien/index', [
+                'title' => 'Data Pasien',
+                'pasiens' => $result['data'],
+                'total' => $result['total'],
+                'page' => $page,
+                'perPage' => $perPage,
+                'search' => $search
+            ]);
+        } catch (Exception $e) {
+            Notification::error('Gagal memuat data pasien');
+            return $this->redirect('');
+        }
     }
 
     public function create() {
@@ -35,10 +36,21 @@ class PasienController extends BaseController {
 
     public function store() {
         try {
-            $data = $this->input();
-            
-            // Generate kode pasien
-            $data['kode'] = $this->model->generateKode();
+            $data = [
+                'kode' => $this->model->generateKode(),
+                'nik' => $this->input->post('nik'),
+                'nama' => $this->input->post('nama'),
+                'nama_pgl' => $this->input->post('nama_pgl'),
+                'no_hp' => $this->input->post('no_hp'),
+                'alamat' => $this->input->post('alamat'),
+                'alamat_domisili' => $this->input->post('alamat_domisili'),
+                'rt' => $this->input->post('rt'),
+                'rw' => $this->input->post('rw'),
+                'kelurahan' => $this->input->post('kelurahan'),
+                'kecamatan' => $this->input->post('kecamatan'),
+                'kota' => $this->input->post('kota'),
+                'pekerjaan' => $this->input->post('pekerjaan')
+            ];
             
             if ($this->model->create($data)) {
                 Notification::success('Data pasien berhasil ditambahkan');
@@ -76,7 +88,20 @@ class PasienController extends BaseController {
 
     public function update($id) {
         try {
-            $data = $this->input();
+            $data = [
+                'nik' => $this->input->post('nik'),
+                'nama' => $this->input->post('nama'),
+                'nama_pgl' => $this->input->post('nama_pgl'),
+                'no_hp' => $this->input->post('no_hp'),
+                'alamat' => $this->input->post('alamat'),
+                'alamat_domisili' => $this->input->post('alamat_domisili'),
+                'rt' => $this->input->post('rt'),
+                'rw' => $this->input->post('rw'),
+                'kelurahan' => $this->input->post('kelurahan'),
+                'kecamatan' => $this->input->post('kecamatan'),
+                'kota' => $this->input->post('kota'),
+                'pekerjaan' => $this->input->post('pekerjaan')
+            ];
             
             if ($this->model->update($id, $data)) {
                 Notification::success('Data pasien berhasil diupdate');

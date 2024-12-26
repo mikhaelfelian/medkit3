@@ -8,10 +8,28 @@ class BaseAutoload {
         // Load autoload configuration
         $this->config = require ROOT_PATH . '/config/autoload.php';
         
+        // Load core libraries first
+        $this->loadCoreLibraries();
+        
         // Load components
         $this->loadModels();
         $this->loadHelpers();
         $this->loadLibraries();
+    }
+    
+    private function loadCoreLibraries() {
+        $coreLibs = [
+            'Input',
+            'Database',
+            'BaseSecurity'
+        ];
+        
+        foreach ($coreLibs as $lib) {
+            $libFile = SYSTEM_PATH . '/libraries/' . $lib . '.php';
+            if (file_exists($libFile)) {
+                require_once $libFile;
+            }
+        }
     }
     
     public static function getInstance() {

@@ -25,9 +25,18 @@ class PengaturanController extends BaseController {
 
     public function update() {
         try {
-            $data = $this->input();
+            $data = [
+                'judul' => $this->input->post('judul'),
+                'judul_app' => $this->input->post('judul_app'),
+                'alamat' => $this->input->post('alamat'),
+                'deskripsi' => $this->input->post('deskripsi'),
+                'kota' => $this->input->post('kota'),
+                'url' => $this->input->post('url'),
+                'theme' => $this->input->post('theme'),
+                'pagination_limit' => $this->input->post('pagination_limit')
+            ];
             
-            // Handle file uploads if present
+            // Handle file uploads
             if (!empty($_FILES['logo']['name'])) {
                 $data['logo'] = $this->model->uploadFile($_FILES['logo'], 'logo');
             }
@@ -38,10 +47,9 @@ class PengaturanController extends BaseController {
             
             if ($this->model->updateSettings($data)) {
                 Notification::success('Pengaturan berhasil diupdate');
-                return $this->redirect('pengaturan');
             }
             
-            throw new Exception("Failed to update settings");
+            return $this->redirect('pengaturan');
             
         } catch (Exception $e) {
             error_log("Error in PengaturanController::update - " . $e->getMessage());

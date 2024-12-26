@@ -7,9 +7,9 @@ class ObatController extends BaseController {
     
     public function index() {
         try {
-            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $search = isset($_GET['search']) ? $_GET['search'] : '';
-            $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+            $page = $this->input->get('page', 1);
+            $search = $this->input->get('search', '');
+            $perPage = $this->input->get('per_page', 10);
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
@@ -30,16 +30,16 @@ class ObatController extends BaseController {
     public function add() {
         try {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (!$this->security->validateCSRFToken($_POST['csrf_token'])) {
+                if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
                     throw new Exception('Invalid security token');
                 }
 
                 $data = [
-                    'kode' => $_POST['kode'],
-                    'barcode' => $_POST['barcode'],
-                    'item' => $_POST['item'],
-                    'jml' => $_POST['jml'],
-                    'harga_jual' => $_POST['harga_jual'],
+                    'kode' => $this->input->post('kode'),
+                    'barcode' => $this->input->post('barcode'),
+                    'item' => $this->input->post('item'),
+                    'jml' => $this->input->post('jml'),
+                    'harga_jual' => $this->input->post('harga_jual'),
                     'status' => 4,
                     'tgl_simpan' => date('Y-m-d H:i:s'),
                     'id_user' => $_SESSION['user_id'] ?? 0,
