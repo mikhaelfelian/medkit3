@@ -1,7 +1,9 @@
 <?php
 class Migration_create_tbl_m_gudangs extends Migration {
+    protected $sql;
+
     public function up() {
-        $sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('m_gudangs') . "` (
+        $this->sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('tbl_m_gudangs') . "` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `created_at` DATETIME NULL DEFAULT NULL,
             `updated_at` DATETIME NULL DEFAULT NULL,
@@ -13,14 +15,15 @@ class Migration_create_tbl_m_gudangs extends Migration {
             PRIMARY KEY (`id`) USING BTREE
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;";
 
-        return $sql;
+        return $this->sql;
     }
 
     public function down() {
-        return "DROP TABLE IF EXISTS `" . $this->getTableName('m_gudangs') . "`;";
+        $this->sql = "DROP TABLE IF EXISTS `" . $this->getTableName('tbl_m_gudangs') . "`;";
+        return $this->sql;
     }
 
     public function getDescription() {
-        return "Create table " . $this->getTableName('m_gudangs');
+        return "Create table " . $this->getTableName('tbl_m_gudangs');
     }
 } 

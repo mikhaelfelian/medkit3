@@ -26,11 +26,9 @@
         <?php require APP_PATH . '/views/layouts/footer.php'; ?>
     </div>
 
-    <!-- jQuery -->
+    <!-- Core Scripts -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') ?>"></script>
-    <!-- Bootstrap 4 -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-    <!-- AdminLTE App -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/dist/js/adminlte.min.js') ?>"></script>
     
     <!-- Page specific scripts -->

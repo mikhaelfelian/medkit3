@@ -130,12 +130,20 @@
     </div>
 </section> 
 
-<!-- Add the script directly -->
+<!-- Content here -->
+
+<?php
+$controller->section('script', '
+<!-- jQuery -->
+<script src="' . BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') . '"></script>
+<!-- Bootstrap 4 -->
+<script src="' . BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') . '"></script>
+
 <script>
 $(document).ready(function() {
     $(".toggle-status").on("change", function() {
         const id = $(this).data("id");
-        const status = $(this).is(":checked") ? "1" : "0";
+        const status_gd = $(this).is(":checked") ? "1" : "0";
         const $switch = $(this);
         const $statusText = $switch.closest(".custom-control").find(".status-text");
         
@@ -143,28 +151,39 @@ $(document).ready(function() {
         $(".toggle-status").prop("disabled", true);
         
         $.ajax({
-            url: "<?= BaseRouting::url('gudang/set_primary') ?>",
+            url: "' . BaseRouting::url('gudang/set_primary') . '",
             type: "POST",
             data: {
                 id: id,
-                status: status
+                status_gd: status_gd
             },
             dataType: "json",
             success: function(response) {
                 if (response.success) {
                     // Update status text
-                    $statusText.text(status === "1" ? "Aktif" : "Non Aktif");
-                    Notification.success("Status gudang utama berhasil diperbarui");
+                    $statusText.text(status_gd === "1" ? "Aktif" : "Non Aktif");
+                    
+                    // If setting as primary, uncheck other switches
+                    if (status_gd === "1") {
+                        $(".toggle-status").not($switch).prop("checked", false)
+                            .closest(".custom-control")
+                            .find(".status-text")
+                            .text("Non Aktif");
+                    }
+                    
+                    // Show success message
+                    alert(response.message || "Status gudang utama berhasil diperbarui");
                 } else {
                     // Revert switch state
                     $switch.prop("checked", !$switch.prop("checked"));
-                    Notification.error(response.message || "Gagal memperbarui status gudang utama");
+                    alert(response.message || "Gagal memperbarui status gudang utama");
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
                 // Revert switch state
                 $switch.prop("checked", !$switch.prop("checked"));
-                Notification.error("Gagal memperbarui status gudang utama");
+                console.error("AJAX Error:", error);
+                alert("Gagal memperbarui status gudang utama");
             },
             complete: function() {
                 // Re-enable all switches
@@ -173,4 +192,6 @@ $(document).ready(function() {
         });
     });
 });
-</script> 
+</script>
+');
+?> 

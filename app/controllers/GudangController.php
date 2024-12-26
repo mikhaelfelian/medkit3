@@ -171,31 +171,38 @@ class GudangController extends BaseController {
     }
 
     public function set_primary() {
+        header('Content-Type: application/json');
         try {
             $id = $this->input->post('id');
-            $status = $this->input->post('status');
-
+            $status = $this->input->post('status_gd');
+            
             if (!$id || !isset($status)) {
                 throw new Exception('Invalid parameters');
             }
-
+            
             // If setting as primary, unset all others first
             if ($status === '1') {
                 $this->model->unsetAllPrimary();
             }
-
+            
             // Update the selected gudang
             if (!$this->model->update($id, ['status_gd' => $status])) {
                 throw new Exception('Failed to update status');
             }
-
-            echo json_encode(['success' => true]);
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Status berhasil diperbarui'
+            ]);
+            exit;
             
         } catch (Exception $e) {
+            http_response_code(500);
             echo json_encode([
                 'success' => false,
                 'message' => $e->getMessage()
             ]);
+            exit;
         }
     }
 } 

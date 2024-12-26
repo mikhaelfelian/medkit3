@@ -88,7 +88,7 @@ abstract class Migration {
             }
             
             error_log("Migration Error: " . $e->getMessage());
-            error_log("SQL: " . $sql);
+            error_log("SQL: " . (!empty($sql) ? $sql : ''));
             return false;
         }
     }
