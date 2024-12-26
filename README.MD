@@ -217,3 +217,36 @@ This README focuses on:
 - Fixed error page layout issues
 - Fixed asset path references
 - Fixed error message persistence
+
+### [1.0.9] - 2024-12-26
+#### Added
+- Added show functionality for obat module:
+  - Added show method in ObatController
+  - Added show view with detail display
+  - Added breadcrumb navigation
+  - Added edit and back buttons
+- Enhanced input handling:
+  - Added Input library for secure input handling
+  - Added input sanitization
+  - Added SQL injection protection
+  - Added XSS prevention
+  - Added global input access
+  - Added input helper methods
+
+#### Changed
+- Updated controllers to use Input library:
+  - Refactored ObatController input handling
+  - Refactored PasienController input handling
+  - Refactored PengaturanController input handling
+- Improved autoloading system:
+  - Added core libraries loading
+  - Added Input class to autoload
+  - Enhanced library loading order
+
+#### Fixed
+- Fixed Input class loading issues
+- Fixed global input access
+- Fixed input sanitization
+- Fixed security vulnerabilities
+- Fixed autoloader configuration
+- Fixed class loading order
