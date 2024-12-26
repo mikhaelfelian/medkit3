@@ -1,26 +1,25 @@
 <?php
 class HomeController extends BaseController {
+    protected $pengaturanModel;
+    
     public function __construct() {
         parent::__construct();
-        $this->pasienModel = $this->loadModel('Pasien');
+        $this->pengaturanModel = $this->loadModel('TblPengaturan');
     }
     
     public function index() {
         try {
-            // Get total patients count if needed
-            $totalPatients = 0;
-            $pasienModel = new PasienModel();
-            $totalPatients = $pasienModel->count();
-            
-            return $this->view('dashboard/index', [
+            $data = [
                 'title' => 'Dashboard',
-                'totalPatients' => $totalPatients
-            ]);
+                'settings' => $this->pengaturanModel->getSettings()
+            ];
+            
+            return $this->view('dashboard/index', $data);
+            
         } catch (Exception $e) {
             error_log("Dashboard Error: " . $e->getMessage());
             return $this->view('dashboard/index', [
-                'title' => 'Dashboard',
-                'totalPatients' => 0
+                'title' => 'Dashboard'
             ]);
         }
     }

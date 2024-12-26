@@ -22,7 +22,7 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3><?= $totalPatients ?></h3>
+                        <h3><?= (!empty($totalPatients)) ? $totalPatients : 0 ?></h3>
                         <p>Total Pasien</p>
                     </div>
                     <div class="icon">

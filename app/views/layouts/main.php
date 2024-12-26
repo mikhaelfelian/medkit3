@@ -14,15 +14,16 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <?php include_once(APP_PATH . '/views/layouts/navbar.php'); ?>
-        <?php include_once(APP_PATH . '/views/layouts/sidebar.php'); ?>
+        <?php require APP_PATH . '/views/layouts/navbar.php'; ?>
+        <?php require APP_PATH . '/views/layouts/sidebar.php'; ?>
 
         <!-- Content Wrapper -->
         <div class="content-wrapper">
-            <?php echo $content; ?>
+            <?= Notification::render() ?>
+            <?= $content ?>
         </div>
 
-        <?php include_once(APP_PATH . '/views/layouts/footer.php'); ?>
+        <?php require APP_PATH . '/views/layouts/footer.php'; ?>
     </div>
 
     <!-- jQuery -->
@@ -33,6 +34,6 @@
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/dist/js/adminlte.min.js') ?>"></script>
     
     <!-- Page specific scripts -->
-    <?= $this->getSection('script') ?>
+    <?= $controller->getSection('script') ?>
 </body>
 </html> 

@@ -127,8 +127,14 @@ $form = BaseForm::getInstance();
 </section>
 
 <!-- bs-custom-file-input -->
+<?php 
+$controller->section('script', '<script src="'.BaseRouting::asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js').'"></script>');
+
+$controller->section('script', '
 <script>
-    $(function () {
-        bsCustomFileInput.init();
-    });
+$(function () {
+    bsCustomFileInput.init();
+});
 </script>
+');
+?>

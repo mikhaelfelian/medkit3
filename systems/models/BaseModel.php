@@ -4,31 +4,9 @@ class BaseModel {
     protected $table;
     protected $primaryKey = 'id';
     protected $fillable = [];
-    protected $timestamps = true;
     
-    public function __construct($conn = null) {
-        $this->conn = $conn ?? Database::getInstance()->getConnection();
-        
-        // If table is not set in child class, use pluralized class name
-        if (empty($this->table)) {
-            // Convert CamelCase to snake_case and remove 'Model' suffix
-            $className = (new ReflectionClass($this))->getShortName();
-            $className = preg_replace('/Model$/', '', $className);
-            $tableName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
-            
-            // Add 's' for plural if it doesn't end with 's'
-            if (substr($tableName, -1) !== 's') {
-                $tableName .= 's';
-            }
-            
-            // For 'm_' prefix tables, add 'm_' after 'tbl_'
-            if (strpos($tableName, 'm_') === 0) {
-                $tableName = substr($tableName, 2); // Remove 'm_' prefix
-                $this->table = 'tbl_m_' . $tableName;
-            } else {
-                $this->table = 'tbl_' . $tableName;
-            }
-        }
+    public function __construct() {
+        $this->conn = Database::getInstance()->getConnection();
     }
     
     public function get() {

@@ -15,7 +15,8 @@ class TblPengaturanModel extends BaseModel {
     ];
 
     public function __construct($conn) {
-        parent::__construct($conn, $this->table);
+        parent::__construct();
+        $this->conn = $conn;
     }
 
     /**
@@ -23,8 +24,9 @@ class TblPengaturanModel extends BaseModel {
      */
     public function getSettings() {
         $sql = "SELECT * FROM {$this->table} LIMIT 1";
-        $result = mysqli_query($this->conn, $sql);
-        return mysqli_fetch_assoc($result);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
     /**

@@ -4,6 +4,7 @@ class BaseController {
     protected $security;
     protected $input;
     protected $viewHelper;
+    protected $sections = [];
 
     public function __construct() {
         require_once SYSTEM_PATH . '/libraries/Input.php';
@@ -16,6 +17,8 @@ class BaseController {
 
     protected function view($view, $data = []) {
         try {
+            $controller = $this;
+            
             extract($data);
             ob_start();
             
@@ -24,15 +27,25 @@ class BaseController {
                 throw new Exception("View file not found: {$viewPath}");
             }
             
-            include $viewPath;
+            require $viewPath;
             $content = ob_get_clean();
             
             ob_start();
-            include APP_PATH . '/views/layouts/main.php';
-            return ob_get_clean();
+            require APP_PATH . '/views/layouts/main.php';
+            $output = ob_get_clean();
+            
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            
+            echo $output;
+            exit;
             
         } catch (Exception $e) {
-            ob_end_clean();
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            error_log("View Error: " . $e->getMessage());
             throw $e;
         }
     }
@@ -44,6 +57,20 @@ class BaseController {
 
     protected function loadModel($model) {
         return ViewHelper::loadModel($model);
+    }
+
+    protected function section($name, $content) {
+        if (!isset($this->sections[$name])) {
+            $this->sections[$name] = [];
+        }
+        $this->sections[$name][] = $content;
+    }
+
+    protected function getSection($name) {
+        if (!isset($this->sections[$name])) {
+            return '';
+        }
+        return implode("\n", $this->sections[$name]);
     }
 }
 ?> 
