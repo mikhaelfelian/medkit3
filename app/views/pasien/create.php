@@ -31,51 +31,60 @@
                             
                             <div class="form-group">
                                 <label for="nik">NIK</label>
-                                <input type="text" class="form-control" id="nik" name="nik" maxlength="16">
+                                <input type="text" class="form-control rounded-0" id="nik" name="nik" 
+                                       maxlength="16" placeholder="Masukkan NIK">
                             </div>
                             
                             <div class="form-group">
                                 <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nama" name="nama" required>
+                                <input type="text" class="form-control rounded-0" id="nama" name="nama" 
+                                       required placeholder="Masukkan nama lengkap">
                             </div>
                             
                             <div class="form-group">
                                 <label for="nama_pgl">Nama Panggilan</label>
-                                <input type="text" class="form-control" id="nama_pgl" name="nama_pgl">
+                                <input type="text" class="form-control rounded-0" id="nama_pgl" name="nama_pgl" 
+                                       placeholder="Masukkan nama panggilan">
                             </div>
                             
                             <div class="form-group">
                                 <label for="no_hp">No HP</label>
-                                <input type="text" class="form-control" id="no_hp" name="no_hp">
+                                <input type="text" class="form-control rounded-0" id="no_hp" name="no_hp" 
+                                       placeholder="Masukkan nomor HP">
                             </div>
                             
                             <div class="form-group">
                                 <label for="alamat">Alamat</label>
-                                <textarea class="form-control" id="alamat" name="alamat" rows="3"></textarea>
+                                <textarea class="form-control rounded-0" id="alamat" name="alamat" 
+                                          rows="3" placeholder="Masukkan alamat lengkap"></textarea>
                             </div>
                             
                             <div class="form-group">
                                 <label for="alamat_domisili">Alamat Domisili</label>
-                                <textarea class="form-control" id="alamat_domisili" name="alamat_domisili" rows="3"></textarea>
+                                <textarea class="form-control rounded-0" id="alamat_domisili" name="alamat_domisili" 
+                                          rows="3" placeholder="Masukkan alamat domisili"></textarea>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="rt">RT</label>
-                                        <input type="text" class="form-control" id="rt" name="rt" maxlength="3">
+                                        <input type="text" class="form-control rounded-0" id="rt" name="rt" 
+                                               maxlength="3" placeholder="RT">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="rw">RW</label>
-                                        <input type="text" class="form-control" id="rw" name="rw" maxlength="3">
+                                        <input type="text" class="form-control rounded-0" id="rw" name="rw" 
+                                               maxlength="3" placeholder="RW">
                                     </div>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="kelurahan">Kelurahan</label>
-                                        <input type="text" class="form-control" id="kelurahan" name="kelurahan">
+                                        <input type="text" class="form-control rounded-0" id="kelurahan" name="kelurahan" 
+                                               placeholder="Masukkan kelurahan">
                                     </div>
                                 </div>
                             </div>
@@ -84,25 +93,32 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="kecamatan">Kecamatan</label>
-                                        <input type="text" class="form-control" id="kecamatan" name="kecamatan">
+                                        <input type="text" class="form-control rounded-0" id="kecamatan" name="kecamatan" 
+                                               placeholder="Masukkan kecamatan">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="kota">Kota</label>
-                                        <input type="text" class="form-control" id="kota" name="kota">
+                                        <input type="text" class="form-control rounded-0" id="kota" name="kota" 
+                                               placeholder="Masukkan kota">
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="pekerjaan">Pekerjaan</label>
-                                <input type="text" class="form-control" id="pekerjaan" name="pekerjaan">
+                                <input type="text" class="form-control rounded-0" id="pekerjaan" name="pekerjaan" 
+                                       placeholder="Masukkan pekerjaan">
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
-                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-default">Batal</a>
+                        <div class="card-footer text-right">
+                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-default rounded-0 float-left">
+                                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-0">
+                                <i class="fas fa-save mr-2"></i>Simpan
+                            </button>
                         </div>
                     </form>
                 </div>
