@@ -48,6 +48,7 @@
                                         <th>Kode</th>
                                         <th>Kategori</th>
                                         <th>Keterangan</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -62,6 +63,13 @@
                                                 <td><?= $item->kode ?></td>
                                                 <td><?= $item->kategori ?></td>
                                                 <td><?= $item->keterangan ?></td>
+                                                <td>
+                                                    <?php if ($item->status == '1'): ?>
+                                                        <span class="badge badge-success">Aktif</span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-danger">Non Aktif</span>
+                                                    <?php endif; ?>
+                                                </td>
                                                 <td>
                                                     <div class="btn-group">
                                                         <a href="<?= BaseRouting::url('kategori/edit/' . $item->id) ?>" 
@@ -79,7 +87,7 @@
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="5" class="text-center">Tidak ada data</td>
+                                            <td colspan="6" class="text-center">Tidak ada data</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
