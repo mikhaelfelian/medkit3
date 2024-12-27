@@ -171,8 +171,8 @@ location / {
 6. Access Application
 - Point your web browser to: `http://localhost/medkit3`
 - Default credentials:
-  - Username: admin
-  - Password: admin123
+  - Username: superadmin
+  - Password: admin1234
 
 ### Troubleshooting
 - Ensure mod_rewrite is enabled
