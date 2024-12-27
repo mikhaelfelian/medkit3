@@ -87,5 +87,28 @@ class BaseRouting {
     public static function asset($path = '') {
         return self::url('public/assets/' . ltrim($path, '/'));
     }
+    
+    public static function getCurrentController() {
+        $uri = $_SERVER['REQUEST_URI'];
+        $basePath = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+        $path = str_replace($basePath, '', $uri);
+        
+        // Remove query string if present
+        if (($pos = strpos($path, '?')) !== false) {
+            $path = substr($path, 0, $pos);
+        }
+        
+        // Remove leading/trailing slashes
+        $path = trim($path, '/');
+        
+        // If empty, return default controller
+        if (empty($path)) {
+            return '';
+        }
+        
+        // Return first segment
+        $segments = explode('/', $path);
+        return $segments[0];
+    }
 }
 ?> 

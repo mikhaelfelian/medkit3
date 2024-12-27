@@ -6,11 +6,16 @@ class ObatModel extends BaseModel {
         'kode',
         'nama',
         'id_kategori',
+        'id_merk',
         'barcode',
         'item',
+        'item_alias',
+        'item_kand',
         'jml',
+        'harga_beli',
         'harga_jual',
         'status_obat',
+        'status'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
@@ -44,9 +49,10 @@ class ObatModel extends BaseModel {
             $page = max(1, min($page, $lastPage));
             
             // Get paginated records
-            $sql = "SELECT i.*, k.kategori as nama_kategori 
+            $sql = "SELECT i.*, k.kategori as nama_kategori, m.merk as nama_merk 
                     FROM {$this->table} i 
                     LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
+                    LEFT JOIN tbl_m_merks m ON i.id_merk = m.id 
                     {$where} 
                     ORDER BY i.created_at DESC 
                     LIMIT :limit OFFSET :offset";
@@ -79,7 +85,12 @@ class ObatModel extends BaseModel {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['created_at'] = date('Y-m-d H:i:s');
-            $fields['status_obat'] = 1; // Changed from 4 to 1 for Obat
+            $fields['status_obat'] = 1;
+            
+            // Ensure item_kand is included even if empty
+            if (!isset($fields['item_kand'])) {
+                $fields['item_kand'] = '';
+            }
             
             $columns = implode(', ', array_keys($fields));
             $values = implode(', ', array_map(function($field) {
@@ -105,6 +116,11 @@ class ObatModel extends BaseModel {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['updated_at'] = date('Y-m-d H:i:s');
+            
+            // Ensure item_kand is included even if empty
+            if (!isset($fields['item_kand'])) {
+                $fields['item_kand'] = '';
+            }
             
             $set = implode(', ', array_map(function($field) {
                 return "$field = :$field";
@@ -157,18 +173,53 @@ class ObatModel extends BaseModel {
     public function validateData($data, $id = null) {
         $errors = [];
         
-        // ... existing validations ...
-        
         // Validate kategori
         if (empty($data['id_kategori'])) {
             $errors['id_kategori'] = 'Kategori is required';
         } else {
             // Check if kategori exists and is active
-            $kategoriModel = $this->loadModel('Kategori');
-            $kategori = $kategoriModel->find($data['id_kategori']);
-            if (!$kategori || $kategori->status != 1) {
+            $sql = "SELECT status FROM tbl_m_kategoris WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $data['id_kategori']);
+            $stmt->execute();
+            $kategori = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if (!$kategori || $kategori->status != '1') {
                 $errors['id_kategori'] = 'Invalid kategori selected';
             }
+        }
+        
+        // Validate merk
+        if (empty($data['id_merk'])) {
+            $errors['id_merk'] = 'Merk is required';
+        } else {
+            // Check if merk exists and is active
+            $sql = "SELECT status FROM tbl_m_merks WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $data['id_merk']);
+            $stmt->execute();
+            $merk = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if (!$merk || $merk->status != '1') {
+                $errors['id_merk'] = 'Invalid merk selected';
+            }
+        }
+        
+        // Validate required fields
+        if (empty($data['kode'])) {
+            $errors['kode'] = 'Kode is required';
+        }
+        
+        if (empty($data['item'])) {
+            $errors['item'] = 'Nama obat is required';
+        }
+        
+        if (!isset($data['harga_beli']) || $data['harga_beli'] < 0) {
+            $errors['harga_beli'] = 'Harga beli must be a positive number';
+        }
+        
+        if (!isset($data['harga_jual']) || $data['harga_jual'] < 0) {
+            $errors['harga_jual'] = 'Harga jual must be a positive number';
         }
         
         return $errors;
@@ -187,6 +238,36 @@ class ObatModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in getWithKategori: " . $e->getMessage());
             throw new Exception("Failed to fetch record");
+        }
+    }
+
+    public function getWithDetails($id) {
+        try {
+            $sql = "SELECT i.*, k.kategori as nama_kategori, m.merk as nama_merk 
+                    FROM {$this->table} i 
+                    LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
+                    LEFT JOIN tbl_m_merks m ON i.id_merk = m.id 
+                    WHERE i.id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in getWithDetails: " . $e->getMessage());
+            throw new Exception("Failed to fetch record");
+        }
+    }
+
+    public function findByMerk($merkId) {
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE id_merk = :merk_id LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':merk_id', $merkId);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in findByMerk: " . $e->getMessage());
+            throw new Exception("Failed to check merk usage");
         }
     }
 } 

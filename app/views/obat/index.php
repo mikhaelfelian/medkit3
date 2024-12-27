@@ -51,28 +51,39 @@
                             <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th width="5%" class="text-center">No</th>
-                                        <th width="10%">Kode</th>
-                                        <th width="10%">Barcode</th>
-                                        <th>Nama Produk</th>
-                                        <th width="10%">Stok</th>
-                                        <th width="15%">Harga Jual</th>
-                                        <th width="10%">Status</th>
-                                        <th width="12%" class="text-center">Aksi</th>
+                                        <th>No</th>
+                                        <th>Kode</th>
+                                        <th>Kategori</th>
+                                        <th>Merk</th>
+                                        <th>Nama Obat</th>
+                                        <th>Harga Beli</th>
+                                        <th>Harga Jual</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (!empty($data)): ?>
-                                        <?php foreach ($data as $i => $item): ?>
+                                        <?php
+                                        $start = ($page - 1) * $perPage + 1;
+                                        foreach ($data as $index => $item):
+                                        ?>
                                             <tr>
-                                                <td class="text-center"><?= $i + 1 ?></td>
-                                                <td><?= htmlspecialchars((string)$item->kode) ?></td>
-                                                <td><?= htmlspecialchars((string)$item->barcode) ?></td>
-                                                <td><?= htmlspecialchars((string)$item->item) ?></td>
-                                                <td><?= htmlspecialchars((string)$item->jml) ?></td>
-                                                <td><?= htmlspecialchars((string)$item->harga_jual) ?></td>
-                                                <td><?= $item->status == 4 ? 'Obat' : ($item->status == 6 ? 'Racikan' : '-') ?></td>
-                                                <td class="text-center">
+                                                <td><?= $start + $index ?></td>
+                                                <td><?= $item->kode ?></td>
+                                                <td><?= $item->nama_kategori ?></td>
+                                                <td><?= $item->nama_merk ?></td>
+                                                <td><?= $item->item ?></td>
+                                                <td class="text-right">Rp <?= number_format($item->harga_beli, 0, ',', '.') ?></td>
+                                                <td class="text-right">Rp <?= number_format($item->harga_jual, 0, ',', '.') ?></td>
+                                                <td>
+                                                    <?php if ($item->status == '1'): ?>
+                                                        <span class="badge badge-success">Aktif</span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-danger">Tidak Aktif</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
                                                     <div class="btn-group">
                                                         <a href="<?= BaseRouting::url('obat/show/' . $item->id) ?>" 
                                                            class="btn btn-info btn-sm" title="Detail">
@@ -94,7 +105,7 @@
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="8" class="text-center">Tidak ada data</td>
+                                            <td colspan="9" class="text-center">Tidak ada data</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>

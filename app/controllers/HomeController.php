@@ -4,7 +4,7 @@ class HomeController extends BaseController {
     
     public function __construct() {
         parent::__construct();
-        $this->pengaturanModel = $this->loadModel('TblPengaturan');
+        $this->pengaturanModel = $this->loadModel('Pengaturan');
     }
     
     public function index() {

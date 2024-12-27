@@ -5,10 +5,10 @@ class Migration_create_tbl_m_merks extends Migration {
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `created_at` DATETIME NULL DEFAULT NULL,
             `updated_at` DATETIME NULL DEFAULT NULL,
+            `kode` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
             `merk` VARCHAR(160) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
             `keterangan` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
             `status` ENUM('0','1') NULL DEFAULT '0' COLLATE 'latin1_swedish_ci',
-            `status_hps` ENUM('0','1') NULL DEFAULT '0' COLLATE 'latin1_swedish_ci',
             PRIMARY KEY (`id`) USING BTREE
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE='latin1_swedish_ci' AUTO_INCREMENT=1;";
 

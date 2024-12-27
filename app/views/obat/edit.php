@@ -30,7 +30,7 @@
                     </a>
                 </div>
             </div>
-            <form action="<?= $data ? BaseRouting::url('obat/edit/' . $data->id) : BaseRouting::url('obat/add') ?>" method="POST">
+            <form action="<?= BaseRouting::url('obat/edit/' . $data->id) ?>" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <div class="card-body rounded-0">
                     <div class="form-group">
@@ -43,7 +43,7 @@
                             foreach ($kategoris as $kategori):
                             ?>
                                 <option value="<?= $kategori->id ?>" 
-                                        <?= isset($data) && $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
+                                        <?= $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
                                     <?= $kategori->kode . ' - ' . $kategori->kategori ?>
                                 </option>
                             <?php endforeach; ?>
@@ -59,8 +59,8 @@
                             foreach ($merks as $merk):
                             ?>
                                 <option value="<?= $merk->id ?>" 
-                                        <?= isset($data) && $data->id_merk == $merk->id ? 'selected' : '' ?>>
-                                    <?= $merk->kode.' - '.$merk->merk ?>
+                                        <?= $data->id_merk == $merk->id ? 'selected' : '' ?>>
+                                    <?= $merk->kode . ' - ' . $merk->merk ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -68,32 +68,31 @@
                     <div class="form-group">
                         <label for="kode">Kode <span class="text-danger">*</span></label>
                         <input type="text" class="form-control rounded-0" id="kode" name="kode"
-                            value="<?= $data ? htmlspecialchars($data->kode) : ViewHelper::loadModel('Obat')->generateKode() ?>" 
-                            readonly>
+                            value="<?= htmlspecialchars($data->kode) ?>" readonly>
                     </div>
                     <div class="form-group">
                         <label for="barcode">Barcode</label>
                         <input type="text" class="form-control rounded-0" id="barcode" name="barcode"
-                            value="<?= $data ? htmlspecialchars($data->barcode) : '' ?>"
+                            value="<?= htmlspecialchars($data->barcode) ?>"
                             placeholder="Masukkan barcode">
                     </div>
                     <div class="form-group">
                         <label for="item">Nama Obat</label>
                         <input type="text" class="form-control rounded-0" id="item" name="item"
-                            value="<?= $data ? htmlspecialchars($data->item) : '' ?>"
+                            value="<?= htmlspecialchars($data->item) ?>"
                             placeholder="Masukkan nama obat"
                             required>
                     </div>
                     <div class="form-group">
                         <label for="item_alias">Nama Alias</label>
                         <input type="text" class="form-control rounded-0" id="item_alias" name="item_alias"
-                            value="<?= $data ? htmlspecialchars($data->item_alias) : '' ?>"
+                            value="<?= htmlspecialchars($data->item_alias) ?>"
                             placeholder="Masukkan nama alias obat">
                     </div>
                     <div class="form-group">
                         <label for="item_kand">Kandungan</label>
                         <textarea class="form-control rounded-0" id="item_kand" name="item_kand" rows="3"
-                            placeholder="Masukkan kandungan obat"><?= $data ? htmlspecialchars($data->item_kand) : '' ?></textarea>
+                            placeholder="Masukkan kandungan obat"><?= htmlspecialchars($data->item_kand) ?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="harga_beli">Harga Beli</label>
@@ -102,7 +101,7 @@
                                 <span class="input-group-text rounded-0">Rp</span>
                             </div>
                             <input type="text" class="form-control rounded-0 currency" id="harga_beli" name="harga_beli"
-                                value="<?= $data ? number_format($data->harga_beli, 0, ',', '.') : '0' ?>"
+                                value="<?= number_format($data->harga_beli, 0, ',', '.') ?>"
                                 placeholder="Masukkan harga beli"
                                 onkeyup="formatCurrency(this)"
                                 required>
@@ -115,7 +114,7 @@
                                 <span class="input-group-text rounded-0">Rp</span>
                             </div>
                             <input type="text" class="form-control rounded-0 currency" id="harga_jual" name="harga_jual"
-                                value="<?= $data ? number_format($data->harga_jual, 0, ',', '.') : '0' ?>"
+                                value="<?= number_format($data->harga_jual, 0, ',', '.') ?>"
                                 placeholder="Masukkan harga jual"
                                 onkeyup="formatCurrency(this)"
                                 required>
@@ -125,7 +124,7 @@
                         <label class="control-label">Stockable</label><br>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="status_stok" value="1" id="status_stok"
-                                <?= ($data && $data->status_stok == '1') ? 'checked' : 'checked' ?>>
+                                <?= $data->status_stok == '1' ? 'checked' : '' ?>>
                             <label class="custom-control-label" for="status_stok">Aktifkan</label>
                         </div>
                         <small class="form-text text-muted">
@@ -136,12 +135,12 @@
                         <label>Status <span class="text-danger">*</span></label>
                         <div class="custom-control custom-radio">
                             <input class="custom-control-input" type="radio" id="status1" name="status" 
-                                   value="1" <?= (!isset($data) || $data->status == '1') ? 'checked' : '' ?>>
+                                   value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
                             <label for="status1" class="custom-control-label">Aktif</label>
                         </div>
                         <div class="custom-control custom-radio">
                             <input class="custom-control-input" type="radio" id="status0" name="status" 
-                                   value="0" <?= (isset($data) && $data->status == '0') ? 'checked' : '' ?>>
+                                   value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
                             <label for="status0" class="custom-control-label">Tidak Aktif</label>
                         </div>
                     </div>
@@ -155,7 +154,7 @@
                         </div>
                         <div class="col-md-6 text-right">
                             <button type="submit" class="btn btn-primary rounded-0">
-                                <i class="fas fa-save mr-2"></i>Simpan
+                                <i class="fas fa-save mr-2"></i>Update
                             </button>
                         </div>
                     </div>
@@ -165,35 +164,26 @@
     </div>
 </section>
 
-<!-- Add this before closing body tag -->
 <script>
 function formatCurrency(input) {
-    // Remove non-digit characters
     let value = input.value.replace(/\D/g, '');
-    
-    // Convert to number and format
     if (value !== '') {
         value = parseInt(value);
         value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
-    
-    // Update input value
     input.value = value;
 }
 
 $(document).ready(function() {
     // Handle form submission
     $('form').on('submit', function(e) {
-        // Remove dots from currency values before submitting
         $('.currency').each(function() {
             var value = $(this).val().replace(/\./g, '');
             $(this).val(value);
         });
     });
-});
 
-$(document).ready(function() {
-    // Initialize all Select2 dropdowns
+    // Initialize Select2
     $('.select2').select2({
         theme: 'bootstrap4',
         width: '100%',
@@ -203,4 +193,4 @@ $(document).ready(function() {
         allowClear: true
     });
 });
-</script>
+</script> 

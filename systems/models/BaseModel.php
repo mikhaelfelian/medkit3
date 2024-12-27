@@ -195,5 +195,17 @@ class BaseModel {
             ];
         }
     }
+    
+    protected function loadModel($modelName) {
+        $modelClass = $modelName . 'Model';
+        $modelPath = APP_PATH . '/models/' . $modelClass . '.php';
+        
+        if (!file_exists($modelPath)) {
+            throw new Exception("Model {$modelClass} not found");
+        }
+        
+        require_once $modelPath;
+        return new $modelClass($this->conn);
+    }
 }
 ?> 

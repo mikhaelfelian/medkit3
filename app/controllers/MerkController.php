@@ -13,10 +13,6 @@ class MerkController extends BaseController {
             $search = $this->input->get('search', '');
             $perPage = (int)$this->input->get('per_page', 10);
             
-            // Validate input
-            if ($page < 1) $page = 1;
-            if ($perPage < 1) $perPage = 10;
-            
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
             return $this->view('merk/index', [
@@ -29,13 +25,8 @@ class MerkController extends BaseController {
             ]);
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::index", [
-                'exception' => $e,
-                'search' => $search,
-                'page' => $page,
-                'perPage' => $perPage
-            ]);
-            throw new Exception("Failed to load merk data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('dashboard');
         }
     }
 
@@ -45,10 +36,8 @@ class MerkController extends BaseController {
                 'title' => 'Tambah Data Merk'
             ]);
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::create", [
-                'exception' => $e
-            ]);
-            throw new Exception("Failed to load create form: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('merk');
         }
     }
 
@@ -59,24 +48,27 @@ class MerkController extends BaseController {
             }
 
             $data = [
+                'kode' => $this->input->post('kode'),
                 'merk' => $this->input->post('merk'),
                 'keterangan' => $this->input->post('keterangan'),
-                'status' => $this->input->post('status', '0')
+                'status' => $this->input->post('status')
             ];
 
+            $errors = $this->model->validateData($data);
+            if (!empty($errors)) {
+                throw new Exception(implode(', ', $errors));
+            }
+
             if ($this->model->create($data)) {
-                Notification::success('Data merk berhasil disimpan');
+                Notification::success('Data merk berhasil ditambahkan');
                 return $this->redirect('merk');
             }
             
-            throw new Exception("Failed to save merk data");
+            throw new Exception("Failed to save record");
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::store", [
-                'exception' => $e,
-                'post_data' => $_POST
-            ]);
-            throw new Exception("Failed to store merk data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('merk/create');
         }
     }
 
@@ -84,7 +76,7 @@ class MerkController extends BaseController {
         try {
             $data = $this->model->find($id);
             if (!$data) {
-                throw new Exception("Merk record not found");
+                throw new Exception("Data not found");
             }
             
             return $this->view('merk/edit', [
@@ -93,11 +85,8 @@ class MerkController extends BaseController {
             ]);
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::edit", [
-                'exception' => $e,
-                'id' => $id
-            ]);
-            throw new Exception("Failed to load edit form: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('merk');
         }
     }
 
@@ -108,10 +97,16 @@ class MerkController extends BaseController {
             }
 
             $data = [
+                'kode' => $this->input->post('kode'),
                 'merk' => $this->input->post('merk'),
                 'keterangan' => $this->input->post('keterangan'),
-                'status' => $this->input->post('status', '0')
+                'status' => $this->input->post('status')
             ];
+
+            $errors = $this->model->validateData($data, $id);
+            if (!empty($errors)) {
+                throw new Exception(implode(', ', $errors));
+            }
 
             if ($this->model->update($id, $data)) {
                 Notification::success('Data merk berhasil diupdate');
@@ -121,18 +116,22 @@ class MerkController extends BaseController {
             throw new Exception("Failed to update record");
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::update", [
-                'exception' => $e,
-                'id' => $id,
-                'post_data' => $_POST
-            ]);
-            throw new Exception("Failed to update merk data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('merk/edit/' . $id);
         }
     }
 
     public function delete($id) {
         try {
-            if (!$this->model->softDelete($id)) {
+            // Check if merk is being used in obat
+            $obatModel = $this->loadModel('Obat');
+            $usedInObat = $obatModel->findByMerk($id);
+            if ($usedInObat) {
+                throw new Exception("Merk tidak dapat dihapus karena sedang digunakan");
+            }
+
+            // Permanent delete
+            if (!$this->model->delete($id)) {
                 throw new Exception("Failed to delete record");
             }
             
@@ -140,11 +139,8 @@ class MerkController extends BaseController {
             return $this->redirect('merk');
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in MerkController::delete", [
-                'exception' => $e,
-                'id' => $id
-            ]);
-            throw new Exception("Failed to delete merk data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('merk');
         }
     }
 } 

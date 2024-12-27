@@ -47,6 +47,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode</th>
                                         <th>Merk</th>
                                         <th>Keterangan</th>
                                         <th>Status</th>
@@ -61,6 +62,7 @@
                                             ?>
                                             <tr>
                                                 <td><?= $start + $index ?></td>
+                                                <td><?= $item->kode ?></td>
                                                 <td><?= $item->merk ?></td>
                                                 <td><?= $item->keterangan ?></td>
                                                 <td>

@@ -30,7 +30,13 @@
                             <?php Notification::render(); ?>
                             
                             <div class="form-group">
-                                <label for="merk">Nama Merk <span class="text-danger">*</span></label>
+                                <label for="kode">Kode <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-0" id="kode" name="kode" 
+                                       value="<?= ViewHelper::loadModel('Merk')->generateKode() ?>" readonly>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="merk">Merk <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control rounded-0" id="merk" name="merk" required>
                             </div>
                             
@@ -39,13 +45,19 @@
                                 <textarea class="form-control rounded-0" id="keterangan" name="keterangan" 
                                           rows="3"></textarea>
                             </div>
-                            
+
                             <div class="form-group">
-                                <label for="status">Status</label>
-                                <select class="form-control rounded-0" id="status" name="status">
-                                    <option value="1">Aktif</option>
-                                    <option value="0">Tidak Aktif</option>
-                                </select>
+                                <label>Status <span class="text-danger">*</span></label>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status1" name="status" 
+                                           value="1" checked>
+                                    <label for="status1" class="custom-control-label">Aktif</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status0" name="status" 
+                                           value="0">
+                                    <label for="status0" class="custom-control-label">Non Aktif</label>
+                                </div>
                             </div>
                         </div>
 
