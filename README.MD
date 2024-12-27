@@ -18,31 +18,168 @@ This reflects our framework's philosophy:
 
 Version 1.0 Beta represents our commitment to continuous improvement and community feedback.
 
-## Features
+## Key Features
 
+### Architecture & Core
 - HMVC Architecture
 - PDO Database Layer
-- AdminLTE 3 Integration
-- Security Features
+- Migration System
+- Exception Handling
+- Autoloader System
+- Routing System
+
+### Security
+- Input Sanitization
+- XSS Prevention
+- CSRF Protection
+- SQL Injection Protection
 - Form Validation
-- Asset Management
+- Security Headers
 - Session Handling
+
+### Frontend Integration
+- AdminLTE 3 Integration
+- Asset Management
+- Standardized Form Styling
+- Responsive Layouts
+- AJAX Support
+- Toastr Notifications
+
+### Development Tools
 - Error Logging
+- Custom Error Pages
+- Debug Mode
+- Migration Tracking
+- Code Documentation
+- Inline Comments
 
-## Requirements
+### Data Management
+- CRUD Operations
+- Search Functionality
+- Pagination System
+- Status Management
+- Timestamp Handling
+- Code Generation
 
-- PHP 7.4 or higher
-- MySQL 5.7 or higher
-- Apache/Nginx
-- mod_rewrite enabled
+### Modules
+- User Management
+- Patient Records
+- Medicine Inventory
+- Warehouse Management
+- Category Management
+- Application Settings
+
+## System Requirements
+
+### Server Requirements
+- PHP >= 7.4
+  - PDO PHP Extension
+  - MySQL PHP Extension
+  - OpenSSL PHP Extension
+  - Mbstring PHP Extension
+  - JSON PHP Extension
+  - XML PHP Extension
+  - GD PHP Extension
+  - Fileinfo Extension
+
+### Database
+- MySQL >= 5.7
+  - InnoDB Storage Engine
+  - UTF-8 Character Set
+  - PDO Connection Support
+  - Stored Procedures Support
+
+### Web Server
+- Apache 2.4+
+  - mod_rewrite Enabled
+  - .htaccess Enabled
+  - AllowOverride All
+- OR Nginx 1.16+
+  - URL Rewrite Module
+  - FastCGI Support
+
+### Development Tools (Optional)
+- Composer
+- Git
+- Web Browser (Chrome/Firefox latest)
+- Text Editor/IDE (VSCode/PHPStorm)
+
+### Recommended Server Specs
+- Memory: 2GB RAM minimum
+- Storage: 1GB free space
+- Processor: Dual Core or better
 
 ## Installation
 
+### Prerequisites
+- PHP 7.4 or higher
+- MySQL 5.7 or higher
+- Apache/Nginx web server
+- mod_rewrite enabled
+- PDO PHP Extension
+- composer (optional)
+
+### Step-by-Step Installation
 1. Clone the repository
-2. Import database.sql
-3. Configure config/config.php
-4. Set proper permissions
-5. Access via web browser
+```bash
+git clone https://github.com/mikhaelfelian/medkit3.git
+cd medkit3
+```
+
+2. Database Setup
+- Create a new MySQL database
+- Import the database schema:
+```bash
+mysql -u your_username -p your_database_name < database/migrations/database.sql
+```
+- Or run migrations:
+```bash
+php migrate.php
+```
+
+3. Configuration
+- Copy `config/config.example.php` to `config/config.php`
+- Update database credentials:
+```php
+'DB_HOST' => 'localhost',
+'DB_NAME' => 'your_database_name',
+'DB_USER' => 'your_username',
+'DB_PASS' => 'your_password'
+```
+
+4. Set Permissions
+```bash
+chmod 755 -R public/
+chmod 755 -R app/
+chmod 777 -R app/logs/
+```
+
+5. Web Server Configuration
+- For Apache, ensure .htaccess is enabled:
+```apache
+<Directory /var/www/html>
+    AllowOverride All
+</Directory>
+```
+- For Nginx, configure URL rewriting:
+```nginx
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+```
+
+6. Access Application
+- Point your web browser to: `http://localhost/medkit3`
+- Default credentials:
+  - Username: admin
+  - Password: admin123
+
+### Troubleshooting
+- Ensure mod_rewrite is enabled
+- Check file permissions
+- Verify database connection
+- Enable error reporting in development
+- Check server logs for errors
 
 ## Directory Structure
 
@@ -50,10 +187,45 @@ Version 1.0 Beta represents our commitment to continuous improvement and communi
 ROOT_PATH/
 ├── app/
 │   ├── controllers/
+│   │   ├── GudangController.php
+│   │   ├── KategoriController.php
+│   │   ├── ObatController.php
+│   │   ├── PasienController.php
+│   │   └── PengaturanController.php
 │   ├── models/
+│   │   ├── GudangModel.php
+│   │   ├── KategoriModel.php
+│   │   ├── ObatModel.php
+│   │   ├── PasienModel.php
+│   │   └── PengaturanModel.php
 │   ├── views/
+│   │   ├── errors/
+│   │   │   ├── 404.php
+│   │   │   └── exception.php
+│   │   ├── gudang/
+│   │   │   ├── index.php
+│   │   │   └── form.php
+│   │   ├── kategori/
+│   │   ├── layouts/
+│   │   │   ├── main.php
+│   │   │   ├── header.php
+│   │   │   ├── footer.php
+│   │   │   ├── navbar.php
+│   │   │   └── sidebar.php
+│   │   ├── obat/
+│   │   │   ├── index.php
+│   │   │   ├── form.php
+��   │   │   └── show.php
+│   │   └── pasien/
+│   │       ├── index.php
+│   │       ├── create.php
+│   │       └── show.php
 │   ├── helpers/
-|   ├── libraries/
+│   │   └── ViewHelper.php
+│   ├── libraries/
+│   │   └── Input.php
+│   └── migrations/
+│       └── 20240322_create_tbl_m_kategoris.php
 ├── systems/
 │   ├── controllers/
 │   │   └── BaseController.php
@@ -61,13 +233,18 @@ ROOT_PATH/
 │   │   └── BaseModel.php
 │   ├── routing/
 │   │   └── BaseRouting.php
+│   ├── exceptions/
+│   │   ├── BaseException.php
+│   │   └── Handler.php
 │   └── helpers/
 ├── public/
 │   └── assets/
 │       ├── css/
 │       ├── js/
 │       └── vendor/
+│           └── adminlte/
 └── config/
+    └── database.php
 ```
 
 ## Configuration
@@ -380,3 +557,28 @@ This README focuses on:
 - Fixed security vulnerabilities
 - Fixed autoloader configuration
 - Fixed class loading order
+
+### v1.0.12 (2024-03-22)
+#### Added
+- Master data kategori management:
+  - Added kategori table migration
+  - Added KategoriModel with CRUD operations
+  - Added timestamp handling
+  - Added status management
+  - Added search functionality
+
+#### Enhanced
+- Database structure:
+  - Added tbl_m_kategoris table
+  - Added proper collation settings
+  - Added status enumeration
+  - Added timestamp fields
+  - Added proper indexing
+
+#### Changed
+- Model implementation:
+  - Added standardized CRUD methods
+  - Enhanced search capabilities
+  - Improved timestamp handling
+  - Added status update functionality
+  - Implemented consistent patterns
