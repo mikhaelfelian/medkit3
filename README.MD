@@ -123,6 +123,45 @@ This README focuses on:
 
 ## Changelog
 ```
+### v1.0.11 (2024-03-22)
+#### Added
+- Enhanced form standardization:
+  - Added consistent form styling across modules
+  - Added standardized input field styling
+  - Added uniform rounded-0 class implementation
+  - Added consistent validation attributes
+  - Added standardized button styling
+
+- View improvements:
+  - Added standardized card layouts
+  - Added consistent form group spacing
+  - Added uniform input field styling
+  - Added standardized button placement
+  - Added consistent validation feedback
+
+#### Changed
+- Updated patient management module:
+  - Refactored create.php to match obat form styling
+  - Standardized form layout patterns
+  - Updated input field classes
+  - Improved form validation display
+  - Enhanced user interface consistency
+
+#### Enhanced
+- Code organization:
+  - Improved view file consistency
+  - Standardized form templates
+  - Enhanced visual hierarchy
+  - Updated component styling
+  - Unified design patterns
+
+#### Fixed
+- Fixed inconsistent form styling
+- Fixed validation display issues
+- Fixed button alignment
+- Fixed input field spacing
+- Fixed form group layouts
+
 ### v1.0.10 (2024-03-22)
 #### Added
 - Enhanced Gudang (Warehouse) management system:
