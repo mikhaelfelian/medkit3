@@ -42,12 +42,14 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                           strpos($_SERVER['REQUEST_URI'], 'merk') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'gelar') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
+                                          strpos($_SERVER['REQUEST_URI'], 'kategori') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'merk') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'gelar') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
+                                                     strpos($_SERVER['REQUEST_URI'], 'kategori') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-database"></i>
@@ -58,10 +60,10 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="<?php echo BaseRouting::url('gudang'); ?>" 
-                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'active' : ''; ?>">
+                            <a href="<?php echo BaseRouting::url('kategori'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'kategori') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Data Gudang</p>
+                                <p>Data Kategori</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -79,6 +81,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('gelar'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gelar') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Gelar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="<?php echo BaseRouting::url('pasien'); ?>" 
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
@@ -86,10 +95,10 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo BaseRouting::url('gelar'); ?>" 
-                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gelar') !== false ? 'active' : ''; ?>">
+                            <a href="<?php echo BaseRouting::url('gudang'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Data Gelar</p>
+                                <p>Data Gudang</p>
                             </a>
                         </li>
                         <li class="nav-item">
