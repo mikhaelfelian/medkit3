@@ -1,30 +1,47 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+## [1.0.1] - 2024-03-XX
 
 ### Added
-- Created new ICD management module with CRUD functionality
-- Added pagination configuration system in `config/pagination.php`
-- Created reusable pagination library in `systems/libraries/Paginate.php`
-- Added support for multiple pagination templates (Bootstrap 4, Bootstrap 3, Tailwind)
+- Added Merk management functionality
+  - CRUD operations for Merk
+  - Auto-generate Merk code (MRKYYMMxxxx format)
+  - Active/Inactive status toggle
+  - Validation for unique merk names
+  - Permanent delete functionality
+
+- Enhanced Obat management
+  - Added Merk relationship to Obat
+  - Added Kandungan (item_kand) field
+  - Added currency formatting for prices
+  - Added status toggle (Aktif/Tidak Aktif)
+  - Auto-generate Obat code (OBYYMMxxxx format)
 
 ### Changed
-- Moved pagination HTML templates to configuration file
-- Renamed TblMPasienModel to PasienModel for better consistency
-- Renamed TblPengaturanModel to PengaturanModel for better consistency
-- Updated model references in controllers and views
-- Refactored pagination to use template-based rendering
+- Updated Obat form to include Merk selection
+- Modified database schema
+  - Added id_merk to tbl_m_items
+  - Added item_kand to tbl_m_items
+  - Added status field to tbl_m_items
+- Improved form validation
+- Enhanced error handling
+- Updated pagination styling
 
 ### Fixed
-- Fixed pagination library path references in views
-- Standardized model naming convention
-- Improved code organization for pagination system
+- Fixed currency formatting in forms
+- Fixed dropdown selection in edit forms
+- Fixed validation messages
+- Fixed data relationships
+- Fixed status handling
 
-### Removed
-- Removed hardcoded HTML from pagination library
-- Removed old pagination files from app/library
-- Removed redundant model name prefixes (Tbl) 
+### Technical
+- Added BaseModel::loadModel method
+- Improved model validation
+- Enhanced data integrity checks
+- Updated database queries
+- Improved error logging
+
+## [1.0.0] - Initial Release
+- Base functionality
+- Basic CRUD operations
+- Initial database structure 
