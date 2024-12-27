@@ -87,7 +87,8 @@
                     <?php if ($total > $perPage): ?>
                         <div class="card-footer clearfix">
                             <?php 
-                            $paginator = new Paginate($conn);
+                            require_once SYSTEM_PATH . '/libraries/Paginate.php';
+                            $paginator = new Paginate();
                             echo $paginator->createLinks($page, $perPage, $total, $search ? ['search' => $search] : []); 
                             ?>
                         </div>

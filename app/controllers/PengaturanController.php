@@ -4,7 +4,7 @@ class PengaturanController extends BaseController {
     
     public function __construct() {
         parent::__construct();
-        $this->model = new PengaturanModel();
+        $this->model = $this->loadModel('Pengaturan');
     }
     
     public function index() {
