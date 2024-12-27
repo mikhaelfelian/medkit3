@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <form action="<?= BaseRouting::url('pasien/store') ?>" method="POST">
-                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                        <?= BaseForm::csrf() ?>
                         
                         <div class="card-body">
                             <?php Notification::render(); ?>

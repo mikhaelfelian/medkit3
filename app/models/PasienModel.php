@@ -2,6 +2,7 @@
 class PasienModel extends BaseModel {
     protected $table = 'tbl_m_pasiens';
     protected $primaryKey = 'id';
+    
     protected $fillable = [
         'kode',
         'nik',
@@ -21,34 +22,60 @@ class PasienModel extends BaseModel {
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
+            
+            // Debug query
+            Logger::getInstance()->error("Debug SQL", [
+                'table' => $this->table,
+                'search' => $search,
+                'page' => $page,
+                'perPage' => $perPage,
+                'offset' => $offset
+            ]);
+            
             $conditions = [];
             $params = [];
-
+            
             if (!empty($search)) {
-                $conditions[] = "(nama LIKE :search OR nik LIKE :search OR kode LIKE :search)";
+                $conditions[] = "(kode LIKE :search OR nik LIKE :search OR nama LIKE :search OR no_hp LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
-
-            $where = empty($conditions) ? "" : "WHERE " . implode(' AND ', $conditions);
-
-            // Get total records
-            $sqlCount = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
-            $stmtCount = $this->conn->prepare($sqlCount);
-            foreach ($params as $key => $value) {
-                $stmtCount->bindValue($key, $value);
+            
+            // Build WHERE clause
+            $where = '';
+            if (!empty($conditions)) {
+                $where = 'WHERE ' . implode(' AND ', $conditions);
             }
-            $stmtCount->execute();
-            $total = $stmtCount->fetch(PDO::FETCH_OBJ)->total;
-
-            // Get paginated records
+            
+            // Get total records with debug
+            $countSql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
+            Logger::getInstance()->error("Count SQL: " . $countSql);
+            
+            $stmt = $this->conn->prepare($countSql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
+            
+            Logger::getInstance()->error("Total records: " . $total);
+            
+            // Calculate last page
+            $lastPage = ceil($total / $perPage);
+            
+            // Ensure current page is valid
+            $page = max(1, min($page, $lastPage));
+            
+            // Get paginated records with debug
             $sql = "SELECT * FROM {$this->table} 
                    {$where} 
                    ORDER BY created_at DESC 
-                   LIMIT :offset, :limit";
+                   LIMIT :limit OFFSET :offset";
+                   
+            Logger::getInstance()->error("Main SQL: " . $sql);
             
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
@@ -56,92 +83,20 @@ class PasienModel extends BaseModel {
             
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_OBJ);
-
+            
+            Logger::getInstance()->error("Fetched records: " . count($data));
+            
             return [
                 'data' => $data,
-                'total' => $total
+                'total' => $total,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => $lastPage
             ];
-
+            
         } catch (PDOException $e) {
             error_log("Database Error in searchPaginate: " . $e->getMessage());
-            throw new Exception("Failed to fetch records");
-        }
-    }
-
-    public function find($id) {
-        try {
-            $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id', $id);
-            $stmt->execute();
-            
-            return $stmt->fetch(PDO::FETCH_OBJ);
-            
-        } catch (PDOException $e) {
-            error_log("Database Error in find: " . $e->getMessage());
-            throw new Exception("Failed to fetch record");
-        }
-    }
-
-    public function create($data) {
-        try {
-            $fields = array_intersect_key($data, array_flip($this->fillable));
-            
-            $columns = implode(', ', array_keys($fields));
-            $values = implode(', ', array_map(function($field) {
-                return ":$field";
-            }, array_keys($fields)));
-            
-            $sql = "INSERT INTO {$this->table} ($columns) VALUES ($values)";
-            $stmt = $this->conn->prepare($sql);
-            
-            foreach ($fields as $key => $value) {
-                $stmt->bindValue(":$key", $value);
-            }
-            
-            return $stmt->execute();
-            
-        } catch (PDOException $e) {
-            error_log("Database Error in create: " . $e->getMessage());
-            throw new Exception("Failed to create record");
-        }
-    }
-
-    public function update($id, $data) {
-        try {
-            $fields = array_intersect_key($data, array_flip($this->fillable));
-            
-            $set = implode(', ', array_map(function($field) {
-                return "$field = :$field";
-            }, array_keys($fields)));
-            
-            $sql = "UPDATE {$this->table} SET $set WHERE {$this->primaryKey} = :id";
-            $stmt = $this->conn->prepare($sql);
-            
-            $stmt->bindValue(':id', $id);
-            foreach ($fields as $key => $value) {
-                $stmt->bindValue(":$key", $value);
-            }
-            
-            return $stmt->execute();
-            
-        } catch (PDOException $e) {
-            error_log("Database Error in update: " . $e->getMessage());
-            throw new Exception("Failed to update record");
-        }
-    }
-
-    public function delete($id) {
-        try {
-            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = :id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':id', $id);
-            
-            return $stmt->execute();
-            
-        } catch (PDOException $e) {
-            error_log("Database Error in delete: " . $e->getMessage());
-            throw new Exception("Failed to delete record");
+            throw new Exception("Failed to fetch records: " . $e->getMessage());
         }
     }
 
