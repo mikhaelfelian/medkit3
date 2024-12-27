@@ -44,7 +44,10 @@ class BaseCore {
             }
         });
 
-        // Load helpers
+        // Load core libraries and helpers
+        require_once SYSTEM_PATH . '/libraries/Logger.php';
+        require_once SYSTEM_PATH . '/libraries/Input.php';
+        require_once SYSTEM_PATH . '/libraries/Security.php';
         require_once SYSTEM_PATH . '/helpers/url_helper.php';
         require_once SYSTEM_PATH . '/helpers/Notification.php';
         

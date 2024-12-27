@@ -19,6 +19,9 @@ class BaseController {
         try {
             $controller = $this;
             
+            // Make security instance available to views
+            $security = $this->security;
+            
             extract($data);
             ob_start();
             
@@ -71,6 +74,46 @@ class BaseController {
             return '';
         }
         return implode("\n", $this->sections[$name]);
+    }
+
+    public static function handleException($e) {
+        // Create logs directory if it doesn't exist
+        $logDir = ROOT_PATH . '/logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
+        
+        // Log error to file
+        $logFile = $logDir . '/error.log';
+        $timestamp = date('Y-m-d H:i:s');
+        $logMessage = sprintf(
+            "[%s] %s in %s:%d\nStack trace:\n%s\n",
+            $timestamp,
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+            $e->getTraceAsString()
+        );
+        error_log($logMessage, 3, $logFile);
+        
+        $data = [
+            'error_message' => $e->getMessage()
+        ];
+        
+        if (DEBUG_MODE) {
+            $data['debug_message'] = $e->getMessage();
+            $data['trace'] = $e->getTraceAsString();
+        }
+        
+        // Set HTTP response code
+        http_response_code(500);
+        
+        // Extract data for the view
+        extract($data);
+        
+        // Render exception view
+        require_once APP_PATH . '/views/errors/exception.php';
+        exit;
     }
 }
 ?> 

@@ -105,7 +105,11 @@ class BaseForm {
         return '</form>';
     }
     
-    public function csrf() {
-        return BaseSecurity::getInstance()->csrfField();
+    public static function csrf() {
+        $security = new Security();
+        return sprintf(
+            '<input type="hidden" name="csrf_token" value="%s">',
+            $security->getCSRFToken()
+        );
     }
 } 

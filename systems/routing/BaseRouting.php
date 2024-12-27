@@ -1,4 +1,6 @@
 <?php
+require_once SYSTEM_PATH . '/libraries/Logger.php';
+
 class BaseRouting {
     private static $basePath = null;
     
@@ -68,17 +70,13 @@ class BaseRouting {
             return call_user_func_array([$controller, $action], $params);
             
         } catch (Exception $e) {
-            error_log("Routing Error: " . $e->getMessage());
+            // Log the error
+            Logger::getInstance()->error("Routing Error: " . $e->getMessage(), [
+                'exception' => $e
+            ]);
             
-            // Show 404 page with error message
-            http_response_code(404);
-            
-            // Store error message in session for display
-            $_SESSION['error_message'] = "Routing Error: " . $e->getMessage();
-            
-            // Include 404 page
-            include APP_PATH . '/views/errors/404.php';
-            exit;
+            // Handle exception using static method
+            BaseController::handleException($e);
         }
     }
     

@@ -9,17 +9,16 @@ class Logger {
     private $logFile;
     
     private function __construct() {
-        $this->logFile = ROOT_PATH . '/logs/error_log.log';
-        
-        // Create logs directory if it doesn't exist
-        $logDir = dirname($this->logFile);
+        $logDir = ROOT_PATH . '/logs';
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }
         
+        $this->logFile = $logDir . '/error.log';
+        
         // Create log file if it doesn't exist
         if (!file_exists($this->logFile)) {
-            file_put_contents($this->logFile, '');
+            touch($this->logFile);
             chmod($this->logFile, 0644);
         }
     }
@@ -31,34 +30,20 @@ class Logger {
         return self::$instance;
     }
     
-    /**
-     * Log a message with timestamp
-     * 
-     * @param string $message Message to log
-     * @param string $type Log type (ERROR, INFO, DEBUG, etc)
-     * @return void
-     */
-    public function log($message, $type = 'ERROR') {
-        try {
-            $timestamp = date('Y-m-d H:i:s');
-            $formattedMessage = "[{$timestamp}] {$type}: {$message}" . PHP_EOL;
-            
-            // Get backtrace for error location
-            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-            $caller = isset($trace[1]) ? $trace[1] : $trace[0];
-            
-            // Add file and line info
-            $file = isset($caller['file']) ? basename($caller['file']) : 'unknown';
-            $line = $caller['line'] ?? 'unknown';
-            $formattedMessage = str_replace(
-                "{$type}:", 
-                "{$type} [{$file}:{$line}]:", 
-                $formattedMessage
-            );
-            
-            file_put_contents($this->logFile, $formattedMessage, FILE_APPEND);
-        } catch (Exception $e) {
-            error_log("Logger Error: " . $e->getMessage());
+    public function error($message, $context = []) {
+        $timestamp = date('Y-m-d H:i:s');
+        $logMessage = "[{$timestamp}] ERROR: {$message}\n";
+        
+        if (!empty($context)) {
+            $logMessage .= "Context: " . json_encode($context) . "\n";
         }
+        
+        if (isset($context['exception'])) {
+            $e = $context['exception'];
+            $logMessage .= "File: {$e->getFile()}:{$e->getLine()}\n";
+            $logMessage .= "Stack trace:\n{$e->getTraceAsString()}\n";
+        }
+        
+        error_log($logMessage, 3, $this->logFile);
     }
 } 
