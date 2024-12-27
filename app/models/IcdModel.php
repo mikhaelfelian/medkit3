@@ -1,38 +1,23 @@
 <?php
-class PasienModel extends BaseModel {
-    protected $table = 'tbl_m_pasiens';
+class IcdModel extends BaseModel {
+    protected $table = 'tbl_m_icds';
     protected $primaryKey = 'id';
     protected $timestamps = true;
     
     protected $fillable = [
-        'no_rm',
-        'nama',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'jenis_kelamin',
-        'alamat',
-        'no_hp',
-        'status'
+        'kode',
+        'icd',
+        'diagnosa_en'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            
-            // Debug query
-            Logger::getInstance()->error("Debug SQL", [
-                'table' => $this->table,
-                'search' => $search,
-                'page' => $page,
-                'perPage' => $perPage,
-                'offset' => $offset
-            ]);
-            
             $conditions = [];
             $params = [];
             
             if (!empty($search)) {
-                $conditions[] = "(kode LIKE :search OR nik LIKE :search OR nama LIKE :search OR no_hp LIKE :search)";
+                $conditions[] = "(kode LIKE :search OR icd LIKE :search OR diagnosa_en LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
             
@@ -42,10 +27,8 @@ class PasienModel extends BaseModel {
                 $where = 'WHERE ' . implode(' AND ', $conditions);
             }
             
-            // Get total records with debug
+            // Get total records
             $countSql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
-            Logger::getInstance()->error("Count SQL: " . $countSql);
-            
             $stmt = $this->conn->prepare($countSql);
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
@@ -53,21 +36,17 @@ class PasienModel extends BaseModel {
             $stmt->execute();
             $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
             
-            Logger::getInstance()->error("Total records: " . $total);
-            
             // Calculate last page
             $lastPage = ceil($total / $perPage);
             
             // Ensure current page is valid
             $page = max(1, min($page, $lastPage));
             
-            // Get paginated records with debug
+            // Get paginated records
             $sql = "SELECT * FROM {$this->table} 
                    {$where} 
-                   ORDER BY created_at DESC 
+                   ORDER BY kode ASC 
                    LIMIT :limit OFFSET :offset";
-                   
-            Logger::getInstance()->error("Main SQL: " . $sql);
             
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
@@ -78,12 +57,9 @@ class PasienModel extends BaseModel {
             }
             
             $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
-            
-            Logger::getInstance()->error("Fetched records: " . count($data));
             
             return [
-                'data' => $data,
+                'data' => $stmt->fetchAll(PDO::FETCH_OBJ),
                 'total' => $total,
                 'per_page' => $perPage,
                 'current_page' => $page,
@@ -96,31 +72,50 @@ class PasienModel extends BaseModel {
         }
     }
 
-    public function generateKode() {
+    public function findByKode($kode) {
         try {
-            $year = date('y');
-            $month = date('m');
-            
-            // Get last number from this month
-            $sql = "SELECT kode FROM {$this->table} WHERE kode LIKE :prefix ORDER BY kode DESC LIMIT 1";
+            $sql = "SELECT * FROM {$this->table} WHERE kode = :kode LIMIT 1";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':prefix', "P{$year}{$month}%");
+            $stmt->bindValue(':kode', $kode);
             $stmt->execute();
-            
-            $data = $stmt->fetch(PDO::FETCH_OBJ);
-            
-            if ($data) {
-                $lastNumber = intval(substr($data->kode, -4));
-                $newNumber = $lastNumber + 1;
-            } else {
-                $newNumber = 1;
-            }
-            
-            return 'P' . $year . $month . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
-            
+            return $stmt->fetch(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
-            error_log("Database Error in generateKode: " . $e->getMessage());
-            throw new Exception("Failed to generate kode");
+            error_log("Database Error in findByKode: " . $e->getMessage());
+            throw new Exception("Failed to fetch ICD");
+        }
+    }
+
+    public function validateData($data, $id = null) {
+        $errors = [];
+        
+        // Validate kode
+        if (empty($data['kode'])) {
+            $errors['kode'] = 'Kode ICD is required';
+        } else {
+            // Check for duplicate kode
+            $existing = $this->findByKode($data['kode']);
+            if ($existing && (!$id || $existing->id != $id)) {
+                $errors['kode'] = 'Kode ICD already exists';
+            }
+        }
+        
+        // Validate icd
+        if (empty($data['icd'])) {
+            $errors['icd'] = 'ICD is required';
+        }
+        
+        return $errors;
+    }
+
+    public function getAll() {
+        try {
+            $sql = "SELECT * FROM {$this->table} ORDER BY kode ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in getAll: " . $e->getMessage());
+            throw new Exception("Failed to fetch ICD list");
         }
     }
 } 

@@ -41,11 +41,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'merk') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'gelar') !== false || 
+                                          strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'merk') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'gelar') !== false || 
+                                                     strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-database"></i>
@@ -88,6 +90,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gelar') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Gelar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('icd'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'icd') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data ICD</p>
                             </a>
                         </li>
                     </ul>
