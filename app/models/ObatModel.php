@@ -4,54 +4,73 @@ class ObatModel extends BaseModel {
     protected $primaryKey = 'id';
     protected $fillable = [
         'kode',
+        'nama',
+        'id_kategori',
         'barcode',
         'item',
         'jml',
         'harga_jual',
-        'status_obat'
+        'status_obat',
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = ['status_obat = 1']; // Filter for obat only
+            $conditions = [];
             $params = [];
             
             if (!empty($search)) {
-                $conditions[] = "(kode LIKE :search OR barcode LIKE :search OR item LIKE :search)";
+                $conditions[] = "(i.kode LIKE :search OR i.nama LIKE :search OR k.kategori LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
             
             $where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
             
             // Get total records
-            $sql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
-            $stmt = $this->conn->prepare($sql);
+            $countSql = "SELECT COUNT(*) as total 
+                         FROM {$this->table} i 
+                         LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
+                         {$where}";
+            
+            $stmt = $this->conn->prepare($countSql);
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
             $stmt->execute();
             $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
             
+            // Calculate last page
+            $lastPage = ceil($total / $perPage);
+            $page = max(1, min($page, $lastPage));
+            
             // Get paginated records
-            $sql = "SELECT * FROM {$this->table} {$where} ORDER BY id DESC LIMIT {$perPage} OFFSET {$offset}";
+            $sql = "SELECT i.*, k.kategori as nama_kategori 
+                    FROM {$this->table} i 
+                    LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
+                    {$where} 
+                    ORDER BY i.created_at DESC 
+                    LIMIT :limit OFFSET :offset";
+            
             $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
+            
             $stmt->execute();
-            $data = $stmt->fetchAll(PDO::FETCH_OBJ);
             
             return [
-                'data' => $data,
+                'data' => $stmt->fetchAll(PDO::FETCH_OBJ),
                 'total' => $total,
                 'per_page' => $perPage,
                 'current_page' => $page,
-                'last_page' => ceil($total / $perPage)
+                'last_page' => $lastPage
             ];
             
         } catch (PDOException $e) {
-            error_log("Database Error: " . $e->getMessage());
+            error_log("Database Error in searchPaginate: " . $e->getMessage());
             throw new Exception("Failed to fetch records");
         }
     }
@@ -132,6 +151,42 @@ class ObatModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in generateKode: " . $e->getMessage());
             throw new Exception("Failed to generate kode");
+        }
+    }
+
+    public function validateData($data, $id = null) {
+        $errors = [];
+        
+        // ... existing validations ...
+        
+        // Validate kategori
+        if (empty($data['id_kategori'])) {
+            $errors['id_kategori'] = 'Kategori is required';
+        } else {
+            // Check if kategori exists and is active
+            $kategoriModel = $this->loadModel('Kategori');
+            $kategori = $kategoriModel->find($data['id_kategori']);
+            if (!$kategori || $kategori->status != 1) {
+                $errors['id_kategori'] = 'Invalid kategori selected';
+            }
+        }
+        
+        return $errors;
+    }
+
+    public function getWithKategori($id) {
+        try {
+            $sql = "SELECT i.*, k.kategori as nama_kategori 
+                    FROM {$this->table} i 
+                    LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
+                    WHERE i.id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in getWithKategori: " . $e->getMessage());
+            throw new Exception("Failed to fetch record");
         }
     }
 } 

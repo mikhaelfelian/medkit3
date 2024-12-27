@@ -34,6 +34,41 @@
                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
                 <div class="card-body rounded-0">
                     <div class="form-group">
+                        <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
+                        <select name="id_kategori" id="id_kategori" class="form-control select2 rounded-0" required>
+                            <option value="">Pilih Kategori</option>
+                            <?php
+                            $kategoriModel = ViewHelper::loadModel('Kategori');
+                            $kategoris = $kategoriModel->getActiveKategoris();
+                            
+                            // If editing and current kategori is inactive, add it to options
+                            $currentKategori = null;
+                            if (isset($data) && $data->id_kategori) {
+                                $currentKategori = $kategoriModel->find($data->id_kategori);
+                                if ($currentKategori && $currentKategori->status != '1') {
+                                    // Add the inactive kategori to the list
+                                    $kategoris = array_merge([$currentKategori], $kategoris);
+                                }
+                            }
+                            
+                            foreach ($kategoris as $kategori):
+                                $isInactive = $kategori->status != '1';
+                            ?>
+                                <option value="<?= $kategori->id ?>" 
+                                        <?= isset($data) && $data->id_kategori == $kategori->id ? 'selected' : '' ?>
+                                        <?= $isInactive ? 'class="text-danger"' : '' ?>>
+                                    <?= $kategori->kode . ' - ' . $kategori->kategori ?>
+                                    <?= $isInactive ? ' (Non Aktif)' : '' ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($currentKategori) && $currentKategori->status != '1'): ?>
+                            <small class="form-text text-danger">
+                                Kategori yang dipilih saat ini berstatus non-aktif
+                            </small>
+                        <?php endif; ?>
+                    </div>
+                    <div class="form-group">
                         <label for="kode">Kode</label>
                         <input type="text" class="form-control rounded-0" id="kode" name="kode"
                             value="<?= $data ? htmlspecialchars($data->kode) : '' ?>" 
@@ -121,30 +156,32 @@
     </div>
 </section>
 
-<!-- Add this before closing body tag -->
 <script>
-function formatCurrency(input) {
-    // Remove non-digit characters
-    let value = input.value.replace(/\D/g, '');
-    
-    // Convert to number and format
-    if (value !== '') {
-        value = parseInt(value);
-        value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+document.addEventListener('DOMContentLoaded', function() {
+    // Format currency function
+    function formatCurrency(input) {
+        // Remove non-digit characters
+        let value = input.value.replace(/\D/g, '');
+        
+        // Convert to number and format
+        if (value !== '') {
+            value = parseInt(value);
+            value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        
+        // Update input value
+        input.value = value;
     }
-    
-    // Update input value
-    input.value = value;
-}
 
-$(document).ready(function() {
     // Handle form submission
-    $('form').on('submit', function(e) {
-        // Remove dots from currency values before submitting
-        $('.currency').each(function() {
-            var value = $(this).val().replace(/\./g, '');
-            $(this).val(value);
+    if (typeof jQuery != 'undefined') {
+        $('form').on('submit', function(e) {
+            // Remove dots from currency values before submitting
+            $('.currency').each(function() {
+                var value = $(this).val().replace(/\./g, '');
+                $(this).val(value);
+            });
         });
-    });
+    }
 });
 </script>

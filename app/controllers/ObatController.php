@@ -69,34 +69,18 @@ class ObatController extends BaseController {
 
     public function edit($id) {
         try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $data = [
-                    'kode' => $this->input->post('kode'),
-                    'barcode' => $this->input->post('barcode'),
-                    'item' => $this->input->post('item'),
-                    'item_alias' => $this->input->post('item_alias'),
-                    'item_kand' => $this->input->post('item_kand'),
-                    'harga_beli' => $this->input->post('harga_beli'),
-                    'harga_jual' => $this->input->post('harga_jual'),
-                    'status_stok' => $this->input->post('status_stok', '0'),
-                    'status_obat' => 1,
-                    'status' => 1
-                ];
-
-                if ($this->model->update($id, $data)) {
-                    Notification::success('Data obat berhasil diperbarui');
-                    return $this->redirect('obat');
-                }
-                throw new Exception('Gagal memperbarui data');
+            $data = $this->model->getWithKategori($id);
+            if (!$data) {
+                throw new Exception("Data not found");
             }
             
             return $this->view('obat/form', [
                 'title' => 'Edit Data Obat',
-                'data' => $this->model->find($id),
-                'csrf_token' => $this->security->getCSRFToken()
+                'data' => $data
             ]);
+            
         } catch (Exception $e) {
-            Notification::error('Gagal memperbarui data obat');
+            Notification::error($e->getMessage());
             return $this->redirect('obat');
         }
     }

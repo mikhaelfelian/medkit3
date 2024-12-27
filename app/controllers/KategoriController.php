@@ -50,7 +50,8 @@ class KategoriController extends BaseController {
             $data = [
                 'kode' => $this->input->post('kode'),
                 'kategori' => $this->input->post('kategori'),
-                'keterangan' => $this->input->post('keterangan')
+                'keterangan' => $this->input->post('keterangan'),
+                'status' => $this->input->post('status')
             ];
 
             $errors = $this->model->validateData($data);
@@ -98,7 +99,8 @@ class KategoriController extends BaseController {
             $data = [
                 'kode' => $this->input->post('kode'),
                 'kategori' => $this->input->post('kategori'),
-                'keterangan' => $this->input->post('keterangan')
+                'keterangan' => $this->input->post('keterangan'),
+                'status' => $this->input->post('status')
             ];
 
             $errors = $this->model->validateData($data, $id);

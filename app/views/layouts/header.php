@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/fontawesome-free/css/all.min.css') ?>">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/dist/css/adminlte.min.css') ?>">
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/css/select2.min.css') ?>">
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') ?>">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">

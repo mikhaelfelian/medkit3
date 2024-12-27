@@ -9,6 +9,7 @@ class Migration_Create_tbl_m_kategoris extends Migration {
             `kode` VARCHAR(100) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
             `kategori` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
             `keterangan` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
+            `status` ENUM('0','1') NULL DEFAULT '0' COLLATE 'latin1_swedish_ci',
             PRIMARY KEY (`id`) USING BTREE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE='utf8mb4_general_ci' AUTO_INCREMENT=1
         COMMENT='Untuk menyimpan data kategori obat';";

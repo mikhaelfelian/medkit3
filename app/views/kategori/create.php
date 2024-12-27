@@ -31,7 +31,8 @@
                             
                             <div class="form-group">
                                 <label for="kode">Kode <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-0" id="kode" name="kode" required>
+                                <input type="text" class="form-control rounded-0" id="kode" name="kode" 
+                                       value="<?= ViewHelper::loadModel('Kategori')->generateKode() ?>" readonly>
                             </div>
                             
                             <div class="form-group">
@@ -43,6 +44,20 @@
                                 <label for="keterangan">Keterangan</label>
                                 <textarea class="form-control rounded-0" id="keterangan" name="keterangan" 
                                           rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Status <span class="text-danger">*</span></label>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status1" name="status" 
+                                           value="1" checked>
+                                    <label for="status1" class="custom-control-label">Aktif</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status0" name="status" 
+                                           value="0">
+                                    <label for="status0" class="custom-control-label">Non Aktif</label>
+                                </div>
                             </div>
                         </div>
 

@@ -8,7 +8,8 @@ class KategoriModel extends BaseModel {
     protected $fillable = [
         'kode',
         'kategori',
-        'keterangan'
+        'keterangan',
+        'status'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
@@ -105,6 +106,73 @@ class KategoriModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in findByKode: " . $e->getMessage());
             throw new Exception("Failed to fetch kategori");
+        }
+    }
+
+    public function getActiveKategoris() {
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE status = '1' ORDER BY kategori ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in getActiveKategoris: " . $e->getMessage());
+            throw new Exception("Failed to fetch active kategoris");
+        }
+    }
+
+    public function generateKode() {
+        try {
+            $year = date('y');
+            $month = date('m');
+            
+            // Get last number from this month
+            $sql = "SELECT kode FROM {$this->table} WHERE kode LIKE :prefix ORDER BY kode DESC LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':prefix', "KTG{$year}{$month}%");
+            $stmt->execute();
+            
+            $data = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if ($data) {
+                $lastNumber = intval(substr($data->kode, -4));
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+            
+            return 'KTG' . $year . $month . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in generateKode: " . $e->getMessage());
+            throw new Exception("Failed to generate kode");
+        }
+    }
+
+    public function update($id, $data) {
+        try {
+            $fields = array_intersect_key($data, array_flip($this->fillable));
+            $fields['updated_at'] = date('Y-m-d H:i:s');
+            
+            error_log("Updating kategori with data: " . print_r($fields, true)); // Debug log
+            
+            $set = implode(', ', array_map(function($field) {
+                return "$field = :$field";
+            }, array_keys($fields)));
+            
+            $sql = "UPDATE {$this->table} SET $set WHERE {$this->primaryKey} = :id";
+            $stmt = $this->conn->prepare($sql);
+            
+            $stmt->bindValue(':id', $id);
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in update: " . $e->getMessage());
+            throw new Exception("Failed to update record");
         }
     }
 } 
