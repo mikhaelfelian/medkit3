@@ -86,8 +86,10 @@ class PengaturanModel extends BaseModel {
     public function deleteFile($path) {
         if (!empty($path)) {
             $fullPath = PUBLIC_PATH . '/file/app/' . basename($path);
-            if (file_exists($fullPath)) {
+            if (file_exists($fullPath) && is_writable($fullPath)) {
                 unlink($fullPath);
+            } else {
+                error_log("Cannot delete file or file not found: " . $fullPath);
             }
         }
     }
@@ -95,20 +97,40 @@ class PengaturanModel extends BaseModel {
     public function uploadFile($file, $type = 'logo') {
         try {
             $uploadDir = PUBLIC_PATH . '/file/app/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+            
+            // Create directory structure if it doesn't exist
+            if (!file_exists($uploadDir)) {
+                if (!mkdir($uploadDir, 0755, true)) {
+                    error_log("Failed to create directory: " . $uploadDir);
+                    throw new Exception("Failed to create upload directory");
+                }
+                
+                // Set proper permissions on created directory
+                chmod($uploadDir, 0755);
+            }
+
+            // Validate directory is writable
+            if (!is_writable($uploadDir)) {
+                error_log("Upload directory not writable: " . $uploadDir);
+                throw new Exception("Upload directory not writable");
             }
 
             // Generate unique filename with type prefix
-            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $fileName = $type . '_' . uniqid() . '.' . $extension;
             $uploadFile = $uploadDir . $fileName;
 
-            if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-                return 'file/app/' . $fileName;
+            // Move uploaded file
+            if (!move_uploaded_file($file['tmp_name'], $uploadFile)) {
+                error_log("Failed to move uploaded file to: " . $uploadFile);
+                throw new Exception("Failed to save uploaded file");
             }
 
-            return false;
+            // Set proper permissions on uploaded file
+            chmod($uploadFile, 0644);
+
+            return 'file/app/' . $fileName;
+
         } catch (Exception $e) {
             error_log("Error uploading file: " . $e->getMessage());
             return false;
