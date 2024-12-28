@@ -299,7 +299,7 @@ This README focuses on:
 ```
 
 ## Changelog
-
+```
 ### v1.0.12 (2024-03-22)
 #### Added
 - Master data kategori management:
