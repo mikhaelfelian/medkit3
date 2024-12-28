@@ -6,7 +6,27 @@ class BaseCore {
             session_start();
         }
 
-        // Register autoloader
+        // Load core libraries and helpers first
+        require_once SYSTEM_PATH . '/libraries/Logger.php';
+        require_once SYSTEM_PATH . '/libraries/Input.php';
+        require_once SYSTEM_PATH . '/libraries/Security.php';
+        require_once SYSTEM_PATH . '/helpers/url_helper.php';
+        require_once SYSTEM_PATH . '/helpers/Notification.php';
+
+        // Load autoload configuration
+        $autoload = require_once CONFIG_PATH . '/autoload.php';
+
+        // Load helpers first
+        if (isset($autoload['helpers'])) {
+            foreach ($autoload['helpers'] as $helper) {
+                $helperFile = APP_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
+                if (file_exists($helperFile)) {
+                    require_once $helperFile;
+                }
+            }
+        }
+
+        // Register class autoloader
         spl_autoload_register(function ($class) {
             // Load base classes first
             if (strpos($class, 'Base') === 0) {
@@ -44,13 +64,6 @@ class BaseCore {
             }
         });
 
-        // Load core libraries and helpers
-        require_once SYSTEM_PATH . '/libraries/Logger.php';
-        require_once SYSTEM_PATH . '/libraries/Input.php';
-        require_once SYSTEM_PATH . '/libraries/Security.php';
-        require_once SYSTEM_PATH . '/helpers/url_helper.php';
-        require_once SYSTEM_PATH . '/helpers/Notification.php';
-        
         // Initialize routing
         BaseRouting::dispatch();
     }

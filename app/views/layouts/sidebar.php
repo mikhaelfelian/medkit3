@@ -92,17 +92,17 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo BaseRouting::url('pasien'); ?>" 
-                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Data Pasien</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="<?php echo BaseRouting::url('gelar'); ?>" 
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gelar') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Gelar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pasien'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Pasien</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -113,17 +113,17 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo BaseRouting::url('icd'); ?>" 
-                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'icd') !== false ? 'active' : ''; ?>">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Data ICD</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="<?php echo BaseRouting::url('supplier'); ?>" 
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'supplier') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Supplier</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('icd'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'icd') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data ICD</p>
                             </a>
                         </li>
                     </ul>

@@ -117,7 +117,7 @@ class KategoriModel extends BaseModel {
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             error_log("Database Error in getActiveKategoris: " . $e->getMessage());
-            throw new Exception("Failed to fetch active kategoris");
+            throw new Exception("Failed to fetch categories");
         }
     }
 

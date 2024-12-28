@@ -20,9 +20,9 @@
 <section class="content">
     <div class="container-fluid">
         <?= Notification::render() ?>
-
+        
         <div class="card rounded-0">
-            <div class="card-header rounded-0">
+            <div class="card-header">
                 <h3 class="card-title"><?= $title ?></h3>
                 <div class="card-tools">
                     <a href="<?= BaseRouting::url('obat') ?>" class="btn btn-tool">
@@ -30,116 +30,105 @@
                     </a>
                 </div>
             </div>
-            <form action="<?= BaseRouting::url('obat/update/' . $data->id) ?>" method="POST">
+            <form action="<?= BaseRouting::url('obat/store') ?>" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                <div class="card-body rounded-0">
+                
+                <div class="card-body">
                     <div class="form-group">
                         <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
-                        <select name="id_kategori" id="id_kategori" class="form-control select2 rounded-0" required>
+                        <select class="form-control select2 rounded-0" id="id_kategori" name="id_kategori" required>
                             <option value="">Pilih Kategori</option>
-                            <?php
-                            $kategoriModel = ViewHelper::loadModel('Kategori');
-                            $kategoris = $kategoriModel->getActiveKategoris();
-                            foreach ($kategoris as $kategori):
-                            ?>
-                                <option value="<?= $kategori->id ?>" 
-                                        <?= $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
+                            <?php foreach ($kategoris as $kategori): ?>
+                                <option value="<?= $kategori->id ?>">
                                     <?= $kategori->kode . ' - ' . $kategori->kategori ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="id_merk">Merk <span class="text-danger">*</span></label>
-                        <select name="id_merk" id="id_merk" class="form-control select2 rounded-0" required>
+                        <select class="form-control select2 rounded-0" id="id_merk" name="id_merk" required>
                             <option value="">Pilih Merk</option>
-                            <?php
-                            $merkModel = ViewHelper::loadModel('Merk');
-                            $merks = $merkModel->getActiveMerks();
-                            foreach ($merks as $merk):
-                            ?>
-                                <option value="<?= $merk->id ?>" 
-                                        <?= $data->id_merk == $merk->id ? 'selected' : '' ?>>
+                            <?php foreach ($merks as $merk): ?>
+                                <option value="<?= $merk->id ?>">
                                     <?= $merk->kode . ' - ' . $merk->merk ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <div class="form-group">
-                        <label for="kode">Kode <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control rounded-0" id="kode" name="kode"
-                            value="<?= htmlspecialchars($data->kode) ?>" readonly>
+                        <label for="item">Nama Obat <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-0" id="item" name="item" 
+                               placeholder="Masukkan nama obat" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="item">Nama Obat</label>
-                        <input type="text" class="form-control rounded-0" id="item" name="item"
-                            value="<?= htmlspecialchars($data->item) ?>"
-                            placeholder="Masukkan nama obat"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="item_alias">Nama Alias</label>
+                        <label for="item_alias">Alias</label>
                         <input type="text" class="form-control rounded-0" id="item_alias" name="item_alias"
-                            value="<?= htmlspecialchars($data->item_alias) ?>"
-                            placeholder="Masukkan nama alias obat">
+                               placeholder="Masukkan nama alias obat">
                     </div>
+
                     <div class="form-group">
                         <label for="item_kand">Kandungan</label>
                         <textarea class="form-control rounded-0" id="item_kand" name="item_kand" rows="3"
-                            placeholder="Masukkan kandungan obat"><?= htmlspecialchars($data->item_kand) ?></textarea>
+                                  placeholder="Masukkan kandungan obat"></textarea>
                     </div>
+
                     <div class="form-group">
-                        <label for="harga_beli">Harga Beli</label>
+                        <label for="harga_beli">Harga Beli <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text rounded-0">Rp</span>
                             </div>
-                            <input type="text" class="form-control rounded-0 currency" id="harga_beli" name="harga_beli"
-                                value="<?= number_format($data->harga_beli, 0, ',', '.') ?>"
-                                placeholder="Masukkan harga beli"
-                                onkeyup="formatCurrency(this)"
-                                required>
+                            <input type="text" class="form-control rounded-0 currency" id="harga_beli" 
+                                   name="harga_beli" placeholder="Masukkan harga beli" required 
+                                   onkeyup="formatCurrency(this)">
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="harga_jual">Harga Jual</label>
+                        <label for="harga_jual">Harga Jual <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text rounded-0">Rp</span>
                             </div>
-                            <input type="text" class="form-control rounded-0 currency" id="harga_jual" name="harga_jual"
-                                value="<?= number_format($data->harga_jual, 0, ',', '.') ?>"
-                                placeholder="Masukkan harga jual"
-                                onkeyup="formatCurrency(this)"
-                                required>
+                            <input type="text" class="form-control rounded-0 currency" id="harga_jual" 
+                                   name="harga_jual" placeholder="Masukkan harga jual" required 
+                                   onkeyup="formatCurrency(this)">
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label class="control-label">Stockable</label><br>
+                        <label>Status Stok</label>
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="status_stok" value="1" id="status_stok"
-                                <?= $data->status_stok == '1' ? 'checked' : '' ?>>
-                            <label class="custom-control-label" for="status_stok">Aktifkan</label>
+                            <input type="checkbox" class="custom-control-input" id="status_stok" name="status_stok" value="1">
+                            <label class="custom-control-label" for="status_stok">
+                                Stockable
+                                <small class="form-text text-muted">
+                                    Aktifkan jika di centang maka akan mengurangi stok.
+                                </small>
+                            </label>
                         </div>
-                        <small class="form-text text-muted">
-                            <i>* Jika di centang maka akan mengurangi stok.</i>
-                        </small>
                     </div>
+
                     <div class="form-group">
                         <label>Status <span class="text-danger">*</span></label>
                         <div class="custom-control custom-radio">
-                            <input class="custom-control-input" type="radio" id="status1" name="status" 
-                                   value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
+                            <input class="custom-control-input" type="radio" id="status1" 
+                                   name="status" value="1" checked>
                             <label for="status1" class="custom-control-label">Aktif</label>
                         </div>
                         <div class="custom-control custom-radio">
-                            <input class="custom-control-input" type="radio" id="status0" name="status" 
-                                   value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
-                            <label for="status0" class="custom-control-label">Tidak Aktif</label>
+                            <input class="custom-control-input" type="radio" id="status0" 
+                                   name="status" value="0">
+                            <label for="status0" class="custom-control-label">Non Aktif</label>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer rounded-0">
+
+                <div class="card-footer">
                     <div class="row">
                         <div class="col-md-6">
                             <a href="<?= BaseRouting::url('obat') ?>" class="btn btn-default rounded-0">
@@ -158,6 +147,7 @@
     </div>
 </section>
 
+<!-- Your existing script -->
 <script>
 function formatCurrency(input) {
     let value = input.value.replace(/\D/g, '');
@@ -187,4 +177,4 @@ $(document).ready(function() {
         allowClear: true
     });
 });
-</script> 
+</script>

@@ -1,3 +1,7 @@
+<?php
+require_once APP_PATH . '/helpers/AngkaHelper.php';
+?>
+
 <!-- Content Header -->
 <section class="content-header">
     <div class="container-fluid">
@@ -26,14 +30,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="btn-group">
-                                    <a href="<?= BaseRouting::url('tindakan/create') ?>" 
-                                       class="btn btn-primary btn-sm rounded-0">
+                                    <a href="<?= BaseRouting::url('tindakan/create') ?>"
+                                        class="btn btn-primary btn-sm rounded-0">
                                         <i class="fas fa-plus"></i> Tambah Data
                                     </a>
-									&nbsp;
-                                    <a href="<?= BaseRouting::url('tindakan/trash') ?>" 
-                                       class="btn btn-danger btn-sm rounded-0">
-                                        <i class="fas fa-trash"></i> Sampah 
+                                    &nbsp;
+                                    <a href="<?= BaseRouting::url('tindakan/trash') ?>"
+                                        class="btn btn-danger btn-sm rounded-0">
+                                        <i class="fas fa-trash"></i> Sampah
                                         <?php if (isset($deletedCount) && $deletedCount > 0): ?>
                                             <span class="badge badge-light ml-1"><?= $deletedCount ?></span>
                                         <?php endif; ?>
@@ -62,11 +66,9 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Kode</th>
                                         <th>Kategori</th>
                                         <th>Item</th>
-                                        <th>Harga Beli</th>
-                                        <th>Harga Jual</th>
+                                        <th class="text-right">Harga Beli</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -76,35 +78,37 @@
                                         <?php
                                         $start = ($page - 1) * $perPage + 1;
                                         foreach ($data as $index => $item):
-                                        ?>
+                                            ?>
                                             <tr>
                                                 <td><?= $start + $index ?></td>
-                                                <td><?= $item->kode ?></td>
                                                 <td><?= $item->nama_kategori ?></td>
-                                                <td><?= $item->item ?></td>
-                                                <td class="text-right">Rp <?= number_format($item->harga_beli, 0, ',', '.') ?></td>
-                                                <td class="text-right">Rp <?= number_format($item->harga_jual, 0, ',', '.') ?></td>
+                                                <td>
+                                                    <?= strtoupper($item->kode) ?><br />
+                                                    <?= strtoupper($item->item) ?><br />
+                                                    <small><b><?= Angka::formatRupiah($item->harga_beli) ?></b></small>
+                                                </td>
+                                                <td class="text-right"><?= Angka::formatRupiah($item->harga_beli) ?></td>
                                                 <td>
                                                     <?php if ($item->status == '1'): ?>
                                                         <span class="badge badge-success">Aktif</span>
                                                     <?php else: ?>
-                                                        <span class="badge badge-danger">Tidak Aktif</span>
+                                                        <span class="badge badge-danger">Non Aktif</span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="<?= BaseRouting::url('tindakan/show/' . $item->id) ?>" 
-                                                           class="btn btn-info btn-sm rounded-0" title="Detail">
+                                                        <a href="<?= BaseRouting::url('tindakan/show/' . $item->id) ?>"
+                                                            class="btn btn-info btn-sm rounded-0" title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="<?= BaseRouting::url('tindakan/edit/' . $item->id) ?>" 
-                                                           class="btn btn-warning btn-sm rounded-0" title="Edit">
+                                                        <a href="<?= BaseRouting::url('tindakan/edit/' . $item->id) ?>"
+                                                            class="btn btn-warning btn-sm rounded-0" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="<?= BaseRouting::url('tindakan/delete/' . $item->id) ?>" 
-                                                           class="btn btn-danger btn-sm rounded-0" 
-                                                           onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')"
-                                                           title="Hapus">
+                                                        <a href="<?= BaseRouting::url('tindakan/delete/' . $item->id) ?>"
+                                                            class="btn btn-danger btn-sm rounded-0"
+                                                            onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')"
+                                                            title="Hapus">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     </div>

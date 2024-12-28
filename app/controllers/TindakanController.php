@@ -6,6 +6,8 @@ class TindakanController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Tindakan');
+        // Load Angka helper
+        $this->loadHelper('angka');
     }
     
     public function index() {
@@ -38,10 +40,10 @@ class TindakanController extends BaseController {
             $search = $this->input->get('search', '');
             $perPage = $this->input->get('per_page', 10);
             
-            $result = $this->model->getTrash($search, $page, $perPage);
+            $result = $this->model->getTrashPaginate($search, $page, $perPage);
             
             return $this->view('tindakan/trash', [
-                'title' => 'Data Tindakan Terhapus',
+                'title' => 'Data Tindakan [Terhapus]',
                 'data' => $result['data'],
                 'total' => $result['total'],
                 'page' => $page,
@@ -56,40 +58,37 @@ class TindakanController extends BaseController {
 
     public function restore($id) {
         try {
-            // Check if record exists
-            $data = $this->model->find($id);
-            if (!$data) {
-                throw new Exception("Data not found");
-            }
+            $data = [
+                'status_hps' => '0',
+                'deleted_at' => null
+            ];
 
-            if (!$this->model->restore($id)) {
-                throw new Exception("Failed to restore record");
+            if (!$this->model->update($id, $data)) {
+                throw new Exception('Failed to restore data');
             }
 
             Notification::success('Data tindakan berhasil dipulihkan');
             return $this->redirect('tindakan/trash');
-            
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan/trash');
         }
     }
 
-    public function permanentDelete($id) {
+    public function hapus($id) {
         try {
-            // Check if record exists
+            // Check if record exists and is in trash
             $data = $this->model->find($id);
-            if (!$data) {
-                throw new Exception("Data not found");
+            if (!$data || $data->status_hps != '1') {
+                throw new Exception('Data not found in trash');
             }
 
             if (!$this->model->permanentDelete($id)) {
-                throw new Exception("Failed to delete record permanently");
+                throw new Exception('Failed to delete data permanently');
             }
 
             Notification::success('Data tindakan berhasil dihapus permanen');
             return $this->redirect('tindakan/trash');
-            
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan/trash');
@@ -107,8 +106,7 @@ class TindakanController extends BaseController {
                     'kode' => $this->input->post('kode'),
                     'id_kategori' => $this->input->post('id_kategori'),
                     'item' => $this->input->post('item'),
-                    'item_alias' => $this->input->post('item_alias'),
-                    'harga_jual' => str_replace('.', '', $this->input->post('harga_jual')),
+                    'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
                     'status' => $this->input->post('status', '1'),
                     'status_item' => '2',
                     'status_hps' => '0',
@@ -160,6 +158,10 @@ class TindakanController extends BaseController {
 
     public function edit($id) {
         try {
+            // Load the Kategori model
+            $kategoriModel = ViewHelper::loadModel('Kategori');
+            
+            // Get tindakan data with details
             $data = $this->model->getWithDetails($id);
             if (!$data) {
                 throw new Exception('Data not found');
@@ -168,8 +170,10 @@ class TindakanController extends BaseController {
             return $this->view('tindakan/edit', [
                 'title' => 'Edit Tindakan',
                 'data' => $data,
+                'kategoris' => $kategoriModel->getActiveKategoris(), // Get active categories
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
+
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan');
@@ -187,7 +191,7 @@ class TindakanController extends BaseController {
                 'id_kategori' => $this->input->post('id_kategori'),
                 'item' => $this->input->post('item'),
                 'item_alias' => $this->input->post('item_alias'),
-                'harga_jual' => str_replace('.', '', $this->input->post('harga_jual')),
+                'harga_jual' => Angka::cleanNumber($this->input->post('harga_jual')),
                 'status' => $this->input->post('status'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
@@ -213,7 +217,6 @@ class TindakanController extends BaseController {
 
     public function delete($id) {
         try {
-            // Soft delete - set status_hps to 1
             $data = [
                 'status_hps' => '1',
                 'deleted_at' => date('Y-m-d H:i:s')
@@ -228,6 +231,41 @@ class TindakanController extends BaseController {
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan');
+        }
+    }
+
+    public function store() {
+        try {
+            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
+                throw new Exception('Invalid security token');
+            }
+
+            $data = [
+                'kode' => $this->model->generateKode(),
+                'id_kategori' => $this->input->post('id_kategori'),
+                'item' => $this->input->post('item'),
+                'item_alias' => $this->input->post('item_alias'),
+                'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
+                'status' => $this->input->post('status', '1'),
+                'status_item' => '2',
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            // Validate data
+            $errors = $this->model->validateData($data);
+            if (!empty($errors)) {
+                throw new Exception(implode(', ', $errors));
+            }
+
+            if (!$this->model->create($data)) {
+                throw new Exception('Gagal menyimpan data');
+            }
+
+            Notification::success('Data tindakan berhasil ditambahkan');
+            return $this->redirect('tindakan');
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('tindakan/create');
         }
     }
 } 

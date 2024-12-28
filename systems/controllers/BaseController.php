@@ -16,6 +16,9 @@ class BaseController {
     }
 
     protected function view($view, $data = []) {
+        // Load common helpers
+        $this->loadHelper('angka');
+        
         try {
             $controller = $this;
             
@@ -114,6 +117,15 @@ class BaseController {
         // Render exception view
         require_once APP_PATH . '/views/errors/exception.php';
         exit;
+    }
+
+    protected function loadHelper($helper) {
+        $helperFile = APP_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
+        if (file_exists($helperFile)) {
+            require_once $helperFile;
+            return true;
+        }
+        return false;
     }
 }
 ?> 

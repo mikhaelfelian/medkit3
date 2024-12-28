@@ -47,6 +47,7 @@ $current_config = $app_config[ENVIRONMENT];
 
 // Define paths
 defined('ROOT_PATH') or define('ROOT_PATH', dirname(__DIR__));
+defined('CONFIG_PATH') or define('CONFIG_PATH', 'config/');
 defined('APP_PATH') or define('APP_PATH', ROOT_PATH . '/app');
 defined('SYSTEM_PATH') or define('SYSTEM_PATH', ROOT_PATH . '/systems');
 defined('PUBLIC_PATH') or define('PUBLIC_PATH', ROOT_PATH . '/public');
