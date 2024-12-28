@@ -45,7 +45,7 @@ class ObatController extends BaseController {
                     'harga_beli' => str_replace('.', '', $this->input->post('harga_beli')),
                     'harga_jual' => str_replace('.', '', $this->input->post('harga_jual')),
                     'status_stok' => $this->input->post('status_stok', '0'),
-                    'status_obat' => 1,
+                    'status_item' => 1,
                     'status' => $this->input->post('status', '1')
                 ];
 

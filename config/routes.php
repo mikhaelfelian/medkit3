@@ -90,13 +90,13 @@ BaseRouting::get('supplier/permanent-delete/{id}', 'Supplier@permanentDelete');
 
 BaseRouting::get('tindakan', 'Tindakan@index');
 
-BaseRouting::get('tindakan/add', 'Tindakan@add');
+BaseRouting::get('tindakan/create', 'Tindakan@create');
 
-BaseRouting::post('tindakan/add', 'Tindakan@add');
+BaseRouting::post('tindakan/create', 'Tindakan@create');
 
 BaseRouting::get('tindakan/edit/{id}', 'Tindakan@edit');
 
-BaseRouting::post('tindakan/edit/{id}', 'Tindakan@edit');
+BaseRouting::post('tindakan/update/{id}', 'Tindakan@update');
 
 BaseRouting::get('tindakan/delete/{id}', 'Tindakan@delete');
 

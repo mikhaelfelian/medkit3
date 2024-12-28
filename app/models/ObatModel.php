@@ -14,22 +14,22 @@ class ObatModel extends BaseModel {
         'jml',
         'harga_beli',
         'harga_jual',
-        'status_obat',
+        'status_item',
         'status'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = [];
+            $conditions = ["i.status_hps = '0' AND i.status_item = '1'"];
             $params = [];
             
             if (!empty($search)) {
-                $conditions[] = "(i.kode LIKE :search OR i.nama LIKE :search OR k.kategori LIKE :search)";
+                $conditions[] = "(i.kode LIKE :search OR i.item LIKE :search OR k.kategori LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
             
-            $where = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+            $where = 'WHERE ' . implode(' AND ', $conditions);
             
             // Get total records
             $countSql = "SELECT COUNT(*) as total 
@@ -83,6 +83,7 @@ class ObatModel extends BaseModel {
 
     public function create($data) {
         try {
+            $data['status_item'] = '1';
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['created_at'] = date('Y-m-d H:i:s');
             $fields['status_obat'] = 1;
@@ -173,6 +174,28 @@ class ObatModel extends BaseModel {
     public function validateData($data, $id = null) {
         $errors = [];
         
+        // Validate kode
+        if (empty($data['kode'])) {
+            $errors['kode'] = 'Kode obat harus diisi';
+        } else {
+            // Check for duplicate kode
+            $sql = "SELECT id FROM {$this->table} WHERE kode = :kode AND status_item = '1'";
+            if ($id) {
+                $sql .= " AND id != :id";
+            }
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':kode', $data['kode']);
+            if ($id) {
+                $stmt->bindValue(':id', $id);
+            }
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if ($result) {
+                $errors['kode'] = 'Kode obat sudah digunakan';
+            }
+        }
+        
         // Validate kategori
         if (empty($data['id_kategori'])) {
             $errors['id_kategori'] = 'Kategori is required';
@@ -206,10 +229,6 @@ class ObatModel extends BaseModel {
         }
         
         // Validate required fields
-        if (empty($data['kode'])) {
-            $errors['kode'] = 'Kode is required';
-        }
-        
         if (empty($data['item'])) {
             $errors['item'] = 'Nama obat is required';
         }
@@ -268,6 +287,18 @@ class ObatModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in findByMerk: " . $e->getMessage());
             throw new Exception("Failed to check merk usage");
+        }
+    }
+
+    public function countDeleted() {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE status_hps = '1' AND status_item = '1'";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_OBJ)->total;
+        } catch (PDOException $e) {
+            error_log("Database Error in countDeleted: " . $e->getMessage());
+            return 0;
         }
     }
 } 

@@ -32,7 +32,7 @@ class Migration_create_tbl_m_items extends Migration {
             `status_stok` ENUM('0','1') NULL DEFAULT '0',
             `status_racikan` ENUM('0','1') NULL DEFAULT '0',
             `status_hps` ENUM('0','1') NULL DEFAULT '0',
-            `status_obat` INT(11) NULL DEFAULT 0 COMMENT '1=obat;2=racikan;3=tindakan;4=lab;5=radiologi;6=bhp;',
+            `status_item` INT(11) NULL DEFAULT 0 COMMENT '1=obat;2=tindakan;3=lab;4=radiologi;5=bhp;',
             PRIMARY KEY (`id`) USING BTREE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
