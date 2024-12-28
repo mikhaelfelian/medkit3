@@ -2,13 +2,11 @@
 class PengaturanModel extends BaseModel {
     protected $table = 'tbl_pengaturans';
     protected $primaryKey = 'id';
-    protected $timestamps = true;
     
     protected $fillable = [
         'judul_app',
         'logo',
-        'favicon',
-        'footer_app'
+        'favicon'
     ];
 
     public function getSettings() {
@@ -23,28 +21,57 @@ class PengaturanModel extends BaseModel {
         }
     }
 
-    public function validateData($data, $id = null) {
+    public function update($id, $data) {
+        try {
+            $settings = $this->getSettings();
+            
+            // Handle file uploads
+            if (!empty($_FILES['logo']['name'])) {
+                if ($settings && !empty($settings->logo)) {
+                    $this->deleteOldFile($settings->logo);
+                }
+                $data['logo'] = $this->uploadFile($_FILES['logo'], 'logo');
+            }
+            
+            if (!empty($_FILES['favicon']['name'])) {
+                if ($settings && !empty($settings->favicon)) {
+                    $this->deleteOldFile($settings->favicon);
+                }
+                $data['favicon'] = $this->uploadFile($_FILES['favicon'], 'favicon');
+            }
+
+            // Update database
+            $fields = array_intersect_key($data, array_flip($this->fillable));
+            
+            if (empty($fields)) {
+                return true;
+            }
+            
+            $set = implode(', ', array_map(function($field) {
+                return "$field = :$field";
+            }, array_keys($fields)));
+            
+            $sql = "UPDATE {$this->table} SET $set WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            
+            $stmt->bindValue(':id', $id);
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(":{$key}", $value);
+            }
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in update: " . $e->getMessage());
+            throw new Exception("Failed to update settings");
+        }
+    }
+
+    public function validateData($data) {
         $errors = [];
         
-        // Validate judul_app
         if (empty($data['judul_app'])) {
-            $errors['judul_app'] = 'Judul aplikasi is required';
-        }
-        
-        // Validate logo file if uploaded
-        if (!empty($_FILES['logo']['name'])) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            if (!in_array($_FILES['logo']['type'], $allowedTypes)) {
-                $errors['logo'] = 'Logo must be an image (JPG, PNG, or GIF)';
-            }
-        }
-        
-        // Validate favicon file if uploaded
-        if (!empty($_FILES['favicon']['name'])) {
-            $allowedTypes = ['image/x-icon', 'image/png'];
-            if (!in_array($_FILES['favicon']['type'], $allowedTypes)) {
-                $errors['favicon'] = 'Favicon must be an ICO or PNG file';
-            }
+            $errors['judul_app'] = 'Judul aplikasi harus diisi';
         }
         
         return $errors;
@@ -56,12 +83,13 @@ class PengaturanModel extends BaseModel {
                 return null;
             }
 
-            $uploadDir = 'uploads/' . $type . '/';
+            $uploadDir = 'public/file/app/';
             if (!file_exists($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            $fileName = time() . '_' . basename($file['name']);
+            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = $type . '_' . time() . '.' . $extension;
             $targetPath = $uploadDir . $fileName;
 
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -77,7 +105,7 @@ class PengaturanModel extends BaseModel {
     }
 
     public function deleteOldFile($path) {
-        if (!empty($path) && file_exists($path)) {
+        if (!empty($path) && file_exists($path) && strpos($path, 'public/file/app/') === 0) {
             unlink($path);
         }
     }
