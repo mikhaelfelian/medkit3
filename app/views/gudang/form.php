@@ -1,3 +1,7 @@
+<?php
+require_once APP_PATH . '/helpers/GudangHelper.php';
+?>
+
 <!-- Content Header -->
 <section class="content-header">
     <div class="container-fluid">
@@ -34,9 +38,9 @@
                     <div class="form-group">
                         <label for="kode">Kode</label>
                         <input type="text" class="form-control rounded-0" id="kode" name="kode"
-                            value="<?= $data ? htmlspecialchars((string)$data->kode) : '' ?>" 
-                            placeholder="Masukkan kode gudang"
-                            required>
+                            value="<?= $data ? htmlspecialchars((string)$data->kode) : generateGudangCode() ?>" 
+                            placeholder="Kode akan dibuat otomatis"
+                            readonly>
                     </div>
                     <div class="form-group">
                         <label for="gudang">Nama Gudang</label>

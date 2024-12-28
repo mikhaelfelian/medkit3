@@ -49,7 +49,8 @@ return [
         'notification', // Will load NotificationHelper.php
         'angka',        // Will load AngkaHelper.php
         'debug',        // Will load DebugHelper.php
-        'generateNoRM'
+        'generateNoRM',
+        'gudang'
 
     ],
 

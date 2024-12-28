@@ -9,9 +9,11 @@ class PengaturanController extends BaseController {
     
     public function index() {
         try {
+            $data = $this->model->get();
+            
             return $this->view('pengaturan/index', [
-                'title' => 'Pengaturan Aplikasi',
-                'data' => $this->model->getSettings(),
+                'title' => 'Pengaturan',
+                'data' => $data,
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
         } catch (Exception $e) {
@@ -19,7 +21,7 @@ class PengaturanController extends BaseController {
             return $this->redirect('');
         }
     }
-
+    
     public function update() {
         try {
             if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
@@ -27,34 +29,40 @@ class PengaturanController extends BaseController {
             }
 
             $data = [
-                'judul_app' => $this->input->post('judul_app')
+                'judul' => $this->input->post('judul'),
+                'judul_app' => $this->input->post('judul_app'),
+                'alamat' => $this->input->post('alamat'),
+                'deskripsi' => $this->input->post('deskripsi'),
+                'kota' => $this->input->post('kota'),
+                'url' => $this->input->post('url'),
+                'theme' => $this->input->post('theme'),
+                'pagination_limit' => $this->input->post('pagination_limit')
             ];
 
-            // Validate input data
-            $errors = $this->model->validateData($data);
-            if (!empty($errors)) {
-                throw new Exception(implode(', ', $errors));
-            }
-
             // Handle logo upload
-            if (!empty($_FILES['logo']['name'])) {
-                $oldSettings = $this->model->getSettings();
-                if ($oldSettings && !empty($oldSettings->logo)) {
-                    $this->model->deleteOldFile($oldSettings->logo);
+            if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+                $current = $this->model->get();
+                if ($current && $current->logo) {
+                    $this->model->deleteFile($current->logo);
                 }
-                $data['logo'] = $this->model->uploadFile($_FILES['logo'], 'logo');
+                $logo = $this->model->uploadFile($_FILES['logo'], 'logo');
+                if ($logo) {
+                    $data['logo'] = $logo;
+                }
             }
 
             // Handle favicon upload
-            if (!empty($_FILES['favicon']['name'])) {
-                $oldSettings = $this->model->getSettings();
-                if ($oldSettings && !empty($oldSettings->favicon)) {
-                    $this->model->deleteOldFile($oldSettings->favicon);
+            if (isset($_FILES['favicon']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
+                $current = $this->model->get();
+                if ($current && $current->favicon) {
+                    $this->model->deleteFile($current->favicon);
                 }
-                $data['favicon'] = $this->model->uploadFile($_FILES['favicon'], 'favicon');
+                $favicon = $this->model->uploadFile($_FILES['favicon'], 'favicon');
+                if ($favicon) {
+                    $data['favicon'] = $favicon;
+                }
             }
 
-            // Update settings
             if (!$this->model->update($data)) {
                 throw new Exception('Gagal mengupdate pengaturan');
             }
