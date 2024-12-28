@@ -17,10 +17,6 @@ class PengaturanModel extends BaseModel {
         'updated_at'
     ];
 
-    public function getSettings() {
-        return $this->get();
-    }
-
     public function get() {
         try {
             $sql = "SELECT * FROM {$this->table} LIMIT 1";
@@ -33,7 +29,16 @@ class PengaturanModel extends BaseModel {
         }
     }
 
-    public function update($data) {
+    public function getSettings() {
+        return $this->get();
+    }
+
+    /**
+     * Update settings
+     * @param int|null $id ID is optional, will use first record if not provided
+     * @param array $data Data to update
+     */
+    public function update($id = null, $data = null) {
         try {
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['updated_at'] = date('Y-m-d H:i:s');
@@ -42,16 +47,19 @@ class PengaturanModel extends BaseModel {
                 return "$field = :$field";
             }, array_keys($fields)));
             
+            // If no ID provided, get the first record's ID
+            if (!$id) {
+                $current = $this->get();
+                if (!$current) {
+                    throw new Exception("Settings record not found");
+                }
+                $id = $current->id;
+            }
+            
             $sql = "UPDATE {$this->table} SET $set WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             
-            // Get the first record's ID
-            $current = $this->get();
-            if (!$current) {
-                throw new Exception("Settings record not found");
-            }
-            
-            $stmt->bindValue(':id', $current->id);
+            $stmt->bindValue(':id', $id);
             foreach ($fields as $key => $value) {
                 $stmt->bindValue(":$key", $value);
             }
