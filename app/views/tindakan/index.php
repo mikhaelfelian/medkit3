@@ -68,7 +68,6 @@ require_once APP_PATH . '/helpers/AngkaHelper.php';
                                         <th>No</th>
                                         <th>Kategori</th>
                                         <th>Item</th>
-                                        <th class="text-right">Harga Beli</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -87,7 +86,6 @@ require_once APP_PATH . '/helpers/AngkaHelper.php';
                                                     <?= strtoupper($item->item) ?><br />
                                                     <small><b><?= Angka::formatRupiah($item->harga_beli) ?></b></small>
                                                 </td>
-                                                <td class="text-right"><?= Angka::formatRupiah($item->harga_beli) ?></td>
                                                 <td>
                                                     <?php if ($item->status == '1'): ?>
                                                         <span class="badge badge-success">Aktif</span>
