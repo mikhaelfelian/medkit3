@@ -215,7 +215,7 @@ ROOT_PATH/
 │   │   ├── obat/
 │   │   │   ├── index.php
 │   │   │   ├── form.php
-��   │   │   └── show.php
+│   │   │   └── show.php
 │   │   └── pasien/
 │   │       ├── index.php
 │   │       ├── create.php
@@ -299,7 +299,32 @@ This README focuses on:
 ```
 
 ## Changelog
-```
+
+### v1.0.12 (2024-03-22)
+#### Added
+- Master data kategori management:
+  - Added kategori table migration
+  - Added KategoriModel with CRUD operations
+  - Added timestamp handling
+  - Added status management
+  - Added search functionality
+
+#### Enhanced
+- Database structure:
+  - Added tbl_m_kategoris table
+  - Added proper collation settings
+  - Added status enumeration
+  - Added timestamp fields
+  - Added proper indexing
+
+#### Changed
+- Model implementation:
+  - Added standardized CRUD methods
+  - Enhanced search capabilities
+  - Improved timestamp handling
+  - Added status update functionality
+  - Implemented consistent patterns
+
 ### v1.0.11 (2024-03-22)
 #### Added
 - Enhanced form standardization:
