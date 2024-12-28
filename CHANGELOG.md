@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.0.2] - 2024-03-XX
+
+### Added
+- Added Satuan management functionality
+  - CRUD operations for Satuan
+  - Active/Inactive status toggle
+  - Validation for unique satuan names
+  - Permanent delete functionality
+  - Relationship with Obat items
+
+### Changed
+- Updated Obat form to include Satuan selection
+- Modified database schema
+  - Added id_satuan to tbl_m_items
+  - Added status field to tbl_m_satuan
+- Enhanced form validation rules
+
+### Fixed
+- Fixed Satuan selection in Obat forms
+- Fixed status toggle functionality
+- Fixed relationship constraints
+
+### Technical
+- Added Satuan model and controller
+- Enhanced data validation
+- Updated database queries for Satuan integration
+
 ## [1.0.1] - 2024-03-XX
 
 ### Added
