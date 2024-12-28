@@ -35,11 +35,22 @@ class PengaturanModel extends BaseModel {
 
     /**
      * Update settings
-     * @param int|null $id ID is optional, will use first record if not provided
-     * @param array $data Data to update
+     * @param mixed $id ID or data array
+     * @param array|null $data Data to update (optional if $id is array)
      */
-    public function update($id = null, $data = null) {
+    public function update($id, $data = null) {
         try {
+            // Handle case where only data is passed
+            if (is_array($id) && $data === null) {
+                $data = $id;
+                $id = null;
+            }
+
+            // Ensure data is an array
+            if (!is_array($data)) {
+                throw new Exception("Update data must be an array");
+            }
+
             $fields = array_intersect_key($data, array_flip($this->fillable));
             $fields['updated_at'] = date('Y-m-d H:i:s');
             
