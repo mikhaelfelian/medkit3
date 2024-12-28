@@ -25,10 +25,20 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-6">
-                                <!-- Tambah button on left -->
-                                <a href="<?= BaseRouting::url('obat/add') ?>" class="btn btn-primary btn-sm rounded-0">
-                                    <i class="fas fa-plus"></i> Tambah Data
-                                </a>
+                                <div class="btn-group">
+                                    <a href="<?= BaseRouting::url('obat/create') ?>" 
+                                       class="btn btn-primary btn-sm rounded-0">
+                                        <i class="fas fa-plus"></i> Tambah Data
+                                    </a>
+									&nbsp;
+                                    <a href="<?= BaseRouting::url('obat/trash') ?>" 
+                                       class="btn btn-danger btn-sm rounded-0">
+                                        <i class="fas fa-trash"></i> Sampah 
+                                        <?php if (isset($deletedCount) && $deletedCount > 0): ?>
+                                            <span class="badge badge-light ml-1"><?= $deletedCount ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <!-- Search form on right -->
@@ -55,7 +65,7 @@
                                         <th>Kode</th>
                                         <th>Kategori</th>
                                         <th>Merk</th>
-                                        <th>Nama Obat</th>
+                                        <th>Item</th>
                                         <th>Harga Beli</th>
                                         <th>Harga Jual</th>
                                         <th>Status</th>

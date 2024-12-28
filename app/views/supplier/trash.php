@@ -18,23 +18,13 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="btn-group">
-                                    <a href="<?= BaseRouting::url('supplier/create') ?>" 
-                                       class="btn btn-primary btn-sm rounded-0">
-                                        <i class="fas fa-plus"></i> Tambah Data
-                                    </a>
-                                    &nbsp;
-                                    <a href="<?= BaseRouting::url('supplier/trash') ?>" 
-                                       class="btn btn-danger btn-sm rounded-0">
-                                        <i class="fas fa-trash"></i> Sampah
-                                        <?php if (isset($deletedCount) && $deletedCount > 0): ?>
-                                            <span class="badge badge-light ml-1"><?= $deletedCount ?></span>
-                                        <?php endif; ?>
-                                    </a>
-                                </div>
+                                <a href="<?= BaseRouting::url('supplier') ?>" 
+                                   class="btn btn-default btn-sm rounded-0">
+                                    <i class="fas fa-arrow-left"></i> Kembali
+                                </a>
                             </div>
                             <div class="col-md-6">
-                                <form action="<?= BaseRouting::url('supplier') ?>" method="GET" class="float-right">
+                                <form action="<?= BaseRouting::url('supplier/trash') ?>" method="GET" class="float-right">
                                     <div class="input-group input-group-sm" style="width: 150px;">
                                         <input type="text" name="search" class="form-control rounded-0" 
                                                placeholder="Search" value="<?= $search ?>">
@@ -58,6 +48,7 @@
                                     <th>Kota</th>
                                     <th>Telepon</th>
                                     <th>Contact Person</th>
+                                    <th>Tgl Hapus</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -74,20 +65,18 @@
                                             <td><?= htmlspecialchars($item->kota) ?></td>
                                             <td><?= htmlspecialchars($item->no_tlp) ?></td>
                                             <td><?= htmlspecialchars($item->cp) ?></td>
+                                            <td><?= date('d/m/Y H:i', strtotime($item->deleted_at)) ?></td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a href="<?= BaseRouting::url('supplier/show/' . $item->id) ?>" 
-                                                       class="btn btn-info btn-sm">
-                                                        <i class="fas fa-eye"></i>
+                                                    <a href="<?= BaseRouting::url('supplier/restore/' . $item->id) ?>"
+                                                       class="btn btn-info btn-sm rounded-0"
+                                                       onclick="return confirm('Pulihkan data ini?')">
+                                                        <i class="fas fa-undo"></i>
                                                     </a>
-                                                    <a href="<?= BaseRouting::url('supplier/edit/' . $item->id) ?>" 
-                                                       class="btn btn-warning btn-sm">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="<?= BaseRouting::url('supplier/delete/' . $item->id) ?>" 
-                                                       class="btn btn-danger btn-sm"
-                                                       onclick="return confirm('Are you sure?')">
-                                                        <i class="fas fa-trash"></i>
+                                                    <a href="<?= BaseRouting::url('supplier/permanent-delete/' . $item->id) ?>"
+                                                       class="btn btn-danger btn-sm rounded-0"
+                                                       onclick="return confirm('Hapus permanen data ini?')">
+                                                        <i class="fas fa-times"></i>
                                                     </a>
                                                 </div>
                                             </td>
@@ -95,7 +84,7 @@
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="7" class="text-center">Tidak ada data</td>
+                                        <td colspan="8" class="text-center">Tidak ada data</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -104,7 +93,8 @@
                     <?php if ($total > $perPage): ?>
                         <div class="card-footer clearfix">
                             <?php
-                            $paginator = new Paginate($this->conn);
+                            require_once SYSTEM_PATH . '/libraries/Paginate.php';
+                            $paginator = new Paginate();
                             echo $paginator->createLinks($page, $perPage, $total, $search ? ['search' => $search] : []);
                             ?>
                         </div>
