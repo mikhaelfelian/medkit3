@@ -31,11 +31,8 @@ return [
     'models' => [
 
         'pengaturan',  // Will load PengaturanModel
-
         'pasien',      // Will load PasienModel
-
         'obat'
-
     ],
 
     
