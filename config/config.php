@@ -11,7 +11,8 @@ $db_config = [
         'password' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
-        'prefix' => 'tbl_'
+        'prefix' => 'tbl_',
+        'driver' => 'mysqli'
     ],
     'production' => [
         'hostname' => 'localhost',
@@ -20,7 +21,8 @@ $db_config = [
         'password' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
-        'prefix' => 'tbl_'
+        'prefix' => 'tbl_',
+        'driver' => 'mysqli'
     ]
 ];
 

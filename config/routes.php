@@ -68,9 +68,10 @@ BaseRouting::notFound(function() {
 
 // Add these routes for trash management
 
-BaseRouting::get('obat/add', 'Obat@store');
 BaseRouting::get('obat/trash', 'Obat@trash');
+
 BaseRouting::get('obat/restore/{id}', 'Obat@restore');
+
 BaseRouting::get('obat/permanent-delete/{id}', 'Obat@permanentDelete');
 
 
@@ -78,7 +79,9 @@ BaseRouting::get('obat/permanent-delete/{id}', 'Obat@permanentDelete');
 // Add these routes for supplier trash management
 
 BaseRouting::get('supplier/trash', 'Supplier@trash');
+
 BaseRouting::get('supplier/restore/{id}', 'Supplier@restore');
+
 BaseRouting::get('supplier/permanent-delete/{id}', 'Supplier@permanentDelete');
 
 
@@ -101,40 +104,6 @@ BaseRouting::get('tindakan/trash', 'Tindakan@trash');
 
 BaseRouting::get('tindakan/restore/{id}', 'Tindakan@restore');
 
-BaseRouting::get('tindakan/hapus/{id}', 'Tindakan@hapus');
-/][=';p']
-
-
-// Add these routes for Obat
-
-BaseRouting::get('obat', 'Obat@index');
-
-BaseRouting::get('obat/create', 'Obat@create');
-
-BaseRouting::post('obat/store', 'Obat@store');
-
-BaseRouting::get('obat/edit/{id}', 'Obat@edit');
-
-BaseRouting::post('obat/update/{id}', 'Obat@update');
-
-BaseRouting::get('obat/delete/{id}', 'Obat@delete');
-
-BaseRouting::get('obat/show/{id}', 'Obat@show');
-
-
-
-// Obat trash management routes
-
-BaseRouting::get('obat/trash', 'Obat@trash');
-
-BaseRouting::get('obat/restore/{id}', 'Obat@restore');
-
-BaseRouting::get('obat/hapus/{id}', 'Obat@hapus');
-
-
-
-// Add this route for handling file access
-
-BaseRouting::get('file/{path}', 'Public@file');
+BaseRouting::get('tindakan/hapus/{id}', 'Tindakan@permanentDelete');
 
 ?> 

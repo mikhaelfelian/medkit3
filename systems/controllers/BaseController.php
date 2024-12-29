@@ -7,18 +7,10 @@ class BaseController {
     protected $sections = [];
 
     public function __construct() {
-        // Load autoload configuration
-        $autoload = require CONFIG_PATH . '/autoload.php';
-
-        // Autoload helpers
-        if (!empty($autoload['helpers'])) {
-            foreach ($autoload['helpers'] as $helper) {
-                $this->loadHelper($helper);
-            }
-        }
-
-        // Initialize other components
-        $this->security = BaseSecurity::getInstance();
+        require_once SYSTEM_PATH . '/libraries/Input.php';
+        require_once SYSTEM_PATH . '/libraries/Security.php';
+        
+        $this->security = new Security();
         $this->input = new Input();
         $this->viewHelper = new ViewHelper();
     }

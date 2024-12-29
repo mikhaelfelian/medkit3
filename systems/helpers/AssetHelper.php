@@ -12,11 +12,11 @@ class AssetHelper {
     }
     
     public static function theme($path) {
-        return BaseRouting::url('public/assets/theme/admin-lte-3/' . ltrim($path, '/'));
+        return BaseRouting::asset('theme/admin-lte-3/' . ltrim($path, '/'));
     }
     
-    public static function file($path) {
-        return BASE_URL . '/public/file/' . ltrim($path, '/');
+    public static function custom($path) {
+        return BaseRouting::asset(ltrim($path, '/'));
     }
     
     public static function exists($path) {
@@ -27,8 +27,8 @@ class AssetHelper {
         $settings = Settings::getInstance();
         
         // Check if custom logo exists
-        if (!empty($settings->logo)) {
-            return BASE_URL . '/public/file/app/' . $settings->logo;
+        if (!empty($settings->logo) && self::exists('images/' . $settings->logo)) {
+            return self::custom('images/' . $settings->logo);
         }
         
         // Return default AdminLTE logo

@@ -1,32 +1,73 @@
 <?php
 
 /**
+
  * Autoload Configuration
+
  * 
- * Specify which helpers, libraries, and models to autoload
+
+ * Specify which models, helpers, and libraries should be loaded automatically
+
  */
 
 return [
-    // Helpers to autoload
-    'helpers' => [
-        'url',         // Will load UrlHelper.php
-        'html',        // Will load HtmlHelper.php
-        'form',        // Will load FormHelper.php
-        'angka',       // Will load AngkaHelper.php
-        'debug',       // Will load DebugHelper.php
-        'tanggalan'    // Will load TanggalanHelper.php
+
+    // Core libraries to autoload
+
+    'core' => [
+
+        'Input',
+
+        'Database',
+
+        'BaseSecurity'
+
     ],
 
-    // Libraries to autoload
-    'libraries' => [
-        'session',
-        'database',
-        'security'
-    ],
+    
 
     // Models to autoload
+
     'models' => [
-        'user',
-        'pengaturan'
+
+        'pengaturan',  // Will load PengaturanModel
+
+        'pasien',      // Will load PasienModel
+
+        'obat'
+
+    ],
+
+    
+
+    // Helpers to autoload
+
+    'helpers' => [
+
+        'asset',       // Will load AssetHelper.php
+
+        'view',        // Will load ViewHelper.php
+
+        'notification', // Will load NotificationHelper.php
+
+        'angka',        // Will load AngkaHelper.php
+
+        'generateNoRM'
+
+    ],
+
+    
+
+    // Libraries to autoload
+
+    'libraries' => [
+
+        'session',     // Will load Session.php
+
+        'security',    // Will load Security.php
+
+        'form'         // Will load Form.php
+
     ]
+
 ]; 
