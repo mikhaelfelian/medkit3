@@ -8,12 +8,17 @@ class TindakanModel extends BaseModel {
         'kode',
         'id_kategori',
         'item',
-        'item_alias',
         'harga_jual',
+        'remun_tipe',
+        'remun_perc',
+        'remun_nom',
+        'apres_tipe',
+        'apres_perc',
+        'apres_nom',
         'status',
         'status_item',
-        'status_hps',
-        'created_at'
+        'created_at',
+        'updated_at'
     ];
 
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
@@ -189,46 +194,40 @@ class TindakanModel extends BaseModel {
         }
     }
 
-    public function validateData($data, $id = null) {
+    public function validateData($data) {
         $errors = [];
         
-        // Validate kode
-        if (empty($data['kode'])) {
-            $errors['kode'] = 'Kode tindakan harus diisi';
-        } else {
-            // Check for duplicate kode
-            $sql = "SELECT id FROM {$this->table} WHERE kode = :kode AND status_item = '2'";
-            if ($id) {
-                $sql .= " AND id != :id";
-            }
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':kode', $data['kode']);
-            if ($id) {
-                $stmt->bindValue(':id', $id);
-            }
-            $stmt->execute();
-            
-            if ($stmt->fetch(PDO::FETCH_OBJ)) {
-                $errors['kode'] = 'Kode tindakan sudah digunakan';
-            }
-        }
-        
-        // Validate kategori
+        // Validate required fields
         if (empty($data['id_kategori'])) {
-            $errors['id_kategori'] = 'Kategori harus dipilih';
+            $errors[] = 'Kategori harus dipilih';
         }
         
-        // Validate item name
         if (empty($data['item'])) {
-            $errors['item'] = 'Nama tindakan harus diisi';
+            $errors[] = 'Nama tindakan harus diisi';
         }
         
-        // Validate harga_jual
         if (empty($data['harga_jual'])) {
-            $errors['harga_jual'] = 'Harga tindakan harus diisi';
-        } elseif (!is_numeric($data['harga_jual'])) {
-            $errors['harga_jual'] = 'Harga tindakan harus berupa angka';
+            $errors[] = 'Harga harus diisi';
+        }
+
+        // Validate remunerasi if type is selected
+        if (!empty($data['remun_tipe'])) {
+            if ($data['remun_tipe'] == '1' && empty($data['remun_perc'])) {
+                $errors[] = 'Persentase remunerasi harus diisi';
+            }
+            if ($data['remun_tipe'] == '2' && empty($data['remun_nom'])) {
+                $errors[] = 'Nominal remunerasi harus diisi';
+            }
+        }
+
+        // Validate apresiasi if type is selected
+        if (!empty($data['apres_tipe'])) {
+            if ($data['apres_tipe'] == '1' && empty($data['apres_perc'])) {
+                $errors[] = 'Persentase apresiasi harus diisi';
+            }
+            if ($data['apres_tipe'] == '2' && empty($data['apres_nom'])) {
+                $errors[] = 'Nominal apresiasi harus diisi';
+            }
         }
         
         return $errors;
@@ -236,7 +235,22 @@ class TindakanModel extends BaseModel {
 
     public function create($data) {
         try {
-            $data['status_item'] = '2'; // Set as tindakan
+            // Clean numeric values
+            $data['harga_jual'] = Angka::cleanNumber($data['harga_jual']);
+            
+            // Clean remun values
+            $data['remun_perc'] = !empty($data['remun_perc']) ? floatval($data['remun_perc']) : 0;
+            $data['remun_nom'] = !empty($data['remun_nom']) ? Angka::cleanNumber($data['remun_nom']) : 0;
+            
+            // Clean apres values
+            $data['apres_perc'] = !empty($data['apres_perc']) ? floatval($data['apres_perc']) : 0;
+            $data['apres_nom'] = !empty($data['apres_nom']) ? Angka::cleanNumber($data['apres_nom']) : 0;
+
+            // Ensure tipe fields are set
+            $data['remun_tipe'] = $data['remun_tipe'] ?: '0';
+            $data['apres_tipe'] = $data['apres_tipe'] ?: '0';
+
+            // Insert the record
             $fields = array_intersect_key($data, array_flip($this->fillable));
             
             $columns = array_keys($fields);
@@ -248,7 +262,12 @@ class TindakanModel extends BaseModel {
             $stmt = $this->conn->prepare($sql);
             
             foreach ($fields as $key => $value) {
-                $stmt->bindValue(":{$key}", $value);
+                if ($key === 'remun_tipe' || $key === 'apres_tipe') {
+                    // Handle ENUM fields
+                    $stmt->bindValue(":{$key}", $value, PDO::PARAM_STR);
+                } else {
+                    $stmt->bindValue(":{$key}", $value);
+                }
             }
             
             return $stmt->execute();
@@ -382,6 +401,24 @@ class TindakanModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in delete: " . $e->getMessage());
             throw new Exception("Failed to delete record");
+        }
+    }
+
+    public function update($id, $data) {
+        try {
+            // Clean numeric values
+            $data['harga_jual'] = Angka::cleanNumber($data['harga_jual']);
+            $data['remun_nom'] = Angka::cleanNumber($data['remun_nom']);
+            $data['apres_nom'] = Angka::cleanNumber($data['apres_nom']);
+            
+            // Set updated timestamp
+            $data['updated_at'] = date('Y-m-d H:i:s');
+            
+            return parent::update($id, $data);
+            
+        } catch (Exception $e) {
+            error_log("Error in TindakanModel::update - " . $e->getMessage());
+            throw new Exception("Failed to update tindakan");
         }
     }
 } 

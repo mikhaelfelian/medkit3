@@ -1,12 +1,17 @@
 RewriteEngine On
 RewriteBase /medkit3/
 
-# Allow direct access to files
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# Allow direct access to assets and files
+RewriteCond %{REQUEST_URI} ^/medkit3/(public/assets|file)/ [NC]
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Route all other requests through index.php
+# Route file requests through PublicController
+RewriteRule ^file/(.*)$ index.php?controller=public&action=file&path=$1 [QSA,L]
+
+# All other requests
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d 
 RewriteRule ^(.*)$ index.php [QSA,L]
 
 # Security Headers

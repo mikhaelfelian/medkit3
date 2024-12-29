@@ -8,6 +8,7 @@ class TindakanController extends BaseController {
         $this->model = $this->loadModel('Tindakan');
         // Load Angka helper
         $this->loadHelper('angka');
+        $this->loadHelper('debug');
     }
     
     public function index() {
@@ -97,36 +98,6 @@ class TindakanController extends BaseController {
 
     public function create() {
         try {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
-                    throw new Exception('Invalid security token');
-                }
-
-                $data = [
-                    'kode' => $this->input->post('kode'),
-                    'id_kategori' => $this->input->post('id_kategori'),
-                    'item' => $this->input->post('item'),
-                    'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
-                    'status' => $this->input->post('status', '1'),
-                    'status_item' => '2',
-                    'status_hps' => '0',
-                    'created_at' => date('Y-m-d H:i:s')
-                ];
-
-                // Validate data
-                $errors = $this->model->validateData($data);
-                if (!empty($errors)) {
-                    throw new Exception(implode(', ', $errors));
-                }
-
-                if (!$this->model->create($data)) {
-                    throw new Exception('Gagal menyimpan data');
-                }
-
-                Notification::success('Data tindakan berhasil ditambahkan');
-                return $this->redirect('tindakan');
-            }
-
             return $this->view('tindakan/create', [
                 'title' => 'Tambah Data Tindakan',
                 'csrf_token' => $this->security->getCSRFToken(),
@@ -195,6 +166,42 @@ class TindakanController extends BaseController {
                 'status' => $this->input->post('status'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
+			
+            // Always save remun_tipe even if empty
+            $data['remun_tipe'] = (string)$this->input->post('remun_tipe');
+
+            // If remun_tipe is percentage (1), calculate nominal amount from percentage
+            if ($this->input->post('remun_tipe') == '1') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $remunPerc = Angka::cleanNumber($this->input->post('remun_perc'));
+                
+                $data['remun_perc'] = $this->input->post('remun_perc') ? Angka::cleanNumber($this->input->post('remun_perc')) : 0;
+                $data['remun_nom'] = round(($hargaJual * $remunPerc) / 100);
+            } else if ($this->input->post('remun_tipe') == '2') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $remunNom = Angka::cleanNumber($this->input->post('remun_nom'));
+                
+                $data['remun_nom'] = $this->input->post('remun_nom') ? Angka::cleanNumber($this->input->post('remun_nom')) : 0;
+                $data['remun_perc'] = $hargaJual > 0 ? min(round(($remunNom * 100) / $hargaJual), 100) : 0;
+            }
+
+            // Always save apres_tipe even if empty
+            $data['apres_tipe'] = (string)$this->input->post('apres_tipe');
+            
+            // If apres_tipe is percentage (1), calculate nominal amount from percentage
+            if ($this->input->post('apres_tipe') == '1') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $apresPerc = Angka::cleanNumber($this->input->post('apres_perc'));
+                
+                $data['apres_perc'] = $this->input->post('apres_perc') ? Angka::cleanNumber($this->input->post('apres_perc')) : 0;
+                $data['apres_nom']  = round(($hargaJual * $apresPerc) / 100);
+            } else if ($this->input->post('apres_tipe') == '2') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual')); 
+                $apresNom = Angka::cleanNumber($this->input->post('apres_nom'));
+                
+                $data['apres_nom'] = $this->input->post('apres_nom') ? Angka::cleanNumber($this->input->post('apres_nom')) : 0;
+                $data['apres_perc'] = $hargaJual > 0 ? min(round(($apresNom * 100) / $hargaJual), 100) : 0;
+            }
 
             // Validate data
             $errors = $this->model->validateData($data, $id);
@@ -240,16 +247,53 @@ class TindakanController extends BaseController {
                 throw new Exception('Invalid security token');
             }
 
+            // Base data
             $data = [
                 'kode' => $this->model->generateKode(),
                 'id_kategori' => $this->input->post('id_kategori'),
                 'item' => $this->input->post('item'),
-                'item_alias' => $this->input->post('item_alias'),
-                'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
+                'harga_jual' => Angka::cleanNumber($this->input->post('harga_jual')),
                 'status' => $this->input->post('status', '1'),
                 'status_item' => '2',
-                'created_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
             ];
+
+            // Always save remun_tipe even if empty
+            $data['remun_tipe'] = (string)$this->input->post('remun_tipe');
+
+            // If remun_tipe is percentage (1), calculate nominal amount from percentage
+            if ($this->input->post('remun_tipe') == '1') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $remunPerc = Angka::cleanNumber($this->input->post('remun_perc'));
+                
+                $data['remun_perc'] = $this->input->post('remun_perc') ? Angka::cleanNumber($this->input->post('remun_perc')) : 0;
+                $data['remun_nom'] = round(($hargaJual * $remunPerc) / 100);
+            } else if ($this->input->post('remun_tipe') == '2') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $remunNom = Angka::cleanNumber($this->input->post('remun_nom'));
+                
+                $data['remun_nom'] = $this->input->post('remun_nom') ? Angka::cleanNumber($this->input->post('remun_nom')) : 0;
+                $data['remun_perc'] = $hargaJual > 0 ? min(round(($remunNom * 100) / $hargaJual), 100) : 0;
+            }
+
+            // Always save apres_tipe even if empty
+            $data['apres_tipe'] = (string)$this->input->post('apres_tipe');
+            
+            // If apres_tipe is percentage (1), calculate nominal amount from percentage
+            if ($this->input->post('apres_tipe') == '1') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual'));
+                $apresPerc = Angka::cleanNumber($this->input->post('apres_perc'));
+                
+                $data['apres_perc'] = $this->input->post('apres_perc') ? Angka::cleanNumber($this->input->post('apres_perc')) : 0;
+                $data['apres_nom']  = round(($hargaJual * $apresPerc) / 100);
+            } else if ($this->input->post('apres_tipe') == '2') {
+                $hargaJual = Angka::cleanNumber($this->input->post('harga_jual')); 
+                $apresNom = Angka::cleanNumber($this->input->post('apres_nom'));
+                
+                $data['apres_nom'] = $this->input->post('apres_nom') ? Angka::cleanNumber($this->input->post('apres_nom')) : 0;
+                $data['apres_perc'] = $hargaJual > 0 ? min(round(($apresNom * 100) / $hargaJual), 100) : 0;
+            }
 
             // Validate data
             $errors = $this->model->validateData($data);
@@ -257,12 +301,14 @@ class TindakanController extends BaseController {
                 throw new Exception(implode(', ', $errors));
             }
 
+            // Create record
             if (!$this->model->create($data)) {
                 throw new Exception('Gagal menyimpan data');
             }
 
             Notification::success('Data tindakan berhasil ditambahkan');
             return $this->redirect('tindakan');
+            
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan/create');

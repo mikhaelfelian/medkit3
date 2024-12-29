@@ -68,7 +68,84 @@
                                 onkeyup="formatCurrency(this)">
                         </div>
                     </div>
-
+                    <div class="row">
+                        <div class="col-lg-4"><label class="control-label">Remunerasi</label></div>
+                        <div class="col-lg-2"><label class="control-label">%</label></div>
+                        <div class="col-lg-6"><label class="control-label">Rp</label></div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <select name="remun_tipe" class="form-control rounded-0">
+                                    <option value="">[Tipe]</option>
+                                    <option value="1" <?= $data->remun_tipe == '1' ? 'selected' : '' ?>>Persen</option>
+                                    <option value="2" <?= $data->remun_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <input type="text" 
+                                       class="form-control rounded-0" 
+                                       id="remun_perc" 
+                                       name="remun_perc"
+                                       value="<?= (float)$data->remun_perc ?>" 
+                                       placeholder="Masukkan %" 
+                                       oninput="validateNumber(this)"
+                                       maxlength="3"
+                                       <?= $data->remun_tipe != '1' ? 'disabled' : '' ?>>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" 
+                                       class="form-control rounded-0 currency" 
+                                       id="remun_nom" 
+                                       name="remun_nom"
+                                       value="<?= Angka::format($data->remun_nom) ?>" 
+                                       placeholder="Masukkan nominal" 
+                                       onkeyup="formatCurrency(this)"
+                                       <?= $data->remun_tipe != '2' ? 'disabled' : '' ?>>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><label class="control-label">Apresiasi</label></div>
+                        <div class="col-lg-2"><label class="control-label">%</label></div>
+                        <div class="col-lg-6"><label class="control-label">Rp</label></div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <select name="apres_tipe" class="form-control rounded-0">
+                                    <option value="">[Tipe]</option>
+                                    <option value="1" <?= $data->apres_tipe == '1' ? 'selected' : '' ?>>Persen</option>
+                                    <option value="2" <?= $data->apres_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <input type="text" 
+                                       class="form-control rounded-0" 
+                                       id="apres_perc" 
+                                       name="apres_perc"
+                                       value="<?= (float)$data->apres_perc ?>" 
+                                       placeholder="Masukkan %" 
+                                       oninput="validateNumber(this)"
+                                       maxlength="3"
+                                       <?= $data->apres_tipe != '1' ? 'disabled' : '' ?>>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" 
+                                       class="form-control rounded-0 currency" 
+                                       id="apres_nom" 
+                                       name="apres_nom"
+                                       value="<?= Angka::format($data->apres_nom) ?>" 
+                                       placeholder="Masukkan nominal" 
+                                       onkeyup="formatCurrency(this)"
+                                       <?= $data->apres_tipe != '2' ? 'disabled' : '' ?>>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Status <span class="text-danger">*</span></label>
                         <div class="custom-control custom-radio">
@@ -114,7 +191,142 @@ function formatCurrency(input) {
     }
 }
 
+function validateNumber(input) {
+    // Remove any non-digit characters
+    input.value = input.value.replace(/[^\d]/g, '');
+    
+    // Ensure value is between 0 and 100
+    let value = parseInt(input.value);
+    if (value > 100) {
+        input.value = '100';
+    }
+
+    // Calculate nominal based on percentage
+    if (input.id === 'remun_perc') {
+        calculateRemunNom();
+    } else if (input.id === 'apres_perc') {
+        calculateApresNom();
+    }
+}
+
+function calculateRemunNom() {
+    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+    const remunPerc = parseInt($('#remun_perc').val() || 0);
+    
+    if (hargaJual && remunPerc) {
+        const remunNom = Math.round((hargaJual * remunPerc) / 100);
+        $('#remun_nom').val(remunNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+    }
+}
+
+function calculateApresNom() {
+    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+    const apresPerc = parseInt($('#apres_perc').val() || 0);
+    
+    if (hargaJual && apresPerc) {
+        const apresNom = Math.round((hargaJual * apresPerc) / 100);
+        $('#apres_nom').val(apresNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+    }
+}
+
+function calculateRemunPerc() {
+    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+    const remunNom = parseInt($('#remun_nom').val().replace(/\./g, '') || 0);
+    
+    if (hargaJual && remunNom) {
+        const remunPerc = Math.round((remunNom * 100) / hargaJual);
+        const finalPerc = Math.min(remunPerc, 100);
+        $('#remun_perc').val(finalPerc);
+    }
+}
+
+function calculateApresPerc() {
+    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+    const apresNom = parseInt($('#apres_nom').val().replace(/\./g, '') || 0);
+    
+    if (hargaJual && apresNom) {
+        const apresPerc = Math.round((apresNom * 100) / hargaJual);
+        const finalPerc = Math.min(apresPerc, 100);
+        $('#apres_perc').val(finalPerc);
+    }
+}
+
+function handleRemunTipeChange() {
+    const remunTipe = $('select[name="remun_tipe"]').val();
+    
+    // Reset fields
+    $('#remun_perc, #remun_nom').val('').prop('disabled', true);
+    
+    if (remunTipe === '1') { // Persen
+        $('#remun_perc').prop('disabled', false);
+        $('#remun_nom').prop('disabled', true);
+    } else if (remunTipe === '2') { // Nominal
+        $('#remun_perc').prop('disabled', true);
+        $('#remun_nom').prop('disabled', false);
+    }
+}
+
+function handleApresTipeChange() {
+    const apresTipe = $('select[name="apres_tipe"]').val();
+    
+    // Reset fields
+    $('#apres_perc, #apres_nom').val('').prop('disabled', true);
+    
+    if (apresTipe === '1') { // Persen
+        $('#apres_perc').prop('disabled', false);
+        $('#apres_nom').prop('disabled', true);
+    } else if (apresTipe === '2') { // Nominal
+        $('#apres_perc').prop('disabled', true);
+        $('#apres_nom').prop('disabled', false);
+    }
+}
+
 $(document).ready(function() {
+    // Initialize fields based on saved values
+    const remunTipe = $('select[name="remun_tipe"]').val();
+    const apresTipe = $('select[name="apres_tipe"]').val();
+
+    // Handle type changes
+    $('select[name="remun_tipe"]').on('change', handleRemunTipeChange);
+    $('select[name="apres_tipe"]').on('change', handleApresTipeChange);
+
+    // Handle harga_jual changes
+    $('#harga_jual').on('keyup', function() {
+        const remunTipe = $('select[name="remun_tipe"]').val();
+        const apresTipe = $('select[name="apres_tipe"]').val();
+
+        if (remunTipe === '1') calculateRemunNom();
+        if (remunTipe === '2') calculateRemunPerc();
+        if (apresTipe === '1') calculateApresNom();
+        if (apresTipe === '2') calculateApresPerc();
+    });
+
+    // Handle percentage inputs
+    $('#remun_perc').on('input', function() {
+        if ($('select[name="remun_tipe"]').val() === '1') {
+            calculateRemunNom();
+        }
+    });
+
+    $('#apres_perc').on('input', function() {
+        if ($('select[name="apres_tipe"]').val() === '1') {
+            calculateApresNom();
+        }
+    });
+
+    // Handle nominal inputs
+    $('#remun_nom').on('keyup', function() {
+        if ($('select[name="remun_tipe"]').val() === '2') {
+            calculateRemunPerc();
+        }
+    });
+
+    $('#apres_nom').on('keyup', function() {
+        if ($('select[name="apres_tipe"]').val() === '2') {
+            calculateApresPerc();
+        }
+    });
+
     // Handle form submission
     $('form').on('submit', function(e) {
         $('.currency').each(function() {
@@ -132,5 +344,18 @@ $(document).ready(function() {
         },
         allowClear: true
     });
+
+    // Add keypress validation for percentage fields
+    $('#remun_perc, #apres_perc').on('keypress', function(e) {
+        // Allow only numbers (0-9)
+        if (e.which < 48 || e.which > 57) {
+            e.preventDefault();
+        }
+        
+        // Prevent input if current value is 100 and trying to add more digits
+        if (this.value === '100' || (this.value.length === 2 && parseInt(this.value + e.key) > 100)) {
+            e.preventDefault();
+        }
+    });
 });
-</script> 
+</script>

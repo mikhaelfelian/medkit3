@@ -78,9 +78,7 @@ BaseRouting::get('obat/permanent-delete/{id}', 'Obat@permanentDelete');
 // Add these routes for supplier trash management
 
 BaseRouting::get('supplier/trash', 'Supplier@trash');
-
 BaseRouting::get('supplier/restore/{id}', 'Supplier@restore');
-
 BaseRouting::get('supplier/permanent-delete/{id}', 'Supplier@permanentDelete');
 
 
@@ -104,7 +102,7 @@ BaseRouting::get('tindakan/trash', 'Tindakan@trash');
 BaseRouting::get('tindakan/restore/{id}', 'Tindakan@restore');
 
 BaseRouting::get('tindakan/hapus/{id}', 'Tindakan@hapus');
-
+/][=';p']
 
 
 // Add these routes for Obat
@@ -132,5 +130,11 @@ BaseRouting::get('obat/trash', 'Obat@trash');
 BaseRouting::get('obat/restore/{id}', 'Obat@restore');
 
 BaseRouting::get('obat/hapus/{id}', 'Obat@hapus');
+
+
+
+// Add this route for handling file access
+
+BaseRouting::get('file/{path}', 'Public@file');
 
 ?> 

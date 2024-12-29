@@ -47,7 +47,7 @@ class PengaturanController extends BaseController {
                 }
                 $logo = $this->model->uploadFile($_FILES['logo'], 'logo');
                 if ($logo) {
-                    $data['logo'] = $logo;
+                    $data['logo'] = 'public/'.$logo;
                 }
             }
 
@@ -59,7 +59,7 @@ class PengaturanController extends BaseController {
                 }
                 $favicon = $this->model->uploadFile($_FILES['favicon'], 'favicon');
                 if ($favicon) {
-                    $data['favicon'] = $favicon;
+                    $data['favicon'] = 'public/'.$favicon;
                 }
             }
 

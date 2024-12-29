@@ -13,3 +13,18 @@ RewriteRule ^(.*)$ ../index.php [QSA,L]
 <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
     Header set Cache-Control "max-age=31536000, public"
 </FilesMatch>
+
+# Public directory .htaccess
+Options -Indexes
+
+# Allow access to assets
+<FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Protect sensitive directories
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

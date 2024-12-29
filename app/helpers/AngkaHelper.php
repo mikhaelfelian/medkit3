@@ -5,7 +5,10 @@ class Angka {
      * Example: 10.000.000
      */
     public static function format($angka) {
-        return number_format($angka, 0, ',', '.');
+        if ($angka === null || $angka === '') {
+            return '0';
+        }
+        return number_format((float)$angka, 0, ',', '.');
     }
 
     /**
@@ -13,7 +16,10 @@ class Angka {
      * Example: Rp. 10.000,-
      */
     public static function formatRupiahDash($angka) {
-        return 'Rp. ' . number_format($angka, 0, ',', '.') . ',-';
+        if ($angka === null || $angka === '') {
+            return 'Rp. 0,-';
+        }
+        return 'Rp. ' . number_format((float)$angka, 0, ',', '.') . ',-';
     }
 
     /**
@@ -21,7 +27,10 @@ class Angka {
      * Example: Rp. 10.000,00
      */
     public static function formatRupiahDecimal($angka) {
-        return 'Rp. ' . number_format($angka, 2, ',', '.');
+        if ($angka === null || $angka === '') {
+            return 'Rp. 0,00';
+        }
+        return 'Rp. ' . number_format((float)$angka, 2, ',', '.');
     }
 
     /**
@@ -29,13 +38,19 @@ class Angka {
      * Example: Rp. 10.000
      */
     public static function formatRupiah($angka) {
-        return 'Rp. ' . number_format($angka, 0, ',', '.');
+        if ($angka === null || $angka === '') {
+            return 'Rp. 0';
+        }
+        return 'Rp. ' . number_format((float)$angka, 0, ',', '.');
     }
 
     /**
      * Clean number from any format
      */
     public static function cleanNumber($number) {
+        if ($number === null || $number === '') {
+            return 0;
+        }
         // Remove all characters except digits and decimal point
         $clean = preg_replace('/[^0-9,.]/', '', $number);
         
@@ -46,10 +61,14 @@ class Angka {
         return strpos($clean, '.') !== false ? (float)$clean : (int)$clean;
     }
 
+    /**
+     * Format number for database storage
+     */
     public static function formatDB($number) {
-        $angka  = (float) $number;
-        $string = str_replace(',','.', str_replace('.','', $number));
-        return $string;
+        if ($number === null || $number === '') {
+            return '0';
+        }
+        $angka = (float)$number;
+        return str_replace(',', '.', str_replace('.', '', (string)$angka));
     }
-
 } 
