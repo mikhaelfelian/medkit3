@@ -6,9 +6,6 @@ class TindakanController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Tindakan');
-        // Load Angka helper
-        $this->loadHelper('angka');
-        $this->loadHelper('debug');
     }
     
     public function index() {
