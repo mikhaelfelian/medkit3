@@ -1,9 +1,11 @@
 <?php
 class IcdController extends BaseController {
     protected $model;
+    protected $conn;
     
     public function __construct() {
         parent::__construct();
+        $this->conn = Database::getInstance()->getConnection();
         $this->model = $this->loadModel('Icd');
     }
     
@@ -24,7 +26,8 @@ class IcdController extends BaseController {
                 'total' => $result['total'],
                 'page' => $page,
                 'perPage' => $perPage,
-                'search' => $search
+                'search' => $search,
+                'conn' => $this->conn
             ]);
             
         } catch (Exception $e) {

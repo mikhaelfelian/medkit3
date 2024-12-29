@@ -16,11 +16,19 @@ return [
 
     'core' => [
 
-        'Input',
-
         'Database',
 
-        'BaseSecurity'
+        'BaseModel',
+
+        'BaseController',
+
+        'BaseRouting',
+
+        'BaseForm',
+
+        'ViewHelper',
+
+        'PaginateHelper'
 
     ],
 
@@ -41,15 +49,15 @@ return [
 
     'helpers' => [
 
-        'asset',       // Will load AssetHelper.php
+        'url',
 
-        'view',        // Will load ViewHelper.php
+        'form',
 
-        'notification', // Will load NotificationHelper.php
+        'html',
 
-        'angka',        // Will load AngkaHelper.php
+        'security',
 
-        'generateNoRM'
+        'paginate'
 
     ],
 
@@ -63,7 +71,9 @@ return [
 
         'security',    // Will load Security.php
 
-        'form'         // Will load Form.php
+        'form',         // Will load Form.php
+
+        'paginate'
 
     ]
 

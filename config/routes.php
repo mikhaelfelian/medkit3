@@ -106,4 +106,26 @@ BaseRouting::get('tindakan/restore/{id}', 'Tindakan@restore');
 
 BaseRouting::get('tindakan/hapus/{id}', 'Tindakan@permanentDelete');
 
+
+
+// Add these routes for Radiologi
+
+BaseRouting::get('radiologi', 'Radiologi@index');
+
+BaseRouting::get('radiologi/create', 'Radiologi@create');
+
+BaseRouting::post('radiologi/store', 'Radiologi@store');
+
+BaseRouting::get('radiologi/edit/{id}', 'Radiologi@edit');
+
+BaseRouting::post('radiologi/update/{id}', 'Radiologi@update');
+
+BaseRouting::get('radiologi/delete/{id}', 'Radiologi@delete');
+
+BaseRouting::get('radiologi/trash', 'Radiologi@trash');
+
+BaseRouting::get('radiologi/restore/{id}', 'Radiologi@restore');
+
+BaseRouting::get('radiologi/permanent-delete/{id}', 'Radiologi@permanentDelete');
+
 ?> 

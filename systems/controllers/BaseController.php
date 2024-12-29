@@ -5,11 +5,13 @@ class BaseController {
     protected $input;
     protected $viewHelper;
     protected $sections = [];
+    protected $conn;
 
     public function __construct() {
         require_once SYSTEM_PATH . '/libraries/Input.php';
         require_once SYSTEM_PATH . '/libraries/Security.php';
         
+        $this->conn = Database::getInstance()->getConnection();
         $this->security = new Security();
         $this->input = new Input();
         $this->viewHelper = new ViewHelper();

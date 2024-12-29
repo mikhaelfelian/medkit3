@@ -130,4 +130,10 @@
             </div>
         </div>
     </div>
-</section> 
+</section>
+
+<?php if ($total > $perPage): ?>
+    <div class="card-footer clearfix">
+        <?php echo PaginateHelper::createLinks($page, $perPage, $total, $search ? ['search' => $search] : []); ?>
+    </div>
+<?php endif; ?> 
