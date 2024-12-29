@@ -251,6 +251,7 @@ class TindakanController extends BaseController {
             $data = [
                 'kode' => $this->model->generateKode(),
                 'id_kategori' => $this->input->post('id_kategori'),
+                'id_merk' => $this->input->post('id_merk'),
                 'item' => $this->input->post('item'),
                 'harga_jual' => Angka::cleanNumber($this->input->post('harga_jual')),
                 'status' => $this->input->post('status', '1'),

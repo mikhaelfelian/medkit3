@@ -7,6 +7,7 @@ class TindakanModel extends BaseModel {
     protected $fillable = [
         'kode',
         'id_kategori',
+        'id_merk',
         'item',
         'harga_jual',
         'remun_tipe',
@@ -200,6 +201,10 @@ class TindakanModel extends BaseModel {
         // Validate required fields
         if (empty($data['id_kategori'])) {
             $errors[] = 'Kategori harus dipilih';
+        }
+        
+        if (empty($data['id_merk'])) {
+            $errors[] = 'Merk harus dipilih';
         }
         
         if (empty($data['item'])) {

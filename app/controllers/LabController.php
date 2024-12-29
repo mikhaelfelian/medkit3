@@ -6,6 +6,7 @@ class LabController extends BaseController {
         parent::__construct();
         $this->model = $this->loadModel('Lab');
         $this->loadHelper('angka');
+        $this->loadHelper('debug');
     }
     
     public function index() {
@@ -118,15 +119,30 @@ class LabController extends BaseController {
                 throw new Exception('Invalid security token');
             }
 
+            // Sanitize and prepare data
             $data = [
-                'id_kategori' => $this->input->post('id_kategori'),
+                'id_kategori' => (int)$this->input->post('id_kategori'),
+                'id_merk' => (int)$this->input->post('id_merk'), // Ensure id_merk is properly cast
                 'item' => $this->input->post('item'),
                 'item_alias' => $this->input->post('item_alias'),
                 'item_kand' => $this->input->post('item_kand'),
                 'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
-                'status' => $this->input->post('status', '1')
+                'status' => $this->input->post('status', '1'),
+                'updated_at' => date('Y-m-d H:i:s')
             ];
 
+            // Validate required fields
+            if (empty($data['id_kategori'])) {
+                throw new Exception('Kategori harus dipilih');
+            }
+            if (empty($data['id_merk'])) {
+                throw new Exception('Merk harus dipilih');
+            }
+            if (empty($data['item'])) {
+                throw new Exception('Nama item harus diisi');
+            }
+
+            // Update the record
             if (!$this->model->update($id, $data)) {
                 throw new Exception('Gagal mengupdate data');
             }

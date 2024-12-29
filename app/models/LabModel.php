@@ -6,6 +6,7 @@ class LabModel extends BaseModel {
     protected $fillable = [
         'kode',
         'id_kategori',
+        'id_merk',
         'item',
         'item_alias',
         'item_kand',
