@@ -167,4 +167,16 @@ class MerkModel extends BaseModel {
         
         return $errors;
     }
+
+    public function getActiveRecords() {
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE status = '1' ORDER BY merk ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Database Error in getActiveRecords: " . $e->getMessage());
+            return [];
+        }
+    }
 } 
