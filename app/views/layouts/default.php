@@ -39,6 +39,6 @@
     <script src="<?= AssetHelper::custom('js/script.js') ?>"></script>
     <?php endif; ?>
     
-    <?= $this->yield('scripts') ?>
+    <?php // $this->yield('scripts') ?>
 </body>
 </html> 

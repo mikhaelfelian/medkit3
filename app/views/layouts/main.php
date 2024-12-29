@@ -22,6 +22,21 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
     <!-- Additional CSS -->
     <?= $this->getSection('css') ?>
+	
+    <!-- Core Scripts -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/dist/js/adminlte.min.js') ?>"></script>
+
+    <!-- jQuery -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') ?>"></script>
+    <!-- Bootstrap 4 -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+	
+    <!-- Select2 -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/js/select2.full.min.js') ?>"></script>
+	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/css/select2.min.css') ?>">
+	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') ?>">	
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -37,12 +52,9 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
         <?php require APP_PATH . '/views/layouts/footer.php'; ?>
     </div>
 
-    <!-- Core Scripts -->
-    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery/jquery.min.js') ?>"></script>
-    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-    <script src="<?= BaseRouting::asset('theme/admin-lte-3/dist/js/adminlte.min.js') ?>"></script>
     
     <!-- Page specific scripts -->
-    <?= $controller->getSection('script') ?>
+    <?php $controller->getSection('script') ?>
+    <?php if (isset($pageScripts)) echo $pageScripts; ?>
 </body>
 </html> 
