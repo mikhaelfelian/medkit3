@@ -25,11 +25,11 @@
                             </div>
                             <div class="col-md-6">
                                 <form action="<?= BaseRouting::url('kategori') ?>" method="GET" class="float-right">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="search" class="form-control rounded-0" 
-                                               placeholder="Search" value="<?= $search ?>">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
+                                        <input type="text" class="form-control rounded-0" placeholder="Cari..."
+                                            name="search" value="<?= $search ?? '' ?>">
                                         <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default rounded-0">
+                                            <button class="btn btn-primary rounded-0" type="submit">
                                                 <i class="fas fa-search"></i>
                                             </button>
                                         </div>

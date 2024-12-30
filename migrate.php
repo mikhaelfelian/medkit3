@@ -1,70 +1,61 @@
 <?php
-// First load config
+// Load configuration first
 require_once __DIR__ . '/config/config.php';
 
-// Then load database
-require_once __DIR__ . '/config/database.php';
-
-// Finally load migration class
+// Load required files
+require_once __DIR__ . '/systems/Database.php';
 require_once __DIR__ . '/systems/databases/Migration.php';
-require_once __DIR__ . '/systems/databases/BaseTables.php';
 
 try {
-    // Use existing database connection
-    $db = $GLOBALS['conn'];
+    // Get database connection
+    $conn = new PDO(
+        "mysql:host={$GLOBALS['db_config']['hostname']};dbname={$GLOBALS['db_config']['database']};charset={$GLOBALS['db_config']['charset']}",
+        $GLOBALS['db_config']['username'],
+        $GLOBALS['db_config']['password'],
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$GLOBALS['db_config']['charset']}"
+        ]
+    );
+
+    // Get migration files
+    $migrationFiles = glob(__DIR__ . '/app/migrations/*.php');
     
-    echo "Starting migrations...\n";
-    echo "==========================================\n";
-    
-    // Get all migration files
-    $migrations = glob(__DIR__ . '/app/migrations/*.php');
-    sort($migrations);
-    
-    // Move create_migrations.php to be first
-    foreach ($migrations as $key => $file) {
-        if (strpos($file, 'create_tbl_migrations.php') !== false) {
-            // Remove and prepend to beginning
-            $migration = array_splice($migrations, $key, 1)[0];
-            array_unshift($migrations, $migration);
-            break;
+    foreach ($migrationFiles as $file) {
+        require_once $file;
+        
+        // Get migration class name from filename
+        $className = 'Migration_' . basename($file, '.php');
+        
+        if (class_exists($className)) {
+            echo "Running migration: " . basename($file) . "\n";
+            
+            // Create migration instance with database connection
+            $migration = new $className($conn);
+            
+            try {
+                // Begin transaction
+                $conn->beginTransaction();
+                
+                // Run migration
+                $sql = $migration->up();
+                $conn->exec($sql);
+                
+                // Commit transaction
+                $conn->commit();
+                
+                echo "Migration successful\n";
+            } catch (Exception $e) {
+                // Rollback on error
+                $conn->rollBack();
+                echo "Migration failed: " . $e->getMessage() . "\n";
+            }
         }
     }
-    
-    // Track migration status
-    $totalMigrations = count($migrations);
-    $successCount = 0;
-    $failedCount = 0;
-    
-    foreach ($migrations as $migration) {
-        require_once $migration;
-        
-        // Get class name from filename
-        $baseName = basename($migration, '.php');
-        $className = 'Migration_' . $baseName;
-        
-        $migration = new $className($db);
-        
-        echo "\nMigrating: " . $migration->getDescription() . "\n";
-        
-        if ($migration->migrate()) {
-            echo "✓ Migration successful\n";
-            $successCount++;
-        } else {
-            echo "✗ Migration failed\n";
-            $failedCount++;
-        }
-    }
-    
-    echo "\n==========================================\n";
-    echo "Migration Summary:\n";
-    echo "Total migrations: " . $totalMigrations . "\n";
-    echo "Successful: " . $successCount . "\n";
-    echo "Failed: " . $failedCount . "\n";
-    echo "==========================================\n";
-    
+
+    echo "All migrations completed\n";
+
 } catch (Exception $e) {
-    echo "\n==========================================\n";
-    echo "Error: " . $e->getMessage() . "\n";
-    echo "Migration process terminated.\n";
-    echo "==========================================\n";
+    die("Migration Error: " . $e->getMessage() . "\n");
 } 

@@ -5,148 +5,142 @@
  * Provides common methods for table creation
  */
 class BaseTables {
-    /**
-     * Create table options
-     * 
-     * @return string
-     */
-    public static function tableOptions() {
-        return "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci";
-    }
+    protected $conn;
+    protected $prefix;
     
-    /**
-     * Create primary key field
-     * 
-     * @return string
-     */
-    public static function primaryKey() {
-        return "`id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY";
+    public function __construct($conn) {
+        $this->conn = $conn;
+        $this->prefix = 'tbl_';
     }
-    
+
     /**
-     * Create timestamp fields
-     * 
-     * @return string
+     * Create a new table
      */
-    public static function timestamps() {
-        return "`created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-                `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP";
+    public function create($tableName, $callback) {
+        $table = new TableBuilder($this->prefix . $tableName);
+        $callback($table);
+        return $table->build();
     }
-    
+
     /**
-     * Create varchar field
-     * 
-     * @param string $name Field name
-     * @param int $length Field length
-     * @param bool $nullable Whether field is nullable
-     * @param string|null $default Default value
-     * @return string
+     * Get table name with prefix
      */
-    public static function varchar($name, $length = 255, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT '$default'";
-        return "`$name` VARCHAR($length) $null $default";
+    protected function getTableName($name) {
+        return $this->prefix . $name;
     }
-    
-    /**
-     * Create text field
-     * 
-     * @param string $name Field name
-     * @param bool $nullable Whether field is nullable
-     * @return string
-     */
-    public static function text($name, $nullable = true) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        return "`$name` TEXT $null";
+}
+
+/**
+ * Table Builder Class
+ */
+class TableBuilder {
+    private $tableName;
+    private $columns = [];
+    private $primaryKey;
+    private $foreignKeys = [];
+    private $engine = 'InnoDB';
+    private $charset = 'utf8mb4';
+    private $collation = 'utf8mb4_general_ci';
+    private $currentColumn;
+
+    public function __construct($tableName) {
+        $this->tableName = $tableName;
     }
-    
-    /**
-     * Create integer field
-     * 
-     * @param string $name Field name
-     * @param bool $nullable Whether field is nullable
-     * @param int|null $default Default value
-     * @return string
-     */
-    public static function integer($name, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT $default";
-        return "`$name` INT(11) $null $default";
+
+    // Add method chaining support
+    public function nullable() {
+        $this->columns[count($this->columns) - 1] = str_replace('NOT NULL', 'NULL DEFAULT NULL', $this->columns[count($this->columns) - 1]);
+        return $this;
     }
-    
-    /**
-     * Create decimal field
-     * 
-     * @param string $name Field name
-     * @param int $precision Total digits
-     * @param int $scale Decimal places
-     * @param bool $nullable Whether field is nullable
-     * @param float|null $default Default value
-     * @return string
-     */
-    public static function decimal($name, $precision = 10, $scale = 2, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT $default";
-        return "`$name` DECIMAL($precision,$scale) $null $default";
+
+    public function notNull() {
+        $this->columns[count($this->columns) - 1] = str_replace('NULL DEFAULT NULL', 'NOT NULL', $this->columns[count($this->columns) - 1]);
+        return $this;
     }
-    
-    /**
-     * Create enum field
-     * 
-     * @param string $name Field name
-     * @param array $values Enum values
-     * @param bool $nullable Whether field is nullable
-     * @param string|null $default Default value
-     * @return string
-     */
-    public static function enum($name, $values = [], $nullable = true, $default = null) {
-        $values = array_map(function($val) { return "'$val'"; }, $values);
-        $valuesStr = implode(',', $values);
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT '$default'";
-        return "`$name` ENUM($valuesStr) $null $default";
+
+    public function default($value) {
+        if (is_string($value)) {
+            $value = "'$value'";
+        }
+        $this->columns[count($this->columns) - 1] = preg_replace('/DEFAULT.*?(?=,|$)/', "DEFAULT $value", $this->columns[count($this->columns) - 1]);
+        return $this;
     }
-    
-    /**
-     * Create datetime field
-     * 
-     * @param string $name Field name
-     * @param bool $nullable Whether field is nullable
-     * @param string|null $default Default value
-     * @return string
-     */
-    public static function datetime($name, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT $default";
-        return "`$name` DATETIME $null $default";
+
+    public function increments($column) {
+        $this->columns[] = "`$column` INT(11) NOT NULL AUTO_INCREMENT";
+        $this->primaryKey = $column;
+        return $this;
     }
-    
-    /**
-     * Create float field
-     * 
-     * @param string $name Field name
-     * @param bool $nullable Whether field is nullable
-     * @param float|null $default Default value
-     * @return string
-     */
-    public static function float($name, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT $default";
-        return "`$name` FLOAT $null $default";
+
+    public function bigIncrements($column) {
+        $this->columns[] = "`$column` BIGINT(20) NOT NULL AUTO_INCREMENT";
+        $this->primaryKey = $column;
+        return $this;
     }
-    
-    /**
-     * Create timestamp field
-     * 
-     * @param string $name Field name
-     * @param bool $nullable Whether field is nullable
-     * @param string|null $default Default value
-     * @return string
-     */
-    public static function timestamp($name, $nullable = true, $default = null) {
-        $null = $nullable ? 'NULL' : 'NOT NULL';
-        $default = is_null($default) ? '' : "DEFAULT $default";
-        return "`$name` TIMESTAMP $null $default";
+
+    public function string($column, $length = 255) {
+        $this->columns[] = "`$column` VARCHAR($length) NOT NULL";
+        return $this;
+    }
+
+    public function text($column) {
+        $this->columns[] = "`$column` TEXT NOT NULL";
+        return $this;
+    }
+
+    public function integer($column) {
+        $this->columns[] = "`$column` INT(11) NOT NULL";
+        return $this;
+    }
+
+    public function bigInteger($column) {
+        $this->columns[] = "`$column` BIGINT(20) NOT NULL";
+        return $this;
+    }
+
+    public function boolean($column) {
+        $this->columns[] = "`$column` TINYINT(1) NOT NULL DEFAULT '0'";
+        return $this;
+    }
+
+    public function datetime($column) {
+        $this->columns[] = "`$column` DATETIME NOT NULL";
+        return $this;
+    }
+
+    public function timestamp($column, $default = 'CURRENT_TIMESTAMP') {
+        $this->columns[] = "`$column` TIMESTAMP NOT NULL DEFAULT $default";
+        return $this;
+    }
+
+    public function enum($column, $values) {
+        $values = array_map(function($value) {
+            return "'$value'";
+        }, $values);
+        $this->columns[] = "`$column` ENUM(" . implode(',', $values) . ") NOT NULL";
+        return $this;
+    }
+
+    public function foreign($column, $reference) {
+        $this->foreignKeys[] = "FOREIGN KEY (`$column`) REFERENCES $reference";
+        return $this;
+    }
+
+    public function build() {
+        $sql = "CREATE TABLE IF NOT EXISTS `{$this->tableName}` (\n";
+        $sql .= implode(",\n", $this->columns);
+        
+        if ($this->primaryKey) {
+            $sql .= ",\nPRIMARY KEY (`{$this->primaryKey}`)";
+        }
+        
+        if (!empty($this->foreignKeys)) {
+            $sql .= ",\n" . implode(",\n", $this->foreignKeys);
+        }
+        
+        $sql .= "\n) ENGINE={$this->engine} DEFAULT CHARSET={$this->charset} COLLATE={$this->collation};";
+        
+        return $sql;
     }
 }
 ?> 

@@ -136,4 +136,20 @@ BaseRouting::get('radiologi/edit/{id}', 'Radiologi@edit');
 
 BaseRouting::post('radiologi/update/{id}', 'Radiologi@update');
 
+
+
+// Add these routes for Satuan
+
+BaseRouting::get('satuan', 'Satuan@index');
+
+BaseRouting::get('satuan/create', 'Satuan@create');
+
+BaseRouting::post('satuan/store', 'Satuan@store');
+
+BaseRouting::get('satuan/edit/{id}', 'Satuan@edit');
+
+BaseRouting::post('satuan/update/{id}', 'Satuan@update');
+
+BaseRouting::get('satuan/delete/{id}', 'Satuan@delete');
+
 ?> 
