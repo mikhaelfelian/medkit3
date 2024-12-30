@@ -44,6 +44,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                           strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'satuan') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'kategori') !== false || 
+                                          strpos($_SERVER['REQUEST_URI'], 'poli') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'supplier') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'tindakan') !== false || 
@@ -57,6 +58,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                                      strpos($_SERVER['REQUEST_URI'], 'icd') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'satuan') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'kategori') !== false || 
+                                                     strpos($_SERVER['REQUEST_URI'], 'poli') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'obat') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'supplier') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'tindakan') !== false || 
@@ -118,6 +120,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'radiologi') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Radiologi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('poli'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'poli') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Klinik</p>
                             </a>
                         </li>
                         <li class="nav-item">
