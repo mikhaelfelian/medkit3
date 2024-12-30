@@ -46,19 +46,13 @@
                             </div>
                         </div>
 
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <a href="<?= BaseRouting::url('icd') ?>" class="btn btn-default rounded-0">
-                                        <i class="fas fa-arrow-left mr-2"></i>Kembali
-                                    </a>
-                                </div>
-                                <div class="col-md-6 text-right">
-                                    <button type="submit" class="btn btn-primary rounded-0">
-                                        <i class="fas fa-save mr-2"></i>Simpan
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="card-footer text-right">
+                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-default rounded-0 float-left">
+                                <i class="fas fa-arrow-left mr-2"></i>Kembali
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-0">
+                                <i class="fas fa-save mr-2"></i>Simpan
+                            </button>
                         </div>
                     </form>
                 </div>

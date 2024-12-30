@@ -49,6 +49,7 @@
                                 <th>No</th>
                                 <th>Satuan Kecil</th>
                                 <th>Satuan Besar</th>
+                                <th>Jml</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>

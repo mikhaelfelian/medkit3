@@ -59,13 +59,20 @@ class PasienController extends BaseController {
                 throw new Exception("Invalid security token");
             }
             
-            $gelar = ViewHelper::loadModel('Gelar')->find($this->input->post('id_gelar'));
-            $nama_pgl = $gelar->gelar . ' ' . $this->input->post('nama');
+            // Gelar 
+            $gelar      = ViewHelper::loadModel('Gelar')->find($this->input->post('id_gelar'));
+            $nama_pgl   = $gelar->gelar . ' ' . $this->input->post('nama');
+
+            // Generate no_rm
+            $no_rm      = $this->model->generateKode();
+
+            // Uploads directory path
+            $path       = PUBLIC_PATH.'/file/pasien/'.strtolower($no_rm);
 
             // Get form data
             $data = [
                 'id_gelar'          => $this->input->post('id_gelar'),
-                'kode'              => $this->model->generateKode(),
+                'kode'              => $no_rm,
                 'nik'               => $this->input->post('nik'),
                 'nama'              => strtoupper($this->input->post('nama')),
                 'nama_pgl'          => strtoupper($nama_pgl),
@@ -82,7 +89,7 @@ class PasienController extends BaseController {
                 'pekerjaan'         => $this->input->post('pekerjaan'),
                 'no_hp'             => $this->input->post('no_hp'),
                 'status'            => '1'
-            ];
+            ];           
 
             // Validate required fields
             $errors = $this->model->validate($data);
@@ -91,6 +98,11 @@ class PasienController extends BaseController {
                     Notification::error($error);
                 }
                 return $this->redirect('pasien/create');
+            }
+
+            // Create uploads directory if not exists
+            if(!file_exists($path)) {
+                mkdir($path, 0777, true);
             }
 
             // Add timestamps
@@ -144,19 +156,28 @@ class PasienController extends BaseController {
                 throw new Exception("Record not found");
             }
 
+            // Gelar 
+            $gelar      = ViewHelper::loadModel('Gelar')->find($this->input->post('id_gelar'));
+            $nama_pgl   = $gelar->gelar . ' ' . $this->input->post('nama');
+
+            // Get form data
             $data = [
-                'nik' => $this->input->post('nik'),
-                'nama' => $this->input->post('nama'),
-                'nama_pgl' => $this->input->post('nama_pgl'),
-                'no_hp' => $this->input->post('no_hp'),
-                'alamat' => $this->input->post('alamat'),
-                'alamat_domisili' => $this->input->post('alamat_domisili'),
-                'rt' => $this->input->post('rt'),
-                'rw' => $this->input->post('rw'),
-                'kelurahan' => $this->input->post('kelurahan'),
-                'kecamatan' => $this->input->post('kecamatan'),
-                'kota' => $this->input->post('kota'),
-                'pekerjaan' => $this->input->post('pekerjaan')
+                'id_gelar'          => $this->input->post('id_gelar'),
+                'nik'               => $this->input->post('nik'),
+                'nama'              => strtoupper($this->input->post('nama')),
+                'nama_pgl'          => strtoupper($nama_pgl),
+                'tmp_lahir'         => $this->input->post('tmp_lahir'),
+                'tgl_lahir'         => Tanggalan::formatDB($this->input->post('tgl_lahir')),
+                'jns_klm'           => $this->input->post('jns_klm'),
+                'alamat'            => $this->input->post('alamat'),
+                'alamat_domisili'   => $this->input->post('alamat_domisili'),
+                'rt'                => $this->input->post('rt'),
+                'rw'                => $this->input->post('rw'),
+                'kelurahan'         => $this->input->post('kelurahan'),
+                'kecamatan'         => $this->input->post('kecamatan'),
+                'kota'              => $this->input->post('kota'),
+                'pekerjaan'         => $this->input->post('pekerjaan'),
+                'no_hp'             => $this->input->post('no_hp')
             ];
 
             if ($this->model->update($id, $data)) {
@@ -177,8 +198,16 @@ class PasienController extends BaseController {
 
     public function delete($id) {
         try {
+            $no_rm      = $this->model->find($id)->kode;
+            $path       = PUBLIC_PATH.'/file/pasien/'.strtolower($no_rm);
+
             if (!$this->model->delete($id)) {
                 throw new Exception("Failed to delete record");
+            }
+
+            // Delete uploads directory if exists
+            if(file_exists($path)) {
+                rmdir($path);
             }
             
             Notification::success('Data pasien berhasil dihapus');

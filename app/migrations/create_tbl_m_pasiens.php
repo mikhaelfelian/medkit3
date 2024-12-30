@@ -22,6 +22,8 @@ class Migration_create_tbl_m_pasiens extends Migration {
             `kecamatan` VARCHAR(50) DEFAULT NULL,
             `kota` VARCHAR(50) DEFAULT NULL,
             `pekerjaan` VARCHAR(50) DEFAULT NULL,
+            `file_foto` VARCHAR(160) DEFAULT NULL,
+            `file_ktp` VARCHAR(160) DEFAULT NULL,
             `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
             `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (`id`),
