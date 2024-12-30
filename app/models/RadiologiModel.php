@@ -10,7 +10,14 @@ class RadiologiModel extends BaseModel {
         'item',
         'item_alias',
         'item_kand',
+        'harga_beli',
         'harga_jual',
+        'remun_tipe',
+        'remun_perc',
+        'remun_nom',
+        'apres_tipe',
+        'apres_perc',
+        'apres_nom',
         'status',
         'status_item',
         'status_hps',
@@ -124,5 +131,177 @@ class RadiologiModel extends BaseModel {
             error_log("Database Error in generateKode: " . $e->getMessage());
             throw new Exception("Failed to generate kode");
         }
+    }
+
+    public function softDelete($id) {
+        try {
+            $sql = "UPDATE {$this->table} 
+                    SET status_hps = '1', 
+                        deleted_at = :deleted_at 
+                    WHERE id = :id";
+                    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->bindValue(':deleted_at', date('Y-m-d H:i:s'));
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in softDelete: " . $e->getMessage());
+            throw new Exception("Failed to delete record");
+        }
+    }
+
+    public function getDeletedPaginate($search = '', $page = 1, $perPage = 10) {
+        try {
+            $offset = ($page - 1) * $perPage;
+            $conditions = ["status_hps = '1'"];
+            
+            if (!empty($search)) {
+                $conditions[] = "(kode LIKE :search OR item LIKE :search)";
+            }
+            
+            $where = implode(' AND ', $conditions);
+            
+            // Get total records
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE {$where}";
+            $stmt = $this->conn->prepare($sql);
+            
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%{$search}%");
+            }
+            
+            $stmt->execute();
+            $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
+            
+            // Get paginated records
+            $sql = "SELECT * FROM {$this->table} WHERE {$where} ORDER BY created_at DESC LIMIT :offset, :limit";
+            $stmt = $this->conn->prepare($sql);
+            
+            if (!empty($search)) {
+                $stmt->bindValue(':search', "%{$search}%");
+            }
+            
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return [
+                'data' => $stmt->fetchAll(PDO::FETCH_OBJ),
+                'total' => $total
+            ];
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in getDeletedPaginate: " . $e->getMessage());
+            throw new Exception("Failed to fetch deleted records");
+        }
+    }
+
+    public function restore($id) {
+        try {
+            $sql = "UPDATE {$this->table} 
+                    SET status_hps = '0', 
+                        deleted_at = NULL 
+                    WHERE id = :id";
+                    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in restore: " . $e->getMessage());
+            throw new Exception("Failed to restore record");
+        }
+    }
+
+    public function permanentDelete($id) {
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE id = :id AND status_hps = '1'";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            
+            return $stmt->execute();
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in permanentDelete: " . $e->getMessage());
+            throw new Exception("Failed to permanently delete record");
+        }
+    }
+
+    public function validate($data, $id = null) {
+        $errors = [];
+
+        // Validate id_kategori
+        if (empty($data['id_kategori'])) {
+            $errors['id_kategori'] = 'Kategori harus dipilih';
+        }
+
+        // Validate item name
+        if (empty($data['item'])) {
+            $errors['item'] = 'Nama tindakan harus diisi';
+        } else {
+            // Check for duplicate item names, excluding current record if updating
+            $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE item = :item AND status_hps = '0'";
+            if ($id) {
+                $sql .= " AND id != :id";
+            }
+            
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindValue(':item', $data['item']);
+                if ($id) {
+                    $stmt->bindValue(':id', $id);
+                }
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_OBJ);
+                
+                if ($result->count > 0) {
+                    $errors['item'] = 'Nama tindakan sudah digunakan';
+                }
+            } catch (PDOException $e) {
+                error_log("Database Error in validate: " . $e->getMessage());
+                throw new Exception("Gagal memvalidasi data");
+            }
+        }
+
+        // Validate harga_jual
+        if (empty($data['harga_jual'])) {
+            $errors['harga_jual'] = 'Harga harus diisi';
+        } else if (!is_numeric(str_replace(['.', ','], '', $data['harga_jual']))) {
+            $errors['harga_jual'] = 'Harga harus berupa angka';
+        }
+
+        // Validate remun_tipe if set
+        if (!empty($data['remun_tipe'])) {
+            if ($data['remun_tipe'] == '1') {
+                // Percentage type
+                if (!empty($data['remun_perc']) && (!is_numeric($data['remun_perc']) || $data['remun_perc'] > 100)) {
+                    $errors['remun_perc'] = 'Persentase remunerasi harus antara 0-100';
+                }
+            } else if ($data['remun_tipe'] == '2') {
+                // Nominal type
+                if (!empty($data['remun_nom']) && !is_numeric(str_replace(['.', ','], '', $data['remun_nom']))) {
+                    $errors['remun_nom'] = 'Nominal remunerasi harus berupa angka';
+                }
+            }
+        }
+
+        // Validate apres_tipe if set
+        if (!empty($data['apres_tipe'])) {
+            if ($data['apres_tipe'] == '1') {
+                // Percentage type
+                if (!empty($data['apres_perc']) && (!is_numeric($data['apres_perc']) || $data['apres_perc'] > 100)) {
+                    $errors['apres_perc'] = 'Persentase apresiasi harus antara 0-100';
+                }
+            } else if ($data['apres_tipe'] == '2') {
+                // Nominal type
+                if (!empty($data['apres_nom']) && !is_numeric(str_replace(['.', ','], '', $data['apres_nom']))) {
+                    $errors['apres_nom'] = 'Nominal apresiasi harus berupa angka';
+                }
+            }
+        }
+
+        return $errors;
     }
 } 

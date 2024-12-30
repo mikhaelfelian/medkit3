@@ -128,4 +128,12 @@ BaseRouting::get('radiologi/restore/{id}', 'Radiologi@restore');
 
 BaseRouting::get('radiologi/permanent-delete/{id}', 'Radiologi@permanentDelete');
 
+
+
+// Add these routes if not already present
+
+BaseRouting::get('radiologi/edit/{id}', 'Radiologi@edit');
+
+BaseRouting::post('radiologi/update/{id}', 'Radiologi@update');
+
 ?> 

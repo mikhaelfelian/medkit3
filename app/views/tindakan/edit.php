@@ -160,8 +160,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer">
+				<div class="card-footer">
                     <div class="row">
                         <div class="col-md-6">
                             <a href="<?= BaseRouting::url('tindakan') ?>" class="btn btn-default rounded-0">
@@ -181,181 +180,194 @@
 </section>
 
 <script>
-function formatCurrency(input) {
-    // Remove non-digits
-    let value = input.value.replace(/\D/g, '');
-    if (value !== '') {
-        // Format with thousand separator
-        value = parseInt(value);
-        input.value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-}
+    function formatCurrency(input) {
+        // Remove non-digit characters
+        let value = input.value.replace(/\D/g, '');
 
-function validateNumber(input) {
-    // Remove any non-digit characters
-    input.value = input.value.replace(/[^\d]/g, '');
-    
-    // Ensure value is between 0 and 100
-    let value = parseInt(input.value);
-    if (value > 100) {
-        input.value = '100';
+        // Convert to number and format
+        if (value !== '') {
+            value = parseInt(value);
+            value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Update input value
+        input.value = value;
     }
 
-    // Calculate nominal based on percentage
-    if (input.id === 'remun_perc') {
-        calculateRemunNom();
-    } else if (input.id === 'apres_perc') {
-        calculateApresNom();
-    }
-}
+    function validateNumber(input) {
+        // Remove any non-digit characters except decimal point
+        input.value = input.value.replace(/[^\d]/g, '');
+        
+        // Ensure value is between 0 and 100
+        let value = parseInt(input.value);
+        if (value > 100) {
+            input.value = '100';
+        }
 
-function calculateRemunNom() {
-    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-    const remunPerc = parseInt($('#remun_perc').val() || 0);
-    
-    if (hargaJual && remunPerc) {
-        const remunNom = Math.round((hargaJual * remunPerc) / 100);
-        $('#remun_nom').val(remunNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-    }
-}
-
-function calculateApresNom() {
-    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-    const apresPerc = parseInt($('#apres_perc').val() || 0);
-    
-    if (hargaJual && apresPerc) {
-        const apresNom = Math.round((hargaJual * apresPerc) / 100);
-        $('#apres_nom').val(apresNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-    }
-}
-
-function calculateRemunPerc() {
-    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-    const remunNom = parseInt($('#remun_nom').val().replace(/\./g, '') || 0);
-    
-    if (hargaJual && remunNom) {
-        const remunPerc = Math.round((remunNom * 100) / hargaJual);
-        const finalPerc = Math.min(remunPerc, 100);
-        $('#remun_perc').val(finalPerc);
-    }
-}
-
-function calculateApresPerc() {
-    const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-    const apresNom = parseInt($('#apres_nom').val().replace(/\./g, '') || 0);
-    
-    if (hargaJual && apresNom) {
-        const apresPerc = Math.round((apresNom * 100) / hargaJual);
-        const finalPerc = Math.min(apresPerc, 100);
-        $('#apres_perc').val(finalPerc);
-    }
-}
-
-function handleRemunTipeChange() {
-    const remunTipe = $('select[name="remun_tipe"]').val();
-    
-    // Reset fields
-    $('#remun_perc, #remun_nom').val('').prop('disabled', true);
-    
-    if (remunTipe === '1') { // Persen
-        $('#remun_perc').prop('disabled', false);
-        $('#remun_nom').prop('disabled', true);
-    } else if (remunTipe === '2') { // Nominal
-        $('#remun_perc').prop('disabled', true);
-        $('#remun_nom').prop('disabled', false);
-    }
-}
-
-function handleApresTipeChange() {
-    const apresTipe = $('select[name="apres_tipe"]').val();
-    
-    // Reset fields
-    $('#apres_perc, #apres_nom').val('').prop('disabled', true);
-    
-    if (apresTipe === '1') { // Persen
-        $('#apres_perc').prop('disabled', false);
-        $('#apres_nom').prop('disabled', true);
-    } else if (apresTipe === '2') { // Nominal
-        $('#apres_perc').prop('disabled', true);
-        $('#apres_nom').prop('disabled', false);
-    }
-}
-
-$(document).ready(function() {
-    // Initialize fields based on saved values
-    const remunTipe = $('select[name="remun_tipe"]').val();
-    const apresTipe = $('select[name="apres_tipe"]').val();
-
-    // Handle type changes
-    $('select[name="remun_tipe"]').on('change', handleRemunTipeChange);
-    $('select[name="apres_tipe"]').on('change', handleApresTipeChange);
-
-    // Handle harga_jual changes
-    $('#harga_jual').on('keyup', function() {
-        const remunTipe = $('select[name="remun_tipe"]').val();
-        const apresTipe = $('select[name="apres_tipe"]').val();
-
-        if (remunTipe === '1') calculateRemunNom();
-        if (remunTipe === '2') calculateRemunPerc();
-        if (apresTipe === '1') calculateApresNom();
-        if (apresTipe === '2') calculateApresPerc();
-    });
-
-    // Handle percentage inputs
-    $('#remun_perc').on('input', function() {
-        if ($('select[name="remun_tipe"]').val() === '1') {
+        // If this is remun_perc, calculate remun_nom
+        if (input.id === 'remun_perc') {
             calculateRemunNom();
         }
-    });
+    }
 
-    $('#apres_perc').on('input', function() {
-        if ($('select[name="apres_tipe"]').val() === '1') {
-            calculateApresNom();
+    function calculateRemunNom() {
+        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+        const remunPerc = parseInt($('#remun_perc').val() || 0);
+        
+        if (hargaJual && remunPerc) {
+            const remunNom = Math.round((hargaJual * remunPerc) / 100);
+            $('#remun_nom').val(remunNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         }
-    });
+    }
 
-    // Handle nominal inputs
-    $('#remun_nom').on('keyup', function() {
-        if ($('select[name="remun_tipe"]').val() === '2') {
-            calculateRemunPerc();
+    function calculateApresNom() {
+        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+        const apresPerc = parseInt($('#apres_perc').val() || 0);
+        
+        if (hargaJual && apresPerc) {
+            const apresNom = Math.round((hargaJual * apresPerc) / 100);
+            $('#apres_nom').val(apresNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
         }
-    });
+    }
 
-    $('#apres_nom').on('keyup', function() {
-        if ($('select[name="apres_tipe"]').val() === '2') {
-            calculateApresPerc();
+    function calculateRemunPerc() {
+        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+        const remunNom = parseInt($('#remun_nom').val().replace(/\./g, '') || 0);
+        
+        if (hargaJual && remunNom) {
+            const remunPerc = Math.round((remunNom * 100) / hargaJual);
+            const finalPerc = Math.min(remunPerc, 100);
+            $('#remun_perc').val(finalPerc);
         }
-    });
+    }
 
-    // Handle form submission
-    $('form').on('submit', function(e) {
-        $('.currency').each(function() {
-            var value = $(this).val().replace(/\./g, '');
-            $(this).val(value);
+    function calculateApresPerc() {
+        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
+        const apresNom = parseInt($('#apres_nom').val().replace(/\./g, '') || 0);
+        
+        if (hargaJual && apresNom) {
+            const apresPerc = Math.round((apresNom * 100) / hargaJual);
+            const finalPerc = Math.min(apresPerc, 100);
+            $('#apres_perc').val(finalPerc);
+        }
+    }
+
+    function handleRemunTipeChange() {
+        const remunTipe = $('select[name="remun_tipe"]').val();
+        
+        // Reset fields
+        $('#remun_perc, #remun_nom').val('').prop('disabled', true);
+        
+        if (remunTipe === '1') { // Persen
+            $('#remun_perc').prop('disabled', false);
+            $('#remun_nom').prop('disabled', true);
+        } else if (remunTipe === '2') { // Nominal
+            $('#remun_perc').prop('disabled', true);
+            $('#remun_nom').prop('disabled', false);
+        }
+    }
+
+    function handleApresTipeChange() {
+        const apresTipe = $('select[name="apres_tipe"]').val();
+        
+        // Reset fields
+        $('#apres_perc, #apres_nom').val('').prop('disabled', true);
+        
+        if (apresTipe === '1') { // Persen
+            $('#apres_perc').prop('disabled', false);
+            $('#apres_nom').prop('disabled', true);
+        } else if (apresTipe === '2') { // Nominal
+            $('#apres_perc').prop('disabled', true);
+            $('#apres_nom').prop('disabled', false);
+        }
+    }
+
+    $(document).ready(function() {
+        // Initially disable all fields
+        $('#remun_perc, #remun_nom, #apres_perc, #apres_nom').prop('disabled', true);
+
+        // Handle type changes
+        $('select[name="remun_tipe"]').on('change', handleRemunTipeChange);
+        $('select[name="apres_tipe"]').on('change', handleApresTipeChange);
+
+		
+        // Handle harga_jual changes
+        $('#harga_beli').on('keyup', function() {
+            const remunTipe = $('select[name="remun_tipe"]').val();
+            const apresTipe = $('select[name="apres_tipe"]').val();
+
+            if (remunTipe === '1') calculateRemunNom();
+            if (remunTipe === '2') calculateRemunPerc();
+            if (apresTipe === '1') calculateApresNom();
+            if (apresTipe === '2') calculateApresPerc();
+        });
+		
+        // Handle harga_jual changes
+        $('#harga_jual').on('keyup', function() {
+            const remunTipe = $('select[name="remun_tipe"]').val();
+            const apresTipe = $('select[name="apres_tipe"]').val();
+
+            if (remunTipe === '1') calculateRemunNom();
+            if (remunTipe === '2') calculateRemunPerc();
+            if (apresTipe === '1') calculateApresNom();
+            if (apresTipe === '2') calculateApresPerc();
+        });
+
+        // Handle percentage inputs
+        $('#remun_perc').on('input', function() {
+            if ($('select[name="remun_tipe"]').val() === '1') {
+                calculateRemunNom();
+            }
+        });
+
+        $('#apres_perc').on('input', function() {
+            if ($('select[name="apres_tipe"]').val() === '1') {
+                calculateApresNom();
+            }
+        });
+
+        // Handle nominal inputs
+        $('#remun_nom').on('keyup', function() {
+            if ($('select[name="remun_tipe"]').val() === '2') {
+                calculateRemunPerc();
+            }
+        });
+
+        $('#apres_nom').on('keyup', function() {
+            if ($('select[name="apres_tipe"]').val() === '2') {
+                calculateApresPerc();
+            }
+        });
+
+        // Handle form submission
+        $('form').on('submit', function(e) {
+            $('.currency').each(function() {
+                var value = $(this).val().replace(/\./g, '');
+                $(this).val(value);
+            });
+        });
+
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: function() {
+                return $(this).data('placeholder');
+            },
+            allowClear: true
+        });
+
+        // Add keypress validation for percentage fields
+        $('#remun_perc, #apres_perc').on('keypress', function(e) {
+            // Allow only numbers (0-9)
+            if (e.which < 48 || e.which > 57) {
+                e.preventDefault();
+            }
+            
+            // Prevent input if current value is 100 and trying to add more digits
+            if (this.value === '100' || (this.value.length === 2 && parseInt(this.value + e.key) > 100)) {
+                e.preventDefault();
+            }
         });
     });
-
-    // Initialize Select2
-    $('.select2').select2({
-        theme: 'bootstrap4',
-        width: '100%',
-        placeholder: function() {
-            return $(this).data('placeholder');
-        },
-        allowClear: true
-    });
-
-    // Add keypress validation for percentage fields
-    $('#remun_perc, #apres_perc').on('keypress', function(e) {
-        // Allow only numbers (0-9)
-        if (e.which < 48 || e.which > 57) {
-            e.preventDefault();
-        }
-        
-        // Prevent input if current value is 100 and trying to add more digits
-        if (this.value === '100' || (this.value.length === 2 && parseInt(this.value + e.key) > 100)) {
-            e.preventDefault();
-        }
-    });
-});
 </script>

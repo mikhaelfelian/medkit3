@@ -19,78 +19,47 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <?= Notification::render() ?>
-
         <div class="row">
             <div class="col-12">
-                <div class="card rounded-0">
-                    <div class="card-header">
-                        <h3 class="card-title"><?= $title ?></h3>
-                        <div class="card-tools">
-                            <a href="<?= BaseRouting::url('radiologi') ?>" class="btn btn-tool">
-                                <i class="fas fa-times"></i>
-                            </a>
+                <div class="card">
+                    <form action="<?= BaseRouting::url('radiologi/update/' . $data->id) ?>" method="POST">
+                        <?= BaseSecurity::getInstance()->csrfField() ?>
+                        <div class="card-body rounded-0">
+                    <div class="form-group">
+                        <label for="kode">Kode <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-0" id="kode" name="kode"
+                            value="<?= $data->kode ?>" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-control select2 rounded-0" id="id_kategori" name="id_kategori" required>
+                            <option value="">Pilih Kategori</option>
+                            <?php foreach ($kategoris as $kategori): ?>
+                                <option value="<?= $kategori->id ?>" <?= $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
+                                    <?= $kategori->kode . ' - ' . $kategori->kategori ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="item">Nama Tindakan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control rounded-0" id="item" name="item"
+                            value="<?= $data->item ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="harga_jual">Harga <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text rounded-0">Rp</span>
+                            </div>
+                            <input type="text" class="form-control rounded-0 currency" id="harga_jual" name="harga_jual"
+                                value="<?= Angka::format($data->harga_jual) ?>" required
+                                onkeyup="formatCurrency(this)">
                         </div>
                     </div>
-                    <form action="<?= BaseRouting::url('radiologi/store') ?>" method="POST" autocomplete="off">
-                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
-                                <select name="id_kategori" id="id_kategori" class="form-control select2 rounded-0"
-                                    required>
-                                    <option value="">Pilih Kategori</option>
-                                    <?php foreach ($kategoris as $kategori): ?>
-                                        <option value="<?= $kategori->id ?>">
-                                            <?= $kategori->kode . ' - ' . $kategori->kategori ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="id_merk">Merk <span class="text-danger">*</span></label>
-                                <select name="id_merk" id="id_merk" class="form-control select2 rounded-0" required>
-                                    <option value="">Pilih Merk</option>
-                                    <?php foreach ($merks as $merk): ?>
-                                        <option value="<?= $merk->id ?>">
-                                            <?= $merk->kode . ' - ' . $merk->merk ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="kode">Kode <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-0" id="kode" name="kode"
-                                    value="<?= $kode ?>" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="item">Item <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-0" id="item" name="item"
-                                    placeholder="Masukkan nama item" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="harga_beli">Harga Beli <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text rounded-0">Rp</span>
-                                    </div>
-                                    <input type="text" class="form-control rounded-0 currency" id="harga_beli"
-                                        name="harga_beli" placeholder="Masukkan harga beli" required
-                                        onkeyup="formatCurrency(this)">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="harga_jual">Harga Jual<span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text rounded-0">Rp</span>
-                                    </div>
-                                    <input type="text" class="form-control rounded-0 currency" id="harga_jual"
-                                        name="harga_jual" placeholder="Masukkan harga" required onkeyup="formatCurrency(this)">
-                                </div>
-                            </div>
-
                     <div class="row">
                         <div class="col-lg-4"><label class="control-label">Remunerasi</label></div>
                         <div class="col-lg-2"><label class="control-label">%</label></div>
@@ -99,8 +68,8 @@
                             <div class="form-group">
                                 <select name="remun_tipe" class="form-control rounded-0">
                                     <option value="">[Tipe]</option>
-                                    <option value="1">Persen</option>
-                                    <option value="2">Nominal</option>
+                                    <option value="1" <?= $data->remun_tipe == '1' ? 'selected' : '' ?>>Persen</option>
+                                    <option value="2" <?= $data->remun_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
                                 </select>
                             </div>
                         </div>
@@ -110,16 +79,23 @@
                                        class="form-control rounded-0" 
                                        id="remun_perc" 
                                        name="remun_perc"
-                                       value="" 
+                                       value="<?= (float)$data->remun_perc ?>" 
                                        placeholder="Masukkan %" 
                                        oninput="validateNumber(this)"
-                                       maxlength="3">
+                                       maxlength="3"
+                                       <?= $data->remun_tipe != '1' ? 'disabled' : '' ?>>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                            <input type="text" class="form-control rounded-0 currency" id="remun_nom" name="remun_nom"
-                            value="" placeholder="Masukkan nominal" onkeyup="formatCurrency(this)">
+                                <input type="text" 
+                                       class="form-control rounded-0 currency" 
+                                       id="remun_nom" 
+                                       name="remun_nom"
+                                       value="<?= Angka::format($data->remun_nom) ?>" 
+                                       placeholder="Masukkan nominal" 
+                                       onkeyup="formatCurrency(this)"
+                                       <?= $data->remun_tipe != '2' ? 'disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
@@ -131,8 +107,8 @@
                             <div class="form-group">
                                 <select name="apres_tipe" class="form-control rounded-0">
                                     <option value="">[Tipe]</option>
-                                    <option value="1">Persen</option>
-                                    <option value="2">Nominal</option>
+                                    <option value="1" <?= $data->apres_tipe == '1' ? 'selected' : '' ?>>Persen</option>
+                                    <option value="2" <?= $data->apres_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
                                 </select>
                             </div>
                         </div>
@@ -142,50 +118,41 @@
                                        class="form-control rounded-0" 
                                        id="apres_perc" 
                                        name="apres_perc"
-                                       value="" 
+                                       value="<?= (float)$data->apres_perc ?>" 
                                        placeholder="Masukkan %" 
                                        oninput="validateNumber(this)"
-                                       maxlength="3">
+                                       maxlength="3"
+                                       <?= $data->apres_tipe != '1' ? 'disabled' : '' ?>>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                            <input type="text" class="form-control rounded-0 currency" id="apres_nom" name="apres_nom"
-                            value="" placeholder="Masukkan nominal" onkeyup="formatCurrency(this)">
+                                <input type="text" 
+                                       class="form-control rounded-0 currency" 
+                                       id="apres_nom" 
+                                       name="apres_nom"
+                                       value="<?= Angka::format($data->apres_nom) ?>" 
+                                       placeholder="Masukkan nominal" 
+                                       onkeyup="formatCurrency(this)"
+                                       <?= $data->apres_tipe != '2' ? 'disabled' : '' ?>>
                             </div>
                         </div>
                     </div>
-                    
-                            <div class="form-group">
-                                <label>Status Stok</label>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="status_stok"
-                                        name="status_stok" value="1">
-                                    <label class="custom-control-label" for="status_stok">
-                                        Stockable
-                                        <small class="form-text text-muted">
-                                            Aktifkan jika di centang maka akan mengurangi stok.
-                                        </small>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Status <span class="text-danger">*</span></label>
-                                <div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="status1" name="status" class="custom-control-input"
-                                            value="1" checked>
-                                        <label class="custom-control-label" for="status1">Aktif</label>
-                                    </div>
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" id="status2" name="status" class="custom-control-input"
-                                            value="0">
-                                        <label class="custom-control-label" for="status2">Non-Aktif</label>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label>Status <span class="text-danger">*</span></label>
+                        <div class="custom-control custom-radio">
+                            <input class="custom-control-input" type="radio" id="status1" name="status" 
+                                   value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
+                            <label for="status1" class="custom-control-label">Aktif</label>
                         </div>
-                        <div class="card-footer">
+                        <div class="custom-control custom-radio">
+                            <input class="custom-control-input" type="radio" id="status0" name="status" 
+                                   value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
+                            <label for="status0" class="custom-control-label">Non Aktif</label>
+                        </div>
+                    </div>
+                </div>
+				<div class="card-footer">
                             <div class="row">
                                 <div class="col-md-6">
                                     <a href="<?= BaseRouting::url('radiologi') ?>" class="btn btn-default rounded-0">
@@ -194,7 +161,7 @@
                                 </div>
                                 <div class="col-md-6 text-right">
                                     <button type="submit" class="btn btn-primary rounded-0">
-                                        <i class="fas fa-save mr-2"></i>Simpan
+                                        <i class="fas fa-save mr-2"></i>Update
                                     </button>
                                 </div>
                             </div>
@@ -205,6 +172,8 @@
         </div>
     </div>
 </section>
+
+
 
 <script>
     function formatCurrency(input) {
