@@ -5,12 +5,15 @@ class PasienModel extends BaseModel {
     protected $timestamps = true;
     
     protected $fillable = [
-        'no_rm',
+        'kode',
+        'nik',
         'nama',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'jenis_kelamin',
+        'nama_pgl',
+        'tmp_lahir',
+        'tgl_lahir',
+        'jns_klm',
         'alamat',
+        'alamat_domisili',
         'no_hp',
         'status'
     ];

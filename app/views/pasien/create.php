@@ -12,60 +12,60 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card card-default">
-                    <div class="card-header">
-                        <h3 class="card-title">Foto Pasien</h3>
-                    </div>
-                    <div class="card-body table-responsive p-0">
-                        <!-- Camera preview -->
-                        <div id="camera-preview" style="width:100%; height:200px;"></div>
+        <form action="<?= BaseRouting::url('pasien/store') ?>" method="POST">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Foto Pasien</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <!-- Camera preview -->
+                            <div id="camera-preview" style="width:100%; height:200px;"></div>
 
-                        <!-- Captured photo will be shown here -->
-                        <div id="camera-result" style="display:none; width:100%; height:240px;">
-                            <img id="photo" style="width:100%; height:100%; object-fit:cover;">
-                            <input type="hidden" name="foto_pasien" id="foto_pasien">
+                            <!-- Captured photo will be shown here -->
+                            <div id="camera-result" style="display:none; width:100%; height:240px;">
+                                <img id="photo" style="width:100%; height:100%; object-fit:cover;">
+                                <input type="hidden" name="foto_pasien" id="foto_pasien">
+                            </div>
+                        </div>
+                        <div class="card-footer p-0">
+                            <button type="button" onclick="takeSnapshot()" class="btn btn-primary btn-flat btn-block"><i
+                                    class="fa fa-camera"></i> Ambil Gambar
+                            </button>
                         </div>
                     </div>
-                    <div class="card-footer p-0">
-                        <button type="button" onclick="takeSnapshot()" class="btn btn-primary btn-flat btn-block"><i
-                                class="fa fa-camera"></i> Ambil Gambar
-                        </button>
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Foto Identitas</h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <!-- Camera preview for KTP -->
+                            <div id="camera-preview-ktp" style="width:100%; height:200px;"></div>
+
+                            <!-- Captured KTP photo will be shown here -->
+                            <div id="camera-result-ktp" style="display:none; width:100%; height:240px;">
+                                <img id="photo-ktp" style="width:100%; height:100%; object-fit:cover;">
+                                <input type="hidden" name="foto_ktp" id="foto_ktp">
+                            </div>
+                        </div>
+                        <div class="card-footer p-0">
+                            <button type="button" onclick="takeKtpSnapshot()"
+                                class="btn btn-primary btn-flat btn-block"><i class="fa fa-camera"></i> Ambil Gambar
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="card card-default">
-                    <div class="card-header">
-                        <h3 class="card-title">Foto Identitas</h3>
-                    </div>
-                    <div class="card-body table-responsive p-0">
-                        <!-- Camera preview for KTP -->
-                        <div id="camera-preview-ktp" style="width:100%; height:200px;"></div>
-
-                        <!-- Captured KTP photo will be shown here -->
-                        <div id="camera-result-ktp" style="display:none; width:100%; height:240px;">
-                            <img id="photo-ktp" style="width:100%; height:100%; object-fit:cover;">
-                            <input type="hidden" name="foto_ktp" id="foto_ktp">
+                <div class="col-9">
+                    <div class="card rounded-0">
+                        <div class="card-header">
+                            <h3 class="card-title">Tambah Data Pasien</h3>
+                            <div class="card-tools">
+                                <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-tool rounded-0">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-footer p-0">
-                        <button type="button" onclick="takeKtpSnapshot()" class="btn btn-primary btn-flat btn-block"><i
-                                class="fa fa-camera"></i> Ambil Gambar
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-9">
-                <div class="card rounded-0">
-                    <div class="card-header">
-                        <h3 class="card-title">Tambah Data Pasien</h3>
-                        <div class="card-tools">
-                            <a href="<?= BaseRouting::url('pasien') ?>" class="btn btn-tool rounded-0">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <form action="<?= BaseRouting::url('pasien/store') ?>" method="POST">
                         <?= BaseSecurity::getInstance()->csrfField() ?>
 
                         <div class="card-body">
@@ -83,7 +83,7 @@
                                     placeholder="Masukkan NIK">
                             </div>
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="id_gelar">Gelar <span class="text-danger">*</span></label>
                                         <select class="form-control select2 rounded-0" id="id_gelar" name="id_gelar"
@@ -98,21 +98,23 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-9">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control rounded-0" id="nama" name="nama" required
                                             placeholder="Masukkan nama lengkap">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="jns_klm">Jenis Kelamin <span class="text-danger">*</span></label>
-                                <select class="form-control rounded-0" id="jns_klm" name="jns_klm" required>
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="L">Laki-laki</option>
-                                    <option value="P">Perempuan</option>
-                                </select>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="jns_klm">Jenis Kelamin <span class="text-danger">*</span></label>
+                                        <select class="form-control rounded-0" id="jns_klm" name="jns_klm" required>
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="L">Laki-laki</option>
+                                            <option value="P">Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -130,22 +132,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="no_hp">No HP</label>
-                                <input type="text" class="form-control rounded-0" id="no_hp" name="no_hp"
-                                    placeholder="Masukkan nomor HP">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="alamat">Alamat</label>
-                                <textarea class="form-control rounded-0" id="alamat" name="alamat" rows="3"
-                                    placeholder="Masukkan alamat lengkap"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="alamat_domisili">Alamat Domisili</label>
-                                <textarea class="form-control rounded-0" id="alamat_domisili" name="alamat_domisili"
-                                    rows="3" placeholder="Masukkan alamat domisili"></textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="alamat">Alamat</label>
+                                        <textarea class="form-control rounded-0" id="alamat" name="alamat" rows="3"
+                                            placeholder="Masukkan alamat lengkap"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="alamat_domisili">Alamat Domisili</label>
+                                        <textarea class="form-control rounded-0" id="alamat_domisili"
+                                            name="alamat_domisili" rows="3"
+                                            placeholder="Masukkan alamat domisili"></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -188,11 +190,21 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <label for="pekerjaan">Pekerjaan</label>
-                                <input type="text" class="form-control rounded-0" id="pekerjaan" name="pekerjaan"
-                                    placeholder="Masukkan pekerjaan">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="no_hp">No HP</label>
+                                        <input type="text" class="form-control rounded-0" id="no_hp" name="no_hp"
+                                            placeholder="Masukkan nomor HP">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pekerjaan">Pekerjaan</label>
+                                        <input type="text" class="form-control rounded-0" id="pekerjaan"
+                                            name="pekerjaan" placeholder="Masukkan pekerjaan">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer text-right">
@@ -203,10 +215,10 @@
                                 <i class="fas fa-save mr-2"></i>Simpan
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </section>
 <script>
@@ -257,7 +269,7 @@
         context.drawImage(video, 0, 0);
 
         // Convert to base64
-        const imageData = canvas.toDataURL('image/jpeg');
+        const imageData = canvas.toDataURL('image/png');
 
         // Show captured photo
         document.getElementById('photo').src = imageData;
@@ -317,7 +329,7 @@
         context.drawImage(ktpCamera, 0, 0);
 
         // Convert to base64
-        let imageData = canvas.toDataURL('image/jpeg');
+        let imageData = canvas.toDataURL('image/png');
 
         // Show result
         document.getElementById('photo-ktp').src = imageData;
