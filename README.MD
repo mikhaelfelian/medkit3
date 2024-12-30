@@ -300,6 +300,39 @@ This README focuses on:
 
 ## Changelog
 ```
+### v1.0.13 (2024-03-22)
+#### Added
+- Enhanced form field handling:
+  - Added readonly attribute implementation
+  - Added dynamic field toggling
+  - Added proper number formatting
+  - Added currency formatting support
+  - Added percentage input validation
+
+#### Changed
+- Updated form interaction:
+  - Changed disabled attributes to readonly
+  - Improved field state management
+  - Enhanced input validation
+  - Standardized number formatting
+  - Refined currency display
+
+#### Enhanced
+- Input field behavior:
+  - Improved data persistence
+  - Enhanced field toggling logic
+  - Standardized input restrictions
+  - Refined validation feedback
+  - Updated field state handling
+
+#### Fixed
+- Fixed form field issues:
+  - Fixed disabled field submissions
+  - Fixed number format display
+  - Fixed currency input handling
+  - Fixed percentage validation
+  - Fixed field state persistence
+
 ### v1.0.12 (2024-03-22)
 #### Added
 - Master data kategori management:
