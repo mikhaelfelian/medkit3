@@ -33,6 +33,11 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
     <!-- Bootstrap 4 -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 	
+    <!-- Datepicker -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') ?>"></script>
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap-datepicker/bootstrap-datepicker.id.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css') ?>">
+
     <!-- Select2 -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/js/select2.full.min.js') ?>"></script>
 	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/css/select2.min.css') ?>">

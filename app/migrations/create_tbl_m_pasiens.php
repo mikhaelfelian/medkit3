@@ -4,6 +4,8 @@ class Migration_create_tbl_m_pasiens extends Migration {
         $sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('m_pasiens') . "` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
             `id_gelar` INT(11) DEFAULT NULL,
+            `id_pekerjaan` INT(11) DEFAULT NULL,            
+            `id_user` INT(11) DEFAULT NULL,
             `kode` VARCHAR(20) NOT NULL,
             `nik` VARCHAR(16) DEFAULT NULL,
             `nama` VARCHAR(100) NOT NULL,

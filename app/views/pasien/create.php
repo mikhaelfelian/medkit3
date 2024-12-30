@@ -82,7 +82,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="tgl_lahir">Tanggal Lahir</label>
-                                        <input type="date" class="form-control rounded-0" id="tgl_lahir" name="tgl_lahir">
+                                        <input type="date" class="form-control rounded-0" id="tgl_lahir" name="tgl_lahir" 
+                                            placeholder="yyyy-mm-dd">
                                     </div>
                                 </div>
                             </div>
