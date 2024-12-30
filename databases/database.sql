@@ -18935,7 +18935,7 @@ CREATE TABLE IF NOT EXISTS `tbl_m_kategoris` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='Untuk menyimpan data kategori obat';
 
--- Dumping data for table db_medkit3.tbl_m_kategoris: ~1 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_kategoris: ~2 rows (approximately)
 DELETE FROM `tbl_m_kategoris`;
 INSERT INTO `tbl_m_kategoris` (`id`, `created_at`, `updated_at`, `kode`, `kategori`, `keterangan`, `status`) VALUES
 	(6, '2024-12-27 23:12:55', '2024-12-27 23:12:55', 'KTG24120001', 'DEFAULT', '', '1'),
@@ -18964,10 +18964,18 @@ INSERT INTO `tbl_m_merks` (`id`, `created_at`, `updated_at`, `kode`, `merk`, `ke
 DROP TABLE IF EXISTS `tbl_m_pasiens`;
 CREATE TABLE IF NOT EXISTS `tbl_m_pasiens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_gelar` int(11) NOT NULL DEFAULT 0,
+  `id_pekerjaan` int(11) NOT NULL DEFAULT 0,
+  `id_user` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `kode` varchar(20) NOT NULL,
   `nik` varchar(16) NOT NULL,
-  `nama` varchar(100) NOT NULL,
-  `nama_pgl` varchar(50) DEFAULT NULL,
+  `nama` varchar(160) NOT NULL,
+  `nama_pgl` varchar(160) DEFAULT NULL,
+  `tgl_lahir` date DEFAULT NULL,
+  `tmp_lahir` varchar(160) DEFAULT NULL,
+  `jns_klm` enum('L','P') DEFAULT NULL,
   `no_hp` varchar(15) DEFAULT NULL,
   `alamat` text DEFAULT NULL,
   `alamat_domisili` text DEFAULT NULL,
@@ -18977,8 +18985,9 @@ CREATE TABLE IF NOT EXISTS `tbl_m_pasiens` (
   `kecamatan` varchar(50) DEFAULT NULL,
   `kota` varchar(50) DEFAULT NULL,
   `pekerjaan` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `file_ktp` varchar(160) DEFAULT NULL,
+  `file_foto` varchar(160) DEFAULT NULL,
+  `status` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `kode` (`kode`),
   UNIQUE KEY `nik` (`nik`)
@@ -18986,8 +18995,27 @@ CREATE TABLE IF NOT EXISTS `tbl_m_pasiens` (
 
 -- Dumping data for table db_medkit3.tbl_m_pasiens: ~1 rows (approximately)
 DELETE FROM `tbl_m_pasiens`;
-INSERT INTO `tbl_m_pasiens` (`id`, `kode`, `nik`, `nama`, `nama_pgl`, `no_hp`, `alamat`, `alamat_domisili`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `pekerjaan`, `created_at`, `updated_at`) VALUES
-	(1, 'P24120001', '3374072807190003', 'Mikhael Felian Waskito', 'COSMOS', '085741220427', 'Perum Mutiara Pandanaran Blok D11, Mangunharjo, Tembalang, Kota Semarang', '-', '011', '001', 'MANGUNHARJO', 'TEMBALANG', 'SEMARANG', '-', '2024-12-25 15:10:38', '2024-12-28 17:39:59');
+INSERT INTO `tbl_m_pasiens` (`id`, `id_gelar`, `id_pekerjaan`, `id_user`, `created_at`, `updated_at`, `kode`, `nik`, `nama`, `nama_pgl`, `tgl_lahir`, `tmp_lahir`, `jns_klm`, `no_hp`, `alamat`, `alamat_domisili`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `pekerjaan`, `file_ktp`, `file_foto`, `status`) VALUES
+	(1, 1, 0, 0, '2024-12-30 14:02:47', '2024-12-30 15:19:23', 'P24120001', '3374071502920002', 'MIKHAEL FELIAN WASKITO', 'TN. MIKHAEL FELIAN WASKITO', '1992-02-15', 'Semarang', 'L', '085741220427', 'Perum Mutiara Pandanaran Blok D11, Mangunharjo, Tembalang, Kota Semarang', 'dsds', '11', '11', 'MANGUNHARJO', 'TEMBALANG', 'Semarang', 'DASD', 'public/file/pasien/p24120001/p24120001_ktp.png', 'public/file/pasien/p24120001/p24120001_profile.png', '1');
+
+-- Dumping structure for table db_medkit3.tbl_m_polis
+DROP TABLE IF EXISTS `tbl_m_polis`;
+CREATE TABLE IF NOT EXISTS `tbl_m_polis` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `kode` varchar(64) DEFAULT NULL,
+  `poli` varchar(64) DEFAULT NULL,
+  `keterangan` text DEFAULT NULL,
+  `post_location` varchar(100) DEFAULT NULL,
+  `status` enum('0','1') DEFAULT '0',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Untuk menyimpan data poli/unit layanan';
+
+-- Dumping data for table db_medkit3.tbl_m_polis: ~0 rows (approximately)
+DELETE FROM `tbl_m_polis`;
+INSERT INTO `tbl_m_polis` (`id`, `created_at`, `updated_at`, `kode`, `poli`, `keterangan`, `post_location`, `status`) VALUES
+	(1, '2024-12-30 23:07:53', '2024-12-30 23:13:42', 'PL24120001', 'POLI JIWA KONTOL', 'asasas', NULL, '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_satuans
 DROP TABLE IF EXISTS `tbl_m_satuans`;
@@ -19002,7 +19030,7 @@ CREATE TABLE IF NOT EXISTS `tbl_m_satuans` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
--- Dumping data for table db_medkit3.tbl_m_satuans: ~0 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_satuans: ~1 rows (approximately)
 DELETE FROM `tbl_m_satuans`;
 INSERT INTO `tbl_m_satuans` (`id`, `created_at`, `updated_at`, `satuanKecil`, `satuanBesar`, `jml`, `status`) VALUES
 	(1, '2024-12-30 10:45:21', '2024-12-30 10:45:21', 'PCS', 'BOX', 10, '1');
