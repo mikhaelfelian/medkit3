@@ -314,6 +314,39 @@ This README focuses on:
 
 ## Changelog
 ```
+### v1.0.14 (2024-03-22)
+#### Added
+- Enhanced patient management module:
+  - Added data persistence in edit form
+  - Added gelar (title) integration
+  - Added proper date formatting
+  - Added field value population
+  - Added form data validation
+
+#### Changed
+- Updated patient form handling:
+  - Improved data retrieval from database
+  - Enhanced form field population
+  - Updated date input formatting
+  - Refined select option handling
+  - Standardized form validation
+
+#### Enhanced
+- Form data management:
+  - Improved model data fetching
+  - Enhanced data display formatting
+  - Standardized field population
+  - Updated select option states
+  - Refined data persistence
+
+#### Fixed
+- Fixed patient data issues:
+  - Fixed missing form values
+  - Fixed date format display
+  - Fixed gelar selection
+  - Fixed field population
+  - Fixed data persistence issues
+
 ### v1.0.13 (2024-03-22)
 #### Added
 - Enhanced form field handling:
