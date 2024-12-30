@@ -15,7 +15,7 @@ class MerkController extends BaseController {
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('merk/index', [
+            return $this->view('master/merk/index', [
                 'title' => 'Data Merk',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -32,7 +32,7 @@ class MerkController extends BaseController {
 
     public function create() {
         try {
-            return $this->view('merk/create', [
+            return $this->view('master/merk/create', [
                 'title' => 'Tambah Data Merk'
             ]);
         } catch (Exception $e) {
@@ -79,7 +79,7 @@ class MerkController extends BaseController {
                 throw new Exception("Data not found");
             }
             
-            return $this->view('merk/edit', [
+            return $this->view('master/merk/edit', [
                 'title' => 'Edit Data Merk',
                 'data' => $data
             ]);

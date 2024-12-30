@@ -20,7 +20,7 @@ class TindakanController extends BaseController {
             $result = $this->model->searchPaginate($search, $page, $perPage);
             $deletedCount = $this->model->countDeleted();
             
-            return $this->view('tindakan/index', [
+            return $this->view('master/tindakan/index', [
                 'title' => 'Data Tindakan',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -43,7 +43,7 @@ class TindakanController extends BaseController {
             
             $result = $this->model->getTrashPaginate($search, $page, $perPage);
             
-            return $this->view('tindakan/trash', [
+            return $this->view('master/tindakan/trash', [
                 'title' => 'Data Tindakan [Terhapus]',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -98,7 +98,7 @@ class TindakanController extends BaseController {
 
     public function create() {
         try {
-            return $this->view('tindakan/create', [
+            return $this->view('master/tindakan/create', [
                 'title' => 'Tambah Data Tindakan',
                 'csrf_token' => $this->security->getCSRFToken(),
                 'data' => null
@@ -117,7 +117,7 @@ class TindakanController extends BaseController {
                 throw new Exception('Data not found');
             }
 
-            return $this->view('tindakan/show', [
+            return $this->view('master/tindakan/show', [
                 'title' => 'Detail Tindakan',
                 'data' => $data
             ]);
@@ -138,7 +138,7 @@ class TindakanController extends BaseController {
                 throw new Exception('Data not found');
             }
 
-            return $this->view('tindakan/edit', [
+            return $this->view('master/tindakan/edit', [
                 'title' => 'Edit Tindakan',
                 'data' => $data,
                 'kategoris' => $kategoriModel->getActiveKategoris(), // Get active categories

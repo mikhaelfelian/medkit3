@@ -20,7 +20,7 @@ class IcdController extends BaseController {
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('icd/index', [
+            return $this->view('master/icd/index', [
                 'title' => 'Data ICD',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -40,7 +40,7 @@ class IcdController extends BaseController {
 
     public function create() {
         try {
-            return $this->view('icd/create', [
+            return $this->view('master/icd/create', [
                 'title' => 'Tambah Data ICD'
             ]);
         } catch (Exception $e) {
@@ -91,7 +91,7 @@ class IcdController extends BaseController {
                 throw new Exception("ICD record not found");
             }
             
-            return $this->view('icd/edit', [
+            return $this->view('master/icd/edit', [
                 'title' => 'Edit Data ICD',
                 'data' => $data
             ]);

@@ -15,7 +15,7 @@ class KategoriController extends BaseController {
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('kategori/index', [
+            return $this->view('master/kategori/index', [
                 'title' => 'Data Kategori',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -32,7 +32,7 @@ class KategoriController extends BaseController {
 
     public function create() {
         try {
-            return $this->view('kategori/create', [
+            return $this->view('master/kategori/create', [
                 'title' => 'Tambah Data Kategori'
             ]);
         } catch (Exception $e) {
@@ -79,7 +79,7 @@ class KategoriController extends BaseController {
                 throw new Exception("Data not found");
             }
             
-            return $this->view('kategori/edit', [
+            return $this->view('master/kategori/edit', [
                 'title' => 'Edit Data Kategori',
                 'data' => $data
             ]);

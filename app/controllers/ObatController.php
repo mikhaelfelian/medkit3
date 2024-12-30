@@ -20,7 +20,7 @@ class ObatController extends BaseController {
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
             $deletedCount = $this->model->countDeleted();
-            return $this->view('obat/index', [
+            return $this->view('master/obat/index', [
                 'title' => 'Data Obat',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -41,7 +41,7 @@ class ObatController extends BaseController {
             $kategoriModel = $this->loadModel('Kategori');
             $merkModel = $this->loadModel('Merk');
             
-            return $this->view('obat/create', [
+            return $this->view('master/obat/create', [
                 'title' => 'Tambah Data Obat',
                 'kategoris' => $kategoriModel->getActiveKategoris(),
                 'merks' => $merkModel->getActiveMerks(),
@@ -112,7 +112,7 @@ class ObatController extends BaseController {
                 throw new Exception("Data not found");
             }
             
-            return $this->view('obat/edit', [
+            return $this->view('master/obat/edit', [
                 'title' => 'Edit Data Obat',
                 'data' => $data,
                 'csrf_token' => $this->security->getCSRFToken()
@@ -188,7 +188,7 @@ class ObatController extends BaseController {
                 throw new Exception("Record not found");
             }
             
-            return $this->view('obat/show', [
+            return $this->view('master/obat/show', [
                 'title' => 'Detail Obat',
                 'data' => $data
             ]);
@@ -208,7 +208,7 @@ class ObatController extends BaseController {
             
             $result = $this->model->getTrashPaginate($search, $page, $perPage);
             
-            return $this->view('obat/trash', [
+            return $this->view('master/obat/trash', [
                 'title' => 'Data Obat [Terhapus]',
                 'data' => $result['data'],
                 'total' => $result['total'],

@@ -9,16 +9,13 @@ class GelarController extends BaseController {
     
     public function index() {
         try {
-            $page = (int)$this->input->get('page', 1);
-            $search = $this->input->get('search', '');
-            $perPage = (int)$this->input->get('per_page', 10);
-            
-            if ($page < 1) $page = 1;
-            if ($perPage < 1) $perPage = 10;
+            $page = $this->input->get('page', 1);
+            $perPage = 10;
+            $search = $this->input->get('search');
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('gelar/index', [
+            return $this->view('master/gelar/index', [
                 'title' => 'Data Gelar',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -28,117 +25,100 @@ class GelarController extends BaseController {
             ]);
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in GelarController::index", [
-                'exception' => $e
-            ]);
-            throw new Exception("Failed to load gelar data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('gelar');
         }
     }
-
+    
     public function create() {
-        try {
-            return $this->view('gelar/create', [
-                'title' => 'Tambah Data Gelar'
-            ]);
-        } catch (Exception $e) {
-            Logger::getInstance()->error("Error in GelarController::create", [
-                'exception' => $e
-            ]);
-            throw new Exception("Failed to load create form: " . $e->getMessage());
-        }
+        return $this->view('master/gelar/create', [
+            'title' => 'Tambah Gelar'
+        ]);
     }
-
+    
     public function store() {
         try {
-            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
-                throw new Exception("Invalid security token");
-            }
-
             $data = [
                 'gelar' => $this->input->post('gelar'),
                 'keterangan' => $this->input->post('keterangan')
             ];
-
-            $errors = $this->model->validateData($data);
+            
+            // Validate input
+            $errors = $this->model->validate($data);
             if (!empty($errors)) {
-                throw new Exception(implode(', ', $errors));
-            }
-
-            if ($this->model->create($data)) {
-                Notification::success('Data gelar berhasil disimpan');
-                return $this->redirect('gelar');
+                return $this->view('master/gelar/create', [
+                    'title' => 'Tambah Gelar',
+                    'errors' => $errors
+                ]);
             }
             
-            throw new Exception("Failed to save gelar data");
+            // Save data
+            $this->model->create($data);
+            
+            Notification::success('Data gelar berhasil ditambahkan');
+            return $this->redirect('gelar');
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in GelarController::store", [
-                'exception' => $e,
-                'post_data' => $_POST
-            ]);
-            throw new Exception("Failed to store gelar data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('gelar/create');
         }
     }
-
+    
     public function edit($id) {
         try {
             $data = $this->model->find($id);
             if (!$data) {
-                throw new Exception("Gelar record not found");
+                throw new Exception('Data gelar tidak ditemukan');
             }
             
-            return $this->view('gelar/edit', [
-                'title' => 'Edit Data Gelar',
+            return $this->view('master/gelar/edit', [
+                'title' => 'Edit Gelar',
                 'data' => $data
             ]);
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in GelarController::edit", [
-                'exception' => $e,
-                'id' => $id
-            ]);
-            throw new Exception("Failed to load edit form: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('gelar');
         }
     }
-
+    
     public function update($id) {
         try {
-            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
-                throw new Exception("Invalid security token");
-            }
-
             $data = [
                 'gelar' => $this->input->post('gelar'),
                 'keterangan' => $this->input->post('keterangan')
             ];
-
-            $errors = $this->model->validateData($data, $id);
+            
+            // Validate input
+            $errors = $this->model->validate($data, $id);
             if (!empty($errors)) {
-                throw new Exception(implode(', ', $errors));
-            }
-
-            if ($this->model->update($id, $data)) {
-                Notification::success('Data gelar berhasil diupdate');
-                return $this->redirect('gelar');
+                return $this->view('master/gelar/edit', [
+                    'title' => 'Edit Gelar',
+                    'data' => (object)array_merge(['id' => $id], $data),
+                    'errors' => $errors
+                ]);
             }
             
-            throw new Exception("Failed to update record");
+            // Update data
+            $this->model->update($id, $data);
+            
+            Notification::success('Data gelar berhasil diupdate');
+            return $this->redirect('gelar');
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in GelarController::update", [
-                'exception' => $e,
-                'id' => $id,
-                'post_data' => $_POST
-            ]);
-            throw new Exception("Failed to update gelar data: " . $e->getMessage());
+            Notification::error($e->getMessage());
+            return $this->redirect('gelar/edit/' . $id);
         }
     }
-
+    
     public function delete($id) {
         try {
-            if (!$this->model->delete($id)) {
-                throw new Exception("Failed to delete record");
+            $data = $this->model->find($id);
+            if (!$data) {
+                throw new Exception('Data gelar tidak ditemukan');
             }
+            
+            $this->model->delete($id);
             
             Notification::success('Data gelar berhasil dihapus');
             return $this->redirect('gelar');

@@ -13,7 +13,7 @@ class GudangController extends BaseController {
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('gudang/index', [
+            return $this->view('master/gudang/index', [
                 'title' => 'Data Gudang',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -57,7 +57,7 @@ class GudangController extends BaseController {
                 return $this->redirect('gudang');
             }
             
-            return $this->view('gudang/form', [
+            return $this->view('master/gudang/form', [
                 'title' => 'Tambah Data Gudang',
                 'data' => null,
                 'csrf_token' => $this->security->getCSRFToken()
@@ -92,7 +92,7 @@ class GudangController extends BaseController {
                 throw new Exception('Gagal memperbarui data');
             }
             
-            return $this->view('gudang/form', [
+            return $this->view('master/gudang/form', [
                 'title' => 'Edit Data Gudang',
                 'data' => $this->model->find($id),
                 'csrf_token' => $this->security->getCSRFToken()
@@ -123,7 +123,7 @@ class GudangController extends BaseController {
                 throw new Exception("Record not found");
             }
             
-            return $this->view('gudang/show', [
+            return $this->view('master/gudang/show', [
                 'title' => 'Detail Gudang',
                 'data' => $data
             ]);

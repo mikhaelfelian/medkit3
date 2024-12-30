@@ -21,7 +21,7 @@ class RadiologiController extends BaseController {
             $result = $this->model->searchPaginate($search, $page, $perPage);
             $deletedCount = $this->model->countDeleted();
             
-            return $this->view('radiologi/index', [
+            return $this->view('master/radiologi/index', [
                 'title' => 'Data Radiologi',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -42,7 +42,7 @@ class RadiologiController extends BaseController {
             $kategoriModel = $this->loadModel('Kategori');
             $merkModel = $this->loadModel('Merk');
             
-            return $this->view('radiologi/create', [
+            return $this->view('master/radiologi/create', [
                 'title' => 'Tambah Data Radiologi',
                 'kategoris' => $kategoriModel->getActiveRecords(),
                 'merks' => $merkModel->getActiveRecords(),
@@ -149,7 +149,7 @@ class RadiologiController extends BaseController {
             
             $result = $this->model->getDeletedPaginate($search, $page, $perPage);
             
-            return $this->view('radiologi/trash', [
+            return $this->view('master/radiologi/trash', [
                 'title' => 'Data Radiologi Terhapus',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -206,7 +206,7 @@ class RadiologiController extends BaseController {
             $kategoriModel = $this->loadModel('Kategori');
             $kategoris = $kategoriModel->getActiveRecords();
 
-            return $this->view('radiologi/edit', [
+            return $this->view('master/radiologi/edit', [
                 'title' => 'Edit Data Radiologi',
                 'data' => $data,
                 'kategoris' => $kategoris

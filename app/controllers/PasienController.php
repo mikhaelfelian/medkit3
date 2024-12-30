@@ -26,7 +26,7 @@ class PasienController extends BaseController
 
             $result = $this->model->searchPaginate($search, $page, $perPage);
 
-            return $this->view('pasien/index', [
+            return $this->view('master/pasien/index', [
                 'title' => 'Data Pasien',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -49,7 +49,7 @@ class PasienController extends BaseController
     public function create()
     {
         try {
-            return $this->view('pasien/create', [
+            return $this->view('master/pasien/create', [
                 'title' => 'Tambah Data Pasien'
             ]);
         } catch (Exception $e) {
@@ -176,7 +176,7 @@ class PasienController extends BaseController
                 throw new Exception("Patient record not found");
             }
 
-            return $this->view('pasien/edit', [
+            return $this->view('master/pasien/edit', [
                 'title' => 'Edit Data Pasien',
                 'data' => $data,
                 'gelars' => $gelars
@@ -331,7 +331,7 @@ class PasienController extends BaseController
                 throw new Exception("Patient record not found");
             }
 
-            return $this->view('pasien/show', [
+            return $this->view('master/pasien/show', [
                 'title' => 'Detail Pasien',
                 'data' => $data
             ]);

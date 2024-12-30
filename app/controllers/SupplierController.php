@@ -15,7 +15,7 @@ class SupplierController extends BaseController {
             
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
-            return $this->view('supplier/index', [
+            return $this->view('master/supplier/index', [
                 'title' => 'Data Supplier',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -61,7 +61,7 @@ class SupplierController extends BaseController {
                 return $this->redirect('supplier');
             }
 
-            return $this->view('supplier/create', [
+            return $this->view('master/supplier/create', [
                 'title' => 'Tambah Supplier',
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
@@ -78,7 +78,7 @@ class SupplierController extends BaseController {
                 throw new Exception('Data not found');
             }
 
-            return $this->view('supplier/edit', [
+            return $this->view('master/supplier/edit', [
                 'title' => 'Edit Supplier',
                 'data' => $data,
                 'csrf_token' => $this->security->getCSRFToken()
@@ -130,7 +130,7 @@ class SupplierController extends BaseController {
                 throw new Exception('Data not found');
             }
 
-            return $this->view('supplier/show', [
+            return $this->view('master/supplier/show', [
                 'title' => 'Detail Supplier',
                 'data' => $data
             ]);

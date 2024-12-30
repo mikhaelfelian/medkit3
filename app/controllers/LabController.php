@@ -18,7 +18,7 @@ class LabController extends BaseController {
             $result = $this->model->searchPaginate($search, $page, $perPage);
             
             $deletedCount = $this->model->countDeleted();
-            return $this->view('lab/index', [
+            return $this->view('master/lab/index', [
                 'title' => 'Data Lab',
                 'data' => $result['data'],
                 'total' => $result['total'],
@@ -43,7 +43,7 @@ class LabController extends BaseController {
             $kategoris = $kategoriModel->getActiveRecords();
             $merks = $merkModel->getActiveRecords();
 
-            return $this->view('lab/create', [
+            return $this->view('master/lab/create', [
                 'title' => 'Tambah Data Lab',
                 'kategoris' => $kategoris,
                 'merks' => $merks,
@@ -99,7 +99,7 @@ class LabController extends BaseController {
             $kategoris = $kategoriModel->getActiveRecords();
             $merks = $merkModel->getActiveRecords();
 
-            return $this->view('lab/edit', [
+            return $this->view('master/lab/edit', [
                 'title' => 'Edit Data Lab',
                 'data' => $data,
                 'kategoris' => $kategoris,
@@ -163,7 +163,7 @@ class LabController extends BaseController {
                 throw new Exception("Data not found");
             }
             
-            return $this->view('lab/show', [
+            return $this->view('master/lab/show', [
                 'title' => 'Detail Lab',
                 'data' => $data
             ]);
@@ -182,7 +182,7 @@ class LabController extends BaseController {
             
             $result = $this->model->getTrashPaginate($search, $page, $perPage);
             
-            return $this->view('lab/trash', [
+            return $this->view('master/lab/trash', [
                 'title' => 'Data Lab [Terhapus]',
                 'data' => $result['data'],
                 'total' => $result['total'],
