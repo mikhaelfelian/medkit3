@@ -123,4 +123,72 @@ class PasienModel extends BaseModel {
             throw new Exception("Failed to generate kode");
         }
     }
+
+    public function validate($data, $id = null) {
+        $errors = [];
+
+        // // Validate required fields
+        // if (empty($data['kode'])) {
+        //     $errors[] = 'Nomor RM harus diisi';
+        // }
+        
+        if (empty($data['nama'])) {
+            $errors[] = 'Nama harus diisi';
+        }
+        
+        if (empty($data['jns_klm'])) {
+            $errors[] = 'Jenis kelamin harus dipilih';
+        }
+
+        // // Check for duplicate no_rm
+        // if (!empty($data['kode'])) {
+        //     $sql = "SELECT id FROM {$this->table} WHERE kode = :kode";
+        //     if ($id) {
+        //         $sql .= " AND id != :id";
+        //     }
+            
+        //     $stmt = $this->conn->prepare($sql);
+        //     $stmt->bindValue(':kode', $data['kode']);
+        //     if ($id) {
+        //         $stmt->bindValue(':id', $id);
+        //     }
+        //     $stmt->execute();
+            
+        //     if ($stmt->fetch()) {
+        //         $errors[] = 'Nomor RM sudah digunakan';
+        //     }
+        // }
+
+        return $errors;
+    }
+
+    public function create($data) {
+        try {
+            // Begin transaction
+            $this->conn->beginTransaction();
+
+            $columns = implode(', ', array_keys($data));
+            $values = ':' . implode(', :', array_keys($data));
+            
+            $sql = "INSERT INTO {$this->table} ($columns) VALUES ($values)";
+            $stmt = $this->conn->prepare($sql);
+            
+            foreach ($data as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+            
+            $result = $stmt->execute();
+            
+            // Commit transaction
+            $this->conn->commit();
+            
+            return $result;
+            
+        } catch (PDOException $e) {
+            // Rollback transaction on error
+            $this->conn->rollBack();
+            error_log("Database Error in create: " . $e->getMessage());
+            throw new Exception("Gagal menyimpan data");
+        }
+    }
 } 

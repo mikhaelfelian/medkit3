@@ -3,10 +3,14 @@ class Migration_create_tbl_m_pasiens extends Migration {
     public function up() {
         $sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('m_pasiens') . "` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
+            `id_gelar` INT(11) DEFAULT NULL,
             `kode` VARCHAR(20) NOT NULL,
             `nik` VARCHAR(16) DEFAULT NULL,
             `nama` VARCHAR(100) NOT NULL,
             `nama_pgl` VARCHAR(20) DEFAULT NULL,
+            `jns_klm` ENUM('L', 'P') DEFAULT NULL,
+            `tmp_lahir` VARCHAR(50) DEFAULT NULL,
+            `tgl_lahir` DATE DEFAULT NULL,
             `no_hp` VARCHAR(15) DEFAULT NULL,
             `alamat` TEXT DEFAULT NULL,
             `alamat_domisili` TEXT DEFAULT NULL,

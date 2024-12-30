@@ -51,4 +51,9 @@ class Tanggalan {
         $timestamp = strtotime($date);
         return date('d-m-Y', $timestamp);
     }
+    public static function formatDB($date) {
+        if (empty($date)) return '';
+        $timestamp = strtotime($date);
+        return date('Y-m-d', $timestamp);
+    }
 }

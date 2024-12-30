@@ -42,7 +42,6 @@
                 </div>
             </div>
             <div class="card-body table-responsive">
-			<?php Notification::render(); ?>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>
@@ -50,7 +49,6 @@
                                 <th>No</th>
                                 <th>Satuan Kecil</th>
                                 <th>Satuan Besar</th>
-                                <th>Jml</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -78,17 +76,15 @@
                                             <?php endif; ?>
                                         </td>
                                         <td>
-										<div class="btn-group">
                                             <a href="<?= BaseRouting::url('satuan/edit/' . $item->id) ?>"
-                                                           class="btn btn-warning btn-sm rounded-0">
-                                                            <i class="fas fa-edit"></i>
+                                                class="btn btn-info btn-sm">
+                                                <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="<?= BaseRouting::url('satuan/delete/' . $item->id) ?>"
-                                                           class="btn btn-danger btn-sm rounded-0" 
-                                                           onclick="return confirm('Are you sure?')">
-                                                            <i class="fas fa-trash"></i>
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                                <i class="fas fa-trash"></i>
                                             </a>
-										</div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
