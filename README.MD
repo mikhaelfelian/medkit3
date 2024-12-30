@@ -314,7 +314,7 @@ This README focuses on:
 
 ## Changelog
 ```
-### v1.0.14 (2024-03-22)
+### v1.0.14 (2024-08-23)
 #### Added
 - Enhanced patient management module:
   - Added data persistence in edit form
