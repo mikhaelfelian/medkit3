@@ -1,5 +1,65 @@
 # Changelog
 
+## [1.0.13] - 2024-03-22
+
+### Added
+- Enhanced form field handling:
+  - Added readonly attribute implementation
+  - Added dynamic field toggling
+  - Added proper number formatting
+  - Added currency formatting support
+  - Added percentage input validation
+
+### Changed
+- Updated form interaction:
+  - Changed disabled attributes to readonly
+  - Improved field state management
+  - Enhanced input validation
+  - Standardized number formatting
+  - Refined currency display
+
+### Enhanced
+- Input field behavior:
+  - Improved data persistence
+  - Enhanced field toggling logic
+  - Standardized input restrictions
+  - Refined validation feedback
+  - Updated field state handling
+
+### Fixed
+- Fixed form field issues:
+  - Fixed disabled field submissions
+  - Fixed number format display
+  - Fixed currency input handling
+  - Fixed percentage validation
+  - Fixed field state persistence
+
+## [1.0.12] - 2024-03-22
+
+### Added
+- Master data kategori management:
+  - Added kategori table migration
+  - Added KategoriModel with CRUD operations
+  - Added timestamp handling
+  - Added status management
+  - Added search functionality
+
+### Enhanced
+- Database structure:
+  - Added tbl_m_kategoris table
+  - Added proper collation settings
+  - Added status enumeration
+  - Added timestamp fields
+  - Added proper indexing
+
+### Changed
+- Model implementation:
+  - Added standardized CRUD methods
+  - Enhanced search capabilities
+  - Improved timestamp handling
+  - Added status update functionality
+  - Implemented consistent patterns
+
 ## [1.0.2] - 2024-03-XX
 
 ### Added
