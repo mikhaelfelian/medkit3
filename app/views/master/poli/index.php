@@ -74,13 +74,18 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
+                                                <a href="<?= BaseRouting::url('poli/show/' . $item->id) ?>"
+                                                    class="btn btn-info btn-sm rounded-0" title="Detail">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
                                                 <a href="<?= BaseRouting::url('poli/edit/' . $item->id) ?>"
-                                                    class="btn btn-warning btn-sm rounded-0">
+                                                    class="btn btn-warning btn-sm rounded-0" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a href="<?= BaseRouting::url('poli/delete/' . $item->id) ?>"
                                                     class="btn btn-danger btn-sm rounded-0"
-                                                    onclick="return confirm('Are you sure?')">
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
+                                                    title="Hapus">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </div>

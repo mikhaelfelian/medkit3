@@ -144,4 +144,26 @@ class PoliController extends BaseController {
             return $this->redirect('poli/edit/' . $id);
         }
     }
+
+    public function delete($id) {
+        try {
+            // Check if data exists
+            $data = $this->model->find($id);
+            if (!$data) {
+                throw new Exception('Data poli tidak ditemukan');
+            }
+
+            // Delete the data
+            if (!$this->model->delete($id)) {
+                throw new Exception('Gagal menghapus data poli');
+            }
+
+            Notification::success('Data poli berhasil dihapus');
+            return $this->redirect('poli');
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('poli');
+        }
+    }
 } 

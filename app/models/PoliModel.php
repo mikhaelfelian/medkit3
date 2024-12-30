@@ -149,4 +149,16 @@ class PoliModel extends BaseModel {
             throw new Exception("Failed to update record");
         }
     }
+
+    public function delete($id) {
+        try {
+            $sql = "DELETE FROM {$this->table} WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Database Error in delete: " . $e->getMessage());
+            throw new Exception("Failed to delete record");
+        }
+    }
 } 
