@@ -189,14 +189,18 @@ ROOT_PATH/
 │   ├── controllers/
 │   │   ├── GudangController.php
 │   │   ├── KategoriController.php
+│   │   ├── LabController.php
 │   │   ├── ObatController.php
 │   │   ├── PasienController.php
+│   │   ├── RadiologiController.php
 │   │   └── PengaturanController.php
 │   ├── models/
 │   │   ├── GudangModel.php
 │   │   ├── KategoriModel.php
+│   │   ├── LabModel.php
 │   │   ├── ObatModel.php
 │   │   ├── PasienModel.php
+│   │   ├── RadiologiModel.php
 │   │   └── PengaturanModel.php
 │   ├── views/
 │   │   ├── errors/
@@ -206,6 +210,12 @@ ROOT_PATH/
 │   │   │   ├── index.php
 │   │   │   └── form.php
 │   │   ├── kategori/
+│   │   │   ├── index.php
+│   │   │   └── form.php
+│   │   ├── lab/
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   └── edit.php
 │   │   ├── layouts/
 │   │   │   ├── main.php
 │   │   │   ├── header.php
@@ -216,10 +226,14 @@ ROOT_PATH/
 │   │   │   ├── index.php
 │   │   │   ├── form.php
 │   │   │   └── show.php
-│   │   └── pasien/
+│   │   ├── pasien/
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   └── show.php
+│   │   └── radiologi/
 │   │       ├── index.php
 │   │       ├── create.php
-│   │       └── show.php
+│   │       └── edit.php
 │   ├── helpers/
 │   │   └── ViewHelper.php
 │   ├── libraries/
