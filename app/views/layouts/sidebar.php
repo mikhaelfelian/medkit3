@@ -50,6 +50,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                           strpos($_SERVER['REQUEST_URI'], 'tindakan') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'lab') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'radiologi') !== false || 
+                                          strpos($_SERVER['REQUEST_URI'], 'karyawan') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'bhp') !== false || 
                                           strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false || 
@@ -64,6 +65,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                                      strpos($_SERVER['REQUEST_URI'], 'tindakan') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'lab') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'radiologi') !== false || 
+                                                     strpos($_SERVER['REQUEST_URI'], 'karyawan') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'bhp') !== false || 
                                                      strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                         <i class="nav-icon fas fa-database"></i>
@@ -141,6 +143,13 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Data Pasien</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('karyawan'); ?>" 
+                               class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'karyawan') !== false ? 'active' : ''; ?>">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Karyawan</p>
                             </a>
                         </li>
                         <li class="nav-item">

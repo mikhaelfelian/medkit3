@@ -89,6 +89,17 @@
                             placeholder="Masukkan kandungan obat"><?= htmlspecialchars($data->item_kand) ?></textarea>
                     </div>
                     <div class="form-group">
+                        <label for="id_satuan">Satuan <span class="text-danger">*</span></label>
+                        <select class="form-control rounded-0" id="id_satuan" name="id_satuan" required>
+                            <option value="">Pilih Satuan</option>
+                            <?php foreach ($satuans as $satuan): ?>
+                                <option value="<?= $satuan->id ?>" <?= $data->id_satuan == $satuan->id ? 'selected' : '' ?>>
+                                    <?= $satuan->satuanBesar ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="harga_beli">Harga Beli</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
