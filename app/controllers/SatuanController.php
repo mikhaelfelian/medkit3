@@ -29,63 +29,6 @@ class SatuanController extends BaseController {
         }
     }
 
-    public function create() {
-        try {
-
-            // Initialize form object
-            $form = BaseForm::getInstance();
-
-            return $this->view('master/satuan/create', [
-                'title' => 'Edit Satuan',
-                'form' => $form
-            ]);
-
-        } catch (Exception $e) {
-            Notification::error($e->getMessage());
-            return $this->redirect('satuan');
-        }
-    }
-
-    public function store() {
-        try {
-            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
-                throw new Exception('Invalid security token');
-            }
-
-            $data = [
-                'satuanKecil' => $this->input->post('satuanKecil'),
-                'satuanBesar' => $this->input->post('satuanBesar'), 
-                'jml' => $this->input->post('jml'),
-                'status' => $this->input->post('status', '1'),
-                'created_at' => date('Y-m-d H:i:s')
-            ];
-
-            // Validate data
-            $errors = $this->model->validate($data);
-            if (!empty($errors)) {
-                return $this->view('master/satuan/create', [
-                    'title' => 'Tambah Satuan',
-                    'data' => (object)$data,
-                    'errors' => $errors,
-                    'form' => BaseForm::getInstance()
-                ]);
-            }
-
-            // Save data
-            if (!$this->model->create($data)) {
-                throw new Exception('Gagal menyimpan data');
-            }
-
-            Notification::success('Data satuan berhasil disimpan');
-            return $this->redirect('satuan');
-
-        } catch (Exception $e) {
-            Notification::error($e->getMessage());
-            return $this->redirect('satuan/create');
-        }
-
-    }
-
     public function edit($id) {
         try {
             $data = $this->model->find($id);
@@ -93,7 +36,6 @@ class SatuanController extends BaseController {
                 throw new Exception('Data satuan tidak ditemukan');
             }
 
-            // Initialize form object
             $form = BaseForm::getInstance();
 
             return $this->view('master/satuan/edit', [
@@ -101,7 +43,6 @@ class SatuanController extends BaseController {
                 'data' => $data,
                 'form' => $form
             ]);
-
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('satuan');
@@ -110,9 +51,6 @@ class SatuanController extends BaseController {
 
     public function update($id) {
         try {
-            // Initialize form object
-            $form = BaseForm::getInstance();
-
             if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
                 throw new Exception('Invalid security token');
             }
@@ -127,6 +65,7 @@ class SatuanController extends BaseController {
             // Validate data
             $errors = $this->model->validate($data, $id);
             if (!empty($errors)) {
+                $form = BaseForm::getInstance();
                 return $this->view('master/satuan/edit', [
                     'title' => 'Edit Satuan',
                     'data' => (object)array_merge(['id' => $id], $data),

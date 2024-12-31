@@ -225,16 +225,10 @@ class RadiologiController extends BaseController {
                 'id_kategori' 	=> $this->input->post('id_kategori'),
                 'item' 			=> $this->input->post('item'),
                 'harga_jual' 	=> $this->input->post('harga_jual'),
-                'remun_tipe' 	=> $this->input->post('remun_tipe'),
-                'remun_perc' 	=> $this->input->post('remun_perc'),
-                'remun_nom' 	=> $this->input->post('remun_nom'),
-                'apres_tipe' 	=> $this->input->post('apres_tipe'),
-                'apres_perc' 	=> $this->input->post('apres_perc'),
-                'apres_nom' 	=> $this->input->post('apres_nom')
-            ];
-			
-            // Always save remun_tipe even if empty
-            $data['remun_tipe'] = (string)$this->input->post('remun_tipe');
+                'remun_tipe' 	=> $this->input->post('remun_tipe') ?: '0',
+                'apres_tipe' 	=> $this->input->post('apres_tipe') ?: '0',
+                'status_stok' 	=> $this->input->post('status_stok') ? '1' : '0'
+            ];	
 
             // If remun_tipe is percentage (1), calculate nominal amount from percentage
             if ($this->input->post('remun_tipe') == '1') {
@@ -250,9 +244,6 @@ class RadiologiController extends BaseController {
                 $data['remun_nom'] = $this->input->post('remun_nom') ? Angka::cleanNumber($this->input->post('remun_nom')) : 0;
                 $data['remun_perc'] = $hargaJual > 0 ? min(round(($remunNom * 100) / $hargaJual), 100) : 0;
             }
-
-            // Always save apres_tipe even if empty
-            $data['apres_tipe'] = (string)$this->input->post('apres_tipe');
             
             // If apres_tipe is percentage (1), calculate nominal amount from percentage
             if ($this->input->post('apres_tipe') == '1') {

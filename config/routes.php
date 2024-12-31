@@ -75,4 +75,8 @@ BaseRouting::post('satuan/store', 'Satuan@store');
 BaseRouting::get('satuan/edit/{id}', 'Satuan@edit');
 BaseRouting::post('satuan/update/{id}', 'Satuan@update');
 BaseRouting::get('satuan/delete/{id}', 'Satuan@delete');
+
+// Add these routes
+BaseRouting::get('stockitems', 'StockItems@index');
+BaseRouting::get('stockitems/index', 'StockItems@index');
 ?> 

@@ -7,7 +7,6 @@ class ObatModel extends BaseModel {
         'kode',
         'id_kategori',
         'id_merk',
-        'id_satuan',
         'item',
         'item_alias',
         'item_kand',

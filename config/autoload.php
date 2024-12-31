@@ -31,6 +31,7 @@ return [
         'html',
         'security',
         'paginate',
+        'debug',
         'image'
     ],
 

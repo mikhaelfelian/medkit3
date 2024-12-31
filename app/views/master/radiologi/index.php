@@ -87,7 +87,12 @@
                                                     <td><?= $item->kode ?></td>
                                                     <td><?= $item->nama_kategori ?></td>
                                                     <td><?= $item->nama_merk ?></td>
-                                                    <td><?= $item->item ?></td>
+                                                    <td>
+                                                        <?= $item->item ?>
+                                                        <?php if ($item->status_stok == '1'): ?>
+                                                            <br><span class="badge badge-info">Stockable</span>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td class="text-right"><?= Angka::format($item->harga_jual) ?></td>
                                                     <td class="text-center">
                                                         <?php if ($item->status == '1'): ?>

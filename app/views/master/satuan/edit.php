@@ -28,29 +28,29 @@
                             <div class="form-group">
                                 <label>Satuan Kecil</label>
                                 <input type="text" class="form-control rounded-0" name="satuanKecil" 
-                                       value="<?= $data->satuanKecil ?>" required>
+                                       value="<?= $data->satuanKecil ?? '' ?>" required>
                             </div>
                             <div class="form-group">
                                 <label>Satuan Besar</label>
-                                <input type="text" class="form-control rounded-0" name="satuanBesar" 
-                                       value="<?= $data->satuanBesar ?>">
+                                <input type="text" class="form-control rounded-0" name="satuanBesar"
+                                       value="<?= $data->satuanBesar ?? '' ?>">
                             </div>
                             <div class="form-group">
                                 <label>Jumlah</label>
-                                <input type="number" class="form-control rounded-0" name="jml" 
-                                       value="<?= $data->jml ?>" required>
+                                <input type="number" class="form-control rounded-0" name="jml"
+                                       value="<?= $data->jml ?? '' ?>" required>
                             </div>
                             <div class="form-group">
                                 <label>Status</label>
                                 <div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="status1" name="status" class="custom-control-input" 
-                                               value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
+                                               value="1" <?= ($data->status ?? '') == '1' ? 'checked' : '' ?>>
                                         <label class="custom-control-label" for="status1">Aktif</label>
                                     </div>
                                     <div class="custom-control custom-radio custom-control-inline">
                                         <input type="radio" id="status0" name="status" class="custom-control-input" 
-                                               value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
+                                               value="0" <?= ($data->status ?? '') == '0' ? 'checked' : '' ?>>
                                         <label class="custom-control-label" for="status0">Non-Aktif</label>
                                     </div>
                                 </div>

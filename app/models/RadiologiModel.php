@@ -20,6 +20,7 @@ class RadiologiModel extends BaseModel {
         'apres_nom',
         'status',
         'status_item',
+        'status_stok',
         'status_hps',
         'created_at',
         'updated_at'

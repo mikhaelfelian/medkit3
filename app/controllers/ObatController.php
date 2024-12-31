@@ -40,13 +40,11 @@ class ObatController extends BaseController {
             // Load required models for dropdowns
             $kategoriModel = $this->loadModel('Kategori');
             $merkModel = $this->loadModel('Merk');
-            $satuanModel = $this->loadModel('Satuan');
-
+            
             return $this->view('master/obat/create', [
                 'title' => 'Tambah Data Obat',
                 'kategoris' => $kategoriModel->getActiveKategoris(),
                 'merks' => $merkModel->getActiveMerks(),
-                'satuans' => $satuanModel->getActiveRecords(),
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
         } catch (Exception $e) {
@@ -66,7 +64,6 @@ class ObatController extends BaseController {
 
             $data = [
                 'kode'          => $this->model->generateKode(),
-                'id_satuan'     => $this->input->post('id_satuan'),
                 'id_kategori'   => $this->input->post('id_kategori'),
                 'id_merk'       => $this->input->post('id_merk'),
                 'item'          => $this->input->post('item'),
@@ -111,10 +108,6 @@ class ObatController extends BaseController {
     public function edit($id) {
         try {
             $data = $this->model->getWithDetails($id);
-            $satuanModel = $this->loadModel('Satuan');
-            $merkModel = $this->loadModel('Merk');
-            $satuanModel = $this->loadModel('Satuan');
-
             if (!$data) {
                 throw new Exception("Data not found");
             }
@@ -122,7 +115,6 @@ class ObatController extends BaseController {
             return $this->view('master/obat/edit', [
                 'title' => 'Edit Data Obat',
                 'data' => $data,
-                'satuans' => $satuanModel->getActiveRecords(),
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
             
@@ -146,7 +138,6 @@ class ObatController extends BaseController {
 
             $data = [
                 'kode'          => $this->input->post('kode'),
-                'id_satuan'     => $this->input->post('id_satuan'),
                 'id_kategori'   => $this->input->post('id_kategori'),
                 'id_merk'       => $this->input->post('id_merk'),
                 'item'          => $this->input->post('item'),
