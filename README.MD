@@ -314,6 +314,31 @@ This README focuses on:
 
 ## Changelog
 ```
+### v1.0.15 (2024-03-25)
+#### Added
+- Enhanced number formatting system:
+  - Added standardized number formatting across modules
+  - Added proper decimal and thousand separators
+  - Added subtotal calculation handling
+  - Added currency display formatting
+  - Added dynamic total computation
+
+#### Changed
+- Updated number display formatting:
+  - Standardized use of number_format function
+  - Implemented consistent thousand separator (.)
+  - Implemented consistent decimal separator (,)
+  - Enhanced subtotal calculation display
+  - Improved price formatting consistency
+
+#### Enhanced
+- Data presentation:
+  - Improved numerical data readability
+  - Enhanced calculation display
+  - Standardized currency formatting
+  - Updated quantity display format
+  - Refined total amount presentation
+
 ### v1.0.14 (2024-08-23)
 #### Added
 - Enhanced patient management module:
