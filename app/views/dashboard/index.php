@@ -22,7 +22,11 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3><?= (!empty($totalPatients)) ? $totalPatients : 0 ?></h3>
+                        <?php
+                        $pasienModel = ViewHelper::loadModel('Pasien');
+                        $totalPasiens = $pasienModel->count('tbl_m_pasiens');
+                        ?>
+                        <h3><?= $totalPasiens ?? 0 ?></h3>
                         <p>Total Pasien</p>
                     </div>
                     <div class="icon">
