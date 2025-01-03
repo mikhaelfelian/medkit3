@@ -41,7 +41,11 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
     <!-- Select2 -->
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/js/select2.full.min.js') ?>"></script>
 	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2/css/select2.min.css') ?>">
-	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') ?>">	
+	<link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') ?>">
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/toastr/toastr.min.css') ?>">
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/toastr/toastr.min.js') ?>"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -50,7 +54,7 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
 
         <!-- Content Wrapper -->
         <div class="content-wrapper">
-            <?= Notification::render() ?>
+            <?php require APP_PATH . '/views/partials/toastr.php'; ?>
             <?= $content ?>
         </div>
 

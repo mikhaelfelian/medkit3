@@ -19,7 +19,8 @@ class BaseController {
 
     protected function view($view, $data = []) {
         // Load common helpers
-        $this->loadHelper('angka');
+        $this->loadHelper('Angka');
+        $this->loadHelper('Notification');
         
         try {
             $controller = $this;
@@ -122,11 +123,28 @@ class BaseController {
     }
 
     protected function loadHelper($helper) {
-        $helperFile = APP_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
-        if (file_exists($helperFile)) {
-            require_once $helperFile;
+        $helperName = ucfirst($helper) . 'Helper';
+        
+        // First try to load from app helpers
+        $appHelperFile = APP_PATH . '/helpers/' . $helperName . '.php';
+        if (file_exists($appHelperFile)) {
+            require_once $appHelperFile;
+            
+            // Also load the backward compatibility class if it exists
+            $compatFile = APP_PATH . '/helpers/' . ucfirst($helper) . '.php';
+            if (file_exists($compatFile)) {
+                require_once $compatFile;
+            }
             return true;
         }
+        
+        // Then try system helpers
+        $systemHelperFile = SYSTEM_PATH . '/helpers/' . $helperName . '.php';
+        if (file_exists($systemHelperFile)) {
+            require_once $systemHelperFile;
+            return true;
+        }
+        
         return false;
     }
 }

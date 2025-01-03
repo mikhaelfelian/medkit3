@@ -15,19 +15,40 @@ class SatuanModel extends BaseModel {
 
     public function validate($data, $id = null) {
         $errors = [];
-        
+
         // Validate satuanKecil
         if (empty($data['satuanKecil'])) {
-            $errors['satuanKecil'] = 'Satuan Kecil harus diisi';
+            $errors['satuanKecil'] = 'Satuan kecil harus diisi';
+        } else {
+            // Check for duplicate satuanKecil
+            $sql = "SELECT COUNT(*) as count FROM {$this->table} WHERE satuanKecil = :satuanKecil";
+            if ($id) {
+                $sql .= " AND id != :id";
+            }
+            
+            try {
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindValue(':satuanKecil', $data['satuanKecil']);
+                if ($id) {
+                    $stmt->bindValue(':id', $id);
+                }
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_OBJ);
+                
+                if ($result->count > 0) {
+                    $errors['satuanKecil'] = 'Satuan kecil sudah ada';
+                }
+            } catch (PDOException $e) {
+                error_log("Database Error in validate: " . $e->getMessage());
+                throw new Exception("Gagal memvalidasi data");
+            }
         }
-        
-        // Validate jml
-        if (empty($data['jml'])) {
-            $errors['jml'] = 'Jumlah harus diisi';
-        } else if (!is_numeric($data['jml'])) {
-            $errors['jml'] = 'Jumlah harus berupa angka';
+
+        // Validate jml (jumlah)
+        if (!isset($data['jml']) || $data['jml'] <= 0) {
+            $errors['jml'] = 'Jumlah harus lebih besar dari 0';
         }
-        
+
         return $errors;
     }
 

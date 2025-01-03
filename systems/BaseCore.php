@@ -1,44 +1,76 @@
 <?php
 class BaseCore {
     public function __construct() {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Load core libraries and helpers first
-        require_once SYSTEM_PATH . '/libraries/Logger.php';
-        require_once SYSTEM_PATH . '/libraries/Input.php';
-        require_once SYSTEM_PATH . '/libraries/Security.php';
-        require_once SYSTEM_PATH . '/helpers/url_helper.php';
-        require_once SYSTEM_PATH . '/helpers/Notification.php';
-
-        // Load autoload configuration
-        $autoload = require_once CONFIG_PATH . '/autoload.php';
-
-        // Load helpers first
-        if (isset($autoload['helpers'])) {
-            foreach ($autoload['helpers'] as $helper) {
-                $helperFile = APP_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
-                if (file_exists($helperFile)) {
-                    require_once $helperFile;
-                }
+        try {
+            // Start session if not started
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
             }
-        }
 
-        // Register class autoloader
+            // Load core system files first
+            $this->loadCoreFiles();
+
+            // Load required helpers in specific order
+            $this->loadCoreHelpers();
+            
+            // Register class autoloader
+            $this->registerAutoloader();
+            
+            // Initialize routing
+            BaseRouting::dispatch();
+            
+        } catch (Exception $e) {
+            // Load BaseController if not loaded
+            if (!class_exists('BaseController')) {
+                require_once SYSTEM_PATH . '/controllers/BaseController.php';
+            }
+            BaseController::handleException($e);
+        }
+    }
+    
+    private function loadCoreFiles() {
+        // Core system files that must be loaded in order
+        $coreFiles = [
+            '/controllers/BaseController.php',
+            '/models/BaseModel.php',
+            '/routing/BaseRouting.php',
+            '/forms/BaseForm.php',
+            '/helpers/ViewHelper.php'
+        ];
+        
+        foreach ($coreFiles as $file) {
+            $filePath = SYSTEM_PATH . $file;
+            if (!file_exists($filePath)) {
+                throw new Exception("Core file not found: {$filePath}");
+            }
+            require_once $filePath;
+        }
+    }
+    
+    private function loadCoreHelpers() {
+        // Core helpers that must be loaded before anything else
+        $coreHelpers = [
+            'NotificationHelper',  // Load this first
+            'Notification',        // Then load the alias
+            'UrlHelper',          // Changed from 'Url' to 'UrlHelper'
+            'FormHelper',         // Changed from 'Form' to 'FormHelper'
+            'SecurityHelper'      // Changed from 'Security' to 'SecurityHelper'
+        ];
+        
+        foreach ($coreHelpers as $helper) {
+            $helperFile = SYSTEM_PATH . '/helpers/' . $helper . '.php';
+            if (!file_exists($helperFile)) {
+                throw new Exception("Core helper not found: {$helperFile}");
+            }
+            require_once $helperFile;
+        }
+    }
+
+    private function registerAutoloader() {
         spl_autoload_register(function ($class) {
             // Load base classes first
             if (strpos($class, 'Base') === 0) {
-                // Check in systems/controllers
                 $file = SYSTEM_PATH . '/controllers/' . $class . '.php';
-                if (file_exists($file)) {
-                    require_once $file;
-                    return;
-                }
-                
-                // Check in app/core
-                $file = APP_PATH . '/core/' . $class . '.php';
                 if (file_exists($file)) {
                     require_once $file;
                     return;
@@ -62,10 +94,24 @@ class BaseCore {
                     return;
                 }
             }
-        });
 
-        // Initialize routing
-        BaseRouting::dispatch();
+            // Check for Helper class
+            if (strpos($class, 'Helper') !== false) {
+                // Try app helpers first
+                $file = APP_PATH . '/helpers/' . $class . '.php';
+                if (file_exists($file)) {
+                    require_once $file;
+                    return;
+                }
+                
+                // Then try system helpers
+                $file = SYSTEM_PATH . '/helpers/' . $class . '.php';
+                if (file_exists($file)) {
+                    require_once $file;
+                    return;
+                }
+            }
+        });
     }
 }
 ?> 

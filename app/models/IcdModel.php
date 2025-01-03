@@ -13,62 +13,64 @@ class IcdModel extends BaseModel {
     public function searchPaginate($search = '', $page = 1, $perPage = 10) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = [];
+            
+            // Basic query
+            $query = "SELECT * FROM {$this->table}";
             $params = [];
+            
+            // Add WHERE conditions
+            $conditions = [];
             
             if (!empty($search)) {
                 $conditions[] = "(kode LIKE :search OR icd LIKE :search OR diagnosa_en LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
             
-            // Build WHERE clause
-            $where = '';
             if (!empty($conditions)) {
-                $where = 'WHERE ' . implode(' AND ', $conditions);
+                $query .= " WHERE " . implode(' AND ', $conditions);
             }
             
-            // Get total records
-            $countSql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
-            $stmt = $this->conn->prepare($countSql);
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-            $stmt->execute();
-            $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
-            
-            // Calculate last page
-            $lastPage = ceil($total / $perPage);
-            
-            // Ensure current page is valid
-            $page = max(1, min($page, $lastPage));
-            
-            // Get paginated records
-            $sql = "SELECT * FROM {$this->table} 
-                   {$where} 
-                   ORDER BY kode ASC 
-                   LIMIT :limit OFFSET :offset";
-            
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
+            // Count total records first
+            $countQuery = str_replace("SELECT *", "SELECT COUNT(*) as total", $query);
+            try {
+                $stmt = $this->conn->prepare($countQuery);
+                foreach ($params as $key => $value) {
+                    $stmt->bindValue($key, $value);
+                }
+                $stmt->execute();
+                $total = (int)$stmt->fetch(PDO::FETCH_OBJ)->total;
+            } catch (PDOException $e) {
+                error_log("Count Query Error: " . $e->getMessage() . "\nQuery: " . $countQuery);
+                throw new Exception("Error counting records");
             }
             
-            $stmt->execute();
+            // Then get the paginated data
+            $query .= " ORDER BY kode ASC LIMIT :limit OFFSET :offset";
+            try {
+                $stmt = $this->conn->prepare($query);
+                
+                // Bind all parameters
+                foreach ($params as $key => $value) {
+                    $stmt->bindValue($key, $value);
+                }
+                $stmt->bindValue(':limit', (int)$perPage, PDO::PARAM_INT);
+                $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+                
+                $stmt->execute();
+                $data = $stmt->fetchAll(PDO::FETCH_OBJ);
+                
+                return [
+                    'data' => $data,
+                    'total' => $total
+                ];
+            } catch (PDOException $e) {
+                error_log("Data Query Error: " . $e->getMessage() . "\nQuery: " . $query);
+                throw new Exception("Error retrieving records");
+            }
             
-            return [
-                'data' => $stmt->fetchAll(PDO::FETCH_OBJ),
-                'total' => $total,
-                'per_page' => $perPage,
-                'current_page' => $page,
-                'last_page' => $lastPage
-            ];
-            
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             error_log("Database Error in searchPaginate: " . $e->getMessage());
-            throw new Exception("Failed to fetch records: " . $e->getMessage());
+            throw new Exception("Failed to fetch ICD data: " . $e->getMessage());
         }
     }
 

@@ -28,7 +28,11 @@
                         
                         <div class="card-body">
                             <?php Notification::render(); ?>
-                            
+                            <div class="form-group">
+                                <label for="kode">Kode <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-0" id="kode" name="kode" 
+                                       value="<?= $data->kode ?>" readonly required>
+                            </div>
                             <div class="form-group">
                                 <label for="merk">Nama Merk <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control rounded-0" id="merk" name="merk" 

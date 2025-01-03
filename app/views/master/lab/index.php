@@ -82,14 +82,14 @@
                                                 <td>
                                                     <?= strtoupper($item->kode) ?><br />
                                                     <?= strtoupper($item->item) ?><br />
-                                                    <small><b><?= Angka::formatRupiah($item->harga_jual) ?></b></small>
+                                                    <small><b><?= AngkaHelper::formatRupiah($item->harga_jual) ?></b></small>
                                                     <?php if ($item->status_stok == '1'): ?>
                                                         <br /><span class="badge badge-success">Stockable</span>
                                                     <?php else: ?>
                                                         <br /><span class="badge badge-warning">Non Stockable</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td class="text-right"><?= Angka::formatRupiah($item->harga_beli) ?></td>
+                                                <td class="text-right"><?= AngkaHelper::formatRupiah($item->harga_beli) ?></td>
                                                 <td>
                                                     <?php if ($item->status == '1'): ?>
                                                         <span class="badge badge-success">Aktif</span>

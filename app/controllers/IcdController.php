@@ -18,23 +18,39 @@ class IcdController extends BaseController {
             if ($page < 1) $page = 1;
             if ($perPage < 1) $perPage = 10;
             
-            $result = $this->model->searchPaginate($search, $page, $perPage);
+            try {
+                $result = $this->model->searchPaginate($search, $page, $perPage);
+            } catch (Exception $e) {
+                // Log the error with more details
+                error_log("ICD Search Error: " . $e->getMessage() . "\n" . 
+                         "Page: $page, PerPage: $perPage, Search: $search");
+                throw $e;
+            }
             
             return $this->view('master/icd/index', [
                 'title' => 'Data ICD',
                 'data' => $result['data'],
-                'total' => $result['total'],
+                'total' => (int)$result['total'],
                 'page' => $page,
                 'perPage' => $perPage,
-                'search' => $search,
-                'conn' => $this->conn
+                'search' => $search
             ]);
             
         } catch (Exception $e) {
-            Logger::getInstance()->error("Error in IcdController::index", [
-                'exception' => $e
+            // Show detailed error in development
+            $errorMessage = DEBUG_MODE ? 
+                $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine() :
+                "Failed to retrieve ICD data. Please try again later.";
+            
+            return $this->view('master/icd/index', [
+                'title' => 'Data ICD',
+                'data' => [],
+                'total' => 0,
+                'page' => 1,
+                'perPage' => 10,
+                'search' => $search,
+                'error' => $errorMessage
             ]);
-            throw new Exception("Failed to load ICD data: " . $e->getMessage());
         }
     }
 

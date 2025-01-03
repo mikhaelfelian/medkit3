@@ -79,7 +79,7 @@
                                 <span class="input-group-text rounded-0">Rp</span>
                             </div>
                             <input type="text" class="form-control rounded-0 currency" id="harga_beli" 
-                                   name="harga_beli" value="<?= Angka::format($data->harga_beli) ?>" placeholder="Masukkan harga beli" required 
+                                   name="harga_beli" value="<?= $data->harga_beli ?>" placeholder="Masukkan harga beli" required 
                                    onkeyup="formatCurrency(this)">
                         </div>
                     </div>

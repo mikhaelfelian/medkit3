@@ -1,0 +1,4 @@
+[2025-01-02 00:04:58] ERROR: Error in find {"model":"SatuanModel","id":"1","error":"SQLSTATE[42S22]: Column not found: 1054 Unknown column 'deleted_at' in 'where clause'"}
+[2025-01-02 22:56:11] ERROR: Error in find {"model":"SatuanModel","id":"1","error":"SQLSTATE[42S22]: Column not found: 1054 Unknown column 'deleted_at' in 'where clause'"}
+[2025-01-02 22:56:14] ERROR: Error in getAll {"model":"BhpModel","error":"SQLSTATE[42S02]: Base table or view not found: 1146 Table 'db_medkit3.tbl_hp' doesn't exist"}
+[2025-01-02 22:56:18] ERROR: Error in find {"model":"PasienModel","id":"1","error":"SQLSTATE[42S22]: Column not found: 1054 Unknown column 'deleted_at' in 'where clause'"}

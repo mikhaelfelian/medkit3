@@ -5,7 +5,7 @@ class LabController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Lab');
-        $this->loadHelper('angka');
+        $this->loadHelper('Angka');
         $this->loadHelper('debug');
     }
     
@@ -62,11 +62,13 @@ class LabController extends BaseController {
             }
 
             $data = [
-                'kode' => $this->model->generateKode(),
                 'id_kategori' => $this->input->post('id_kategori'),
+                'id_merk' => $this->input->post('id_merk'),
+                'kode' => $this->model->generateKode(),
                 'item' => $this->input->post('item'),
                 'item_alias' => $this->input->post('item_alias'),
                 'item_kand' => $this->input->post('item_kand'),
+                'harga_beli' => Angka::formatDB($this->input->post('harga_beli')),
                 'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
                 'status' => $this->input->post('status', '1'),
                 'status_item' => '3', // For Lab items
@@ -119,14 +121,15 @@ class LabController extends BaseController {
                 throw new Exception('Invalid security token');
             }
 
-            // Sanitize and prepare data
             $data = [
-                'id_kategori' => (int)$this->input->post('id_kategori'),
-                'id_merk' => (int)$this->input->post('id_merk'), // Ensure id_merk is properly cast
+                'id_kategori' => $this->input->post('id_kategori'),
+                'id_merk' => $this->input->post('id_merk'),
+                'kode' => $this->input->post('kode'),
                 'item' => $this->input->post('item'),
-                'item_alias' => $this->input->post('item_alias'),
-                'item_kand' => $this->input->post('item_kand'),
-                'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
+                'deskripsi' => $this->input->post('deskripsi'),
+                'harga_beli' => AngkaHelper::unformat($this->input->post('harga_beli')),
+                'harga_jual' => AngkaHelper::unformat($this->input->post('harga_jual')),
+                'status_stok' => $this->input->post('status_stok', '0'),
                 'status' => $this->input->post('status', '1'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];

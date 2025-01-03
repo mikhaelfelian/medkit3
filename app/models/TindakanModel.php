@@ -203,36 +203,12 @@ class TindakanModel extends BaseModel {
             $errors[] = 'Kategori harus dipilih';
         }
         
-        if (empty($data['id_merk'])) {
-            $errors[] = 'Merk harus dipilih';
-        }
-        
         if (empty($data['item'])) {
             $errors[] = 'Nama tindakan harus diisi';
         }
         
         if (empty($data['harga_jual'])) {
             $errors[] = 'Harga harus diisi';
-        }
-
-        // Validate remunerasi if type is selected
-        if (!empty($data['remun_tipe'])) {
-            if ($data['remun_tipe'] == '1' && empty($data['remun_perc'])) {
-                $errors[] = 'Persentase remunerasi harus diisi';
-            }
-            if ($data['remun_tipe'] == '2' && empty($data['remun_nom'])) {
-                $errors[] = 'Nominal remunerasi harus diisi';
-            }
-        }
-
-        // Validate apresiasi if type is selected
-        if (!empty($data['apres_tipe'])) {
-            if ($data['apres_tipe'] == '1' && empty($data['apres_perc'])) {
-                $errors[] = 'Persentase apresiasi harus diisi';
-            }
-            if ($data['apres_tipe'] == '2' && empty($data['apres_nom'])) {
-                $errors[] = 'Nominal apresiasi harus diisi';
-            }
         }
         
         return $errors;
@@ -341,25 +317,29 @@ class TindakanModel extends BaseModel {
     /**
      * Get trash items with pagination
      */
-    public function getTrashPaginate($search = '', $page = 1, $perPage = 10) {
+    public function getTrashPaginate($search = '', $page = 1, $perPage = 10, $filters = []) {
         try {
             $offset = ($page - 1) * $perPage;
-            $conditions = ["i.status_hps = '1' AND i.status_item = '2'"]; // Only show deleted tindakan
+            
+            $conditions = ["status_hps = '1'"]; // Base condition for trash
             $params = [];
             
+            // Add status_item filter
+            if (isset($filters['status_item'])) {
+                $conditions[] = "status_item = :status_item";
+                $params[':status_item'] = $filters['status_item'];
+            }
+            
             if (!empty($search)) {
-                $conditions[] = "(i.kode LIKE :search OR i.item LIKE :search OR k.kategori LIKE :search)";
+                $conditions[] = "(kode LIKE :search OR item LIKE :search)";
                 $params[':search'] = "%{$search}%";
             }
             
-            $where = implode(' AND ', $conditions);
+            $where = 'WHERE ' . implode(' AND ', $conditions);
             
             // Get total records
-            $sql = "SELECT COUNT(*) as total 
-                    FROM {$this->table} i 
-                    LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
-                    WHERE {$where}";
-            $stmt = $this->conn->prepare($sql);
+            $countSql = "SELECT COUNT(*) as total FROM {$this->table} {$where}";
+            $stmt = $this->conn->prepare($countSql);
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
@@ -367,30 +347,29 @@ class TindakanModel extends BaseModel {
             $total = $stmt->fetch(PDO::FETCH_OBJ)->total;
             
             // Get paginated records
-            $sql = "SELECT i.*, k.kategori as nama_kategori 
-                    FROM {$this->table} i 
-                    LEFT JOIN tbl_m_kategoris k ON i.id_kategori = k.id 
-                    WHERE {$where} 
-                    ORDER BY i.kode ASC 
-                    LIMIT :offset, :limit";
+            $sql = "SELECT * FROM {$this->table} 
+                    {$where} 
+                    ORDER BY created_at DESC 
+                    LIMIT :limit OFFSET :offset";
+            
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            
             foreach ($params as $key => $value) {
                 $stmt->bindValue($key, $value);
             }
+            
             $stmt->execute();
             
             return [
                 'data' => $stmt->fetchAll(PDO::FETCH_OBJ),
-                'total' => $total,
-                'per_page' => $perPage,
-                'current_page' => $page
+                'total' => $total
             ];
             
         } catch (PDOException $e) {
             error_log("Database Error in getTrashPaginate: " . $e->getMessage());
-            throw new Exception("Failed to fetch trash data");
+            throw new Exception("Failed to fetch trash records");
         }
     }
 

@@ -35,7 +35,7 @@
                                         class="btn btn-danger btn-sm rounded-0">
                                         <i class="fas fa-trash"></i> Sampah
                                         <?php if (isset($deletedCount) && $deletedCount > 0): ?>
-                                            <span class="badge badge-light ml-1"><?= $deletedCount ?></span>
+                                            <span class="badge badge-light"><?= $deletedCount ?></span>
                                         <?php endif; ?>
                                     </a>
                                 </div>
@@ -87,13 +87,8 @@
                                                     <td><?= $item->kode ?></td>
                                                     <td><?= $item->nama_kategori ?></td>
                                                     <td><?= $item->nama_merk ?></td>
-                                                    <td>
-                                                        <?= $item->item ?>
-                                                        <?php if ($item->status_stok == '1'): ?>
-                                                            <br><span class="badge badge-info">Stockable</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td class="text-right"><?= Angka::format($item->harga_jual) ?></td>
+                                                    <td><?= $item->item ?></td>
+                                                    <td class="text-right"><?= AngkaHelper::formatNumber($item->harga_jual) ?></td>
                                                     <td class="text-center">
                                                         <?php if ($item->status == '1'): ?>
                                                             <span class="badge badge-success">Aktif</span>

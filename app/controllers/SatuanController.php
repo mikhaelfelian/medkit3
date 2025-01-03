@@ -24,8 +24,65 @@ class SatuanController extends BaseController {
                 'search' => $search
             ]);
         } catch (Exception $e) {
-            Notification::error($e->getMessage());
+            ToastrHelper::error($e->getMessage(), 'Error!');
             return $this->redirect('satuan');
+        }
+    }
+
+    public function create() {
+        try {
+            // Initialize form object
+            $form = BaseForm::getInstance();
+
+            return $this->view('master/satuan/create', [
+                'title' => 'Edit Satuan',
+                'form' => $form
+            ]);
+
+        } catch (Exception $e) {
+            ToastrHelper::error($e->getMessage(), 'Error!');
+            return $this->redirect('satuan');
+        }
+    }
+
+    public function store() {
+        try {
+            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
+                throw new Exception('Invalid security token');
+            }
+
+            $data = [
+                'satuanKecil' => $this->input->post('satuanKecil'),
+                'satuanBesar' => $this->input->post('satuanBesar'), 
+                'jml' => $this->input->post('jml'),
+                'status' => $this->input->post('status', '1'),
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            // Validate data
+            $errors = $this->model->validate($data);
+            if (!empty($errors)) {
+                ToastrHelper::warning('Silakan periksa form input', 'Peringatan!');
+                return $this->view('master/satuan/create', [
+                    'title' => 'Tambah Satuan',
+                    'data' => (object)$data,
+                    'errors' => $errors,
+                    'form' => BaseForm::getInstance()
+                ]);
+            }
+
+            // Save data
+            if ($this->model->create($data)) {
+                ToastrHelper::success('Data satuan berhasil disimpan', 'Berhasil!');
+                return $this->redirect('satuan');
+            }
+            
+            ToastrHelper::error('Gagal menyimpan data satuan', 'Error!');
+            return $this->redirect('satuan/create');
+
+        } catch (Exception $e) {
+            ToastrHelper::error($e->getMessage(), 'Error!');
+            return $this->redirect('satuan/create');
         }
     }
 
@@ -36,6 +93,7 @@ class SatuanController extends BaseController {
                 throw new Exception('Data satuan tidak ditemukan');
             }
 
+            // Initialize form object
             $form = BaseForm::getInstance();
 
             return $this->view('master/satuan/edit', [
@@ -43,14 +101,18 @@ class SatuanController extends BaseController {
                 'data' => $data,
                 'form' => $form
             ]);
+
         } catch (Exception $e) {
-            Notification::error($e->getMessage());
+            ToastrHelper::error($e->getMessage(), 'Error!');
             return $this->redirect('satuan');
         }
     }
 
     public function update($id) {
         try {
+            // Initialize form object
+            $form = BaseForm::getInstance();
+
             if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
                 throw new Exception('Invalid security token');
             }
@@ -65,7 +127,7 @@ class SatuanController extends BaseController {
             // Validate data
             $errors = $this->model->validate($data, $id);
             if (!empty($errors)) {
-                $form = BaseForm::getInstance();
+                ToastrHelper::warning('Silakan periksa form input', 'Peringatan!');
                 return $this->view('master/satuan/edit', [
                     'title' => 'Edit Satuan',
                     'data' => (object)array_merge(['id' => $id], $data),
@@ -74,15 +136,16 @@ class SatuanController extends BaseController {
                 ]);
             }
 
-            if (!$this->model->update($id, $data)) {
-                throw new Exception('Gagal mengupdate data satuan');
+            if ($this->model->update($id, $data)) {
+                ToastrHelper::success('Data satuan berhasil diupdate', 'Berhasil!');
+                return $this->redirect('satuan');
             }
-
-            Notification::success('Data satuan berhasil diupdate');
-            return $this->redirect('satuan');
+            
+            ToastrHelper::error('Gagal mengupdate data satuan', 'Error!');
+            return $this->redirect('satuan/edit/' . $id);
 
         } catch (Exception $e) {
-            Notification::error($e->getMessage());
+            ToastrHelper::error($e->getMessage(), 'Error!');
             return $this->redirect('satuan/edit/' . $id);
         }
     }
@@ -94,15 +157,15 @@ class SatuanController extends BaseController {
                 throw new Exception('Data satuan tidak ditemukan');
             }
 
-            if (!$this->model->delete($id)) {
-                throw new Exception('Gagal menghapus data satuan');
+            if ($this->model->delete($id)) {
+                ToastrHelper::success('Data satuan berhasil dihapus', 'Berhasil!');
+            } else {
+                ToastrHelper::error('Gagal menghapus data satuan', 'Error!');
             }
-
-            Notification::success('Data satuan berhasil dihapus');
             return $this->redirect('satuan');
 
         } catch (Exception $e) {
-            Notification::error($e->getMessage());
+            ToastrHelper::error($e->getMessage(), 'Error!');
             return $this->redirect('satuan');
         }
     }

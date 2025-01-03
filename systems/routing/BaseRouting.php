@@ -80,8 +80,24 @@ class BaseRouting {
         }
     }
     
-    public static function url($path = '') {
-        return rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
+    public static function url($path = '', $params = []) {
+        $url = rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
+        
+        if (!empty($params)) {
+            $queryString = http_build_query($params);
+            $url .= '?' . $queryString;
+        }
+        
+        return $url;
+    }
+    
+    protected static function getBaseUrl() {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $dirname = dirname($scriptName);
+        $baseUrl = $protocol . '://' . $host . ($dirname === '/' ? '' : $dirname);
+        return rtrim($baseUrl, '/');
     }
     
     public static function asset($path = '') {

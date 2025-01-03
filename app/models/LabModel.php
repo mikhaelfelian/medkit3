@@ -10,6 +10,7 @@ class LabModel extends BaseModel {
         'item',
         'item_alias',
         'item_kand',
+        'harga_beli',
         'harga_jual',
         'status',
         'status_item',

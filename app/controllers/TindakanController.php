@@ -41,7 +41,12 @@ class TindakanController extends BaseController {
             $search = $this->input->get('search', '');
             $perPage = $this->input->get('per_page', 10);
             
-            $result = $this->model->getTrashPaginate($search, $page, $perPage);
+            // Add status_item filter for tindakan
+            $filters = [
+                'status_item' => '2' // For tindakan items
+            ];
+            
+            $result = $this->model->getTrashPaginate($search, $page, $perPage, $filters);
             
             return $this->view('master/tindakan/trash', [
                 'title' => 'Data Tindakan [Terhapus]',
@@ -158,8 +163,8 @@ class TindakanController extends BaseController {
             }
 
             $data = [
-                'kode' => $this->input->post('kode'),
                 'id_kategori' => $this->input->post('id_kategori'),
+                'kode' => $this->input->post('kode'),
                 'item' => $this->input->post('item'),
                 'item_alias' => $this->input->post('item_alias'),
                 'harga_jual' => Angka::cleanNumber($this->input->post('harga_jual')),

@@ -139,13 +139,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <input class="custom-control-input" type="checkbox" id="status_stok" name="status_stok" value="1" <?= $data->status_stok == '1' ? 'checked' : '' ?>>
-                            <label for="status_stok" class="custom-control-label">Stockable</label>
-                            <small class="form-text text-muted">Jika dicentang maka mengurangi stok</small>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label>Status <span class="text-danger">*</span></label>
                         <div class="custom-control custom-radio">
                             <input class="custom-control-input" type="radio" id="status1" name="status" 

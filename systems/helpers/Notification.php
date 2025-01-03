@@ -1,75 +1,43 @@
 <?php
-class Notification {
-    public static function success($message) {
-        $_SESSION['notification'] = [
-            'type' => 'success',
-            'message' => $message
-        ];
-    }
+require_once APP_PATH . '/helpers/ToastrHelper.php';
+
+/**
+ * @deprecated Use ToastrHelper instead
+ */
+class Notification extends ToastrHelper {
+    // This class exists only for backward compatibility
     
-    public static function error($message) {
-        $_SESSION['notification'] = [
-            'type' => 'error',
-            'message' => $message
-        ];
-    }
-    
-    public static function warning($message) {
-        $_SESSION['notification'] = [
-            'type' => 'warning',
-            'message' => $message
-        ];
-    }
-    
-    public static function info($message) {
-        $_SESSION['notification'] = [
-            'type' => 'info',
-            'message' => $message
-        ];
-    }
-    
-    public static function get() {
-        if (isset($_SESSION['notification'])) {
-            $notification = $_SESSION['notification'];
-            unset($_SESSION['notification']);
-            return $notification;
-        }
-        return null;
-    }
-    
+    // Override render method to maintain backward compatibility
     public static function render() {
-        return self::display();
-    }
-    
-    public static function display() {
-        $notification = self::get();
-        if ($notification) {
-            $type = $notification['type'];
-            $message = $notification['message'];
+        if (self::has()) {
+            $html = '<script>';
+            $html .= 'toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };';
             
-            switch ($type) {
-                case 'success':
-                    $icon = 'fa-check';
-                    $class = 'alert-success';
-                    break;
-                case 'error':
-                    $icon = 'fa-ban';
-                    $class = 'alert-danger';
-                    break;
-                case 'warning':
-                    $icon = 'fa-exclamation-triangle';
-                    $class = 'alert-warning';
-                    break;
-                default:
-                    $icon = 'fa-info';
-                    $class = 'alert-info';
+            foreach (self::get() as $notification) {
+                $type = $notification['type'];
+                $message = addslashes($notification['message']);
+                $title = addslashes($notification['title'] ?? '');
+                
+                $html .= "toastr['{$type}']('{$message}', '{$title}');";
             }
             
-            echo "<div class='alert {$class} alert-dismissible'>
-                    <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                    <h5><i class='icon fas {$icon}'></i> " . ucfirst($type) . "!</h5>
-                    {$message}
-                  </div>";
+            $html .= '</script>';
+            echo $html;
         }
     }
 } 

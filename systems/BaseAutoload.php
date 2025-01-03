@@ -56,13 +56,20 @@ class BaseAutoload {
     }
     
     private function loadHelpers() {
-        foreach ($this->config['helpers'] as $helper) {
-            $helperFile = APP_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
-            if (file_exists($helperFile)) {
-                require_once $helperFile;
-            } else {
-                // Try system helpers
-                $systemHelperFile = SYSTEM_PATH . '/helpers/' . ucfirst($helper) . 'Helper.php';
+        $autoload = require CONFIG_PATH . '/autoload.php';
+        if (isset($autoload['helpers'])) {
+            foreach ($autoload['helpers'] as $helper) {
+                $helperName = ucfirst($helper) . 'Helper';
+                
+                // Try app helpers first
+                $appHelperFile = APP_PATH . '/helpers/' . $helperName . '.php';
+                if (file_exists($appHelperFile)) {
+                    require_once $appHelperFile;
+                    continue;
+                }
+                
+                // Then try system helpers
+                $systemHelperFile = SYSTEM_PATH . '/helpers/' . $helperName . '.php';
                 if (file_exists($systemHelperFile)) {
                     require_once $systemHelperFile;
                 }

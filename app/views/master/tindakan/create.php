@@ -51,21 +51,6 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="id_merk">Merk <span class="text-danger">*</span></label>
-                        <select name="id_merk" id="id_merk" class="form-control select2 rounded-0" required>
-                            <option value="">Pilih Merk</option>
-                            <?php
-                            $merkModel = ViewHelper::loadModel('Merk');
-                            $merks = $merkModel->getActiveMerks();
-                            foreach ($merks as $merk):
-                                ?>
-                                <option value="<?= $merk->id ?>" <?= isset($data) && $data->id_merk == $merk->id ? 'selected' : '' ?>>
-                                    <?= $merk->kode . ' - ' . $merk->merk ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="kode">Kode <span class="text-danger">*</span></label>
                         <input type="text" class="form-control rounded-0" id="kode" name="kode"
                             value="<?= ViewHelper::loadModel('Tindakan')->generateKode(); ?>" readonly>

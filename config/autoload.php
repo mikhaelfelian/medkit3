@@ -26,20 +26,22 @@ return [
 
     // Helpers to autoload
     'helpers' => [
-        'url',
-        'form',
-        'html',
-        'security',
-        'paginate',
-        'debug',
-        'image'
+        // System Helpers
+        'Url',
+        'Form',
+        'Security',
+        'Notification',
+        'Paginate',      // This will load PaginateHelper from system
+        
+        // App Helpers
+        'Angka',
+        'Tanggalan',
+        'Debug'
     ],
 
     // Libraries to autoload
     'libraries' => [
-        'session',     // Will load Session.php
-        'security',    // Will load Security.php
-        'form',         // Will load Form.php
-        'paginate'
+        'Input',
+        'Logger'
     ]
 ];

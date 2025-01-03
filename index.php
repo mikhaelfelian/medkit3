@@ -12,10 +12,6 @@ if (file_exists($publicPath) && is_file($publicPath)) {
     // Serve static files directly
     return false;
 } else {
-    // Define root path
-    define('ROOT_PATH', __DIR__);
-    
     // Forward to public/index.php
     require_once __DIR__ . '/public/index.php';
 }
-?>

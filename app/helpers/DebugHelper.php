@@ -4,7 +4,7 @@
  * 
  * Contains debugging helper functions
  */
-class Debug {
+class DebugHelper {
     /**
      * Print data in pre tags for better readability
      * 
@@ -52,13 +52,9 @@ class Debug {
      * @param bool $die Whether to die after printing (default: false)
      * @return void
      */
-    public static function dump($var, $die = false) {
+    public static function dump($var) {
         echo '<pre>';
         var_dump($var);
         echo '</pre>';
-        
-        if ($die) {
-            die();
-        }
     }
 } 

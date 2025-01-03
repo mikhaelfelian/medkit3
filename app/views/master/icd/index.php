@@ -39,6 +39,12 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <?php if (isset($error)): ?>
+                            <div class="alert alert-danger">
+                                <?= $error ?>
+                            </div>
+                        <?php endif; ?>
+                        
                         <?php Notification::render(); ?>
                         <div class="table-responsive mt-3">
                             <table class="table table-striped table-hover">
@@ -88,7 +94,7 @@
                     </div>
                     <?php if ($total > $perPage): ?>
                         <div class="card-footer clearfix">
-                            <?php echo PaginateHelper::createLinks($page, $perPage, $total, $search ? ['search' => $search] : []); ?>
+                            <?= PaginateHelper::createLinks($page, $perPage, $total, $search ? ['search' => $search] : []); ?>
                         </div>
                     <?php endif; ?>
                 </div>
