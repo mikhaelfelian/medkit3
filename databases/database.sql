@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `tbl_migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8;
 
--- Dumping data for table db_medkit3.tbl_migrations: ~158 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_migrations: ~239 rows (approximately)
 DELETE FROM `tbl_migrations`;
 INSERT INTO `tbl_migrations` (`id`, `migration`, `executed_at`, `execution_time`, `status`, `error_message`, `description`) VALUES
 	(1, 'Migration_create_tbl_migrations', '2024-12-25 15:05:41', 0.0174, 'success', NULL, 'Create table tbl_migrations'),
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS `tbl_m_icds` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=18550 DEFAULT CHARSET=utf8mb4 COMMENT='Untuk menyimpan data tentang ICD 10 (Daftar Penyakit).\r\nsesuai satu sehat';
 
--- Dumping data for table db_medkit3.tbl_m_icds: ~19.169 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_icds: ~18.549 rows (approximately)
 DELETE FROM `tbl_m_icds`;
 INSERT INTO `tbl_m_icds` (`id`, `created_at`, `updated_at`, `kode`, `icd`, `diagnosa_en`) VALUES
 	(1, '2024-12-27 13:28:32', '2024-12-29 00:13:16', 'A00', 'Cholera', ''),
@@ -18880,7 +18880,7 @@ INSERT INTO `tbl_m_icds` (`id`, `created_at`, `updated_at`, `kode`, `icd`, `diag
 DROP TABLE IF EXISTS `tbl_m_items`;
 CREATE TABLE IF NOT EXISTS `tbl_m_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_satuan` int(11) DEFAULT 7,
+  `id_satuan` int(11) DEFAULT 0,
   `id_kategori` int(11) DEFAULT 0,
   `id_kategori_lab` int(11) DEFAULT 0,
   `id_kategori_gol` int(11) DEFAULT 0,
@@ -18890,13 +18890,14 @@ CREATE TABLE IF NOT EXISTS `tbl_m_items` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL,
-  `kode` varchar(65) DEFAULT NULL,
+  `kode` varchar(65) DEFAULT NULL COMMENT 'Kode Item',
   `barcode` varchar(65) DEFAULT NULL,
-  `item` varchar(160) DEFAULT NULL,
-  `item_alias` text DEFAULT NULL COMMENT 'alias',
-  `item_kand` text DEFAULT NULL COMMENT 'kandungan',
-  `jml` float DEFAULT NULL,
-  `jml_limit` float DEFAULT 0,
+  `item` varchar(160) DEFAULT NULL COMMENT 'Nama Item',
+  `item_alias` text DEFAULT NULL COMMENT 'Nama Alias Obat',
+  `item_kand` text DEFAULT NULL COMMENT 'Nama Kandungan Obat',
+  `jml` float DEFAULT NULL COMMENT 'Jumlah Stok',
+  `jml_limit` float DEFAULT 0 COMMENT 'Jumlah Limit untuk warning',
+  `jml_min` float DEFAULT 0 COMMENT 'Jumlah Minimum',
   `harga_beli` decimal(10,2) DEFAULT NULL,
   `harga_jual` decimal(10,2) DEFAULT NULL,
   `remun_tipe` enum('0','1','2') DEFAULT '0',
@@ -18905,22 +18906,138 @@ CREATE TABLE IF NOT EXISTS `tbl_m_items` (
   `apres_tipe` enum('0','1','2') DEFAULT '0',
   `apres_perc` decimal(10,2) DEFAULT 0.00,
   `apres_nom` decimal(10,2) unsigned DEFAULT 0.00,
-  `status` enum('0','1') DEFAULT '0',
-  `status_stok` enum('0','1') DEFAULT '0',
-  `status_racikan` enum('0','1') DEFAULT '0',
-  `status_hps` enum('0','1') DEFAULT '0',
+  `status` enum('0','1') DEFAULT '0' COMMENT 'Status item aktif / tidak',
+  `status_stok` enum('0','1') DEFAULT '0' COMMENT 'Status Stok, mengurangi stok / tidak',
+  `status_racikan` enum('0','1') DEFAULT '0' COMMENT 'Status Obat Racikan',
+  `status_hps` enum('0','1') DEFAULT '0' COMMENT 'Status Item terhapus (soft deleted)',
   `status_item` int(11) DEFAULT 0 COMMENT '1=obat;2=tindakan;3=lab;4=radiologi;5=bhp;',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
--- Dumping data for table db_medkit3.tbl_m_items: ~5 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_items: ~6 rows (approximately)
 DELETE FROM `tbl_m_items`;
-INSERT INTO `tbl_m_items` (`id`, `id_satuan`, `id_kategori`, `id_kategori_lab`, `id_kategori_gol`, `id_lokasi`, `id_merk`, `id_user`, `created_at`, `updated_at`, `deleted_at`, `kode`, `barcode`, `item`, `item_alias`, `item_kand`, `jml`, `jml_limit`, `harga_beli`, `harga_jual`, `remun_tipe`, `remun_perc`, `remun_nom`, `apres_tipe`, `apres_perc`, `apres_nom`, `status`, `status_stok`, `status_racikan`, `status_hps`, `status_item`) VALUES
-	(1, 7, 6, 0, 0, 0, 1, 0, '2024-12-29 22:47:05', NULL, NULL, 'OB24120001', NULL, 'OBAT TEST', 'OBAT ALIAS', '-', NULL, 0, 45000.00, 100000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '1', '0', '0', 1),
-	(2, 7, 6, 0, 0, 0, 0, 0, '2024-12-29 22:47:37', '2024-12-29 15:47:37', NULL, 'TN24120001', NULL, 'TINDAKAN TEST', NULL, NULL, NULL, 0, NULL, 1375000.00, '2', 8.00, 110000.00, '1', 10.00, 137500.00, '1', '0', '0', '0', 2),
-	(3, 7, 6, 0, 0, 0, 2, 0, '2024-12-29 22:47:59', '2024-12-29 16:03:24', NULL, 'LB24120001', NULL, 'LABORAT TES', NULL, NULL, NULL, 0, NULL, 1200000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 3),
-	(4, 7, 6, 0, 0, 0, 1, 0, '2024-12-30 08:54:13', '2024-12-30 03:02:30', NULL, 'RD24120001', NULL, 'RADIOLOGI TEST', NULL, NULL, NULL, 0, NULL, 100000.00, '1', 0.00, 0.00, '2', 0.00, 0.00, '1', '0', '0', '0', 4),
-	(5, 7, 6, 0, 0, 0, 1, 0, '2024-12-30 09:08:50', '2024-12-30 02:08:50', NULL, 'RD24120002', NULL, 'RADIOLOGI TEST 2', NULL, NULL, NULL, 0, NULL, 100000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 4);
+INSERT INTO `tbl_m_items` (`id`, `id_satuan`, `id_kategori`, `id_kategori_lab`, `id_kategori_gol`, `id_lokasi`, `id_merk`, `id_user`, `created_at`, `updated_at`, `deleted_at`, `kode`, `barcode`, `item`, `item_alias`, `item_kand`, `jml`, `jml_limit`, `jml_min`, `harga_beli`, `harga_jual`, `remun_tipe`, `remun_perc`, `remun_nom`, `apres_tipe`, `apres_perc`, `apres_nom`, `status`, `status_stok`, `status_racikan`, `status_hps`, `status_item`) VALUES
+	(2, 7, 6, 0, 0, 0, 0, 0, '2024-12-29 22:47:37', '2025-01-03 01:23:55', NULL, 'TN24120001', NULL, 'TINDAKAN TEST', NULL, NULL, NULL, 0, 0, NULL, 1375000.00, '2', 0.00, 0.00, '1', 0.00, 0.00, '1', '0', '0', '0', 2),
+	(5, 7, 6, 0, 0, 0, 1, 0, '2024-12-30 09:08:50', '2024-12-31 14:59:20', NULL, 'RD24120002', NULL, 'RADIOLOGI TEST 2', NULL, NULL, NULL, 0, 0, NULL, 100000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 4),
+	(7, 1, 6, 0, 0, 0, 1, 0, '2024-12-31 23:51:10', '2024-12-31 16:51:10', '2024-12-31 23:55:31', 'BHP2412001', NULL, 'BHP Item', NULL, NULL, NULL, 0, 0, 5000.00, 15000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '1', '0', '1', 5),
+	(8, 1, 6, 0, 0, 0, 1, 0, '2025-01-03 08:20:57', '2025-01-03 14:31:59', NULL, 'OB25010001', NULL, 'OBAT TEST', 'sadasds', 'adsadsad', NULL, 0, 0, 40000.00, 50000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 1),
+	(9, 0, 6, 0, 0, 0, NULL, 0, '2025-01-03 08:24:40', '2025-01-03 01:24:43', NULL, 'TN25010001', NULL, 'dsadsadsadsad', NULL, NULL, NULL, 0, 0, NULL, 0.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 2),
+	(12, 0, 6, 0, 0, 0, 2, 0, '2025-01-03 08:28:20', '2025-01-03 16:53:30', NULL, 'LB25010003', NULL, 'ANTI CHLAMYDIA IGM', NULL, NULL, NULL, 0, 0, 500000.00, 1200000.00, '0', 0.00, 0.00, '0', 0.00, 0.00, '1', '0', '0', '0', 3);
+
+-- Dumping structure for table db_medkit3.tbl_m_item_refs
+DROP TABLE IF EXISTS `tbl_m_item_refs`;
+CREATE TABLE IF NOT EXISTS `tbl_m_item_refs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_item` int(11) DEFAULT 0,
+  `id_item_ref` int(11) DEFAULT 0,
+  `id_satuan` int(11) DEFAULT 0,
+  `id_user` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `item` varchar(160) DEFAULT NULL,
+  `harga` decimal(10,2) DEFAULT 0.00,
+  `jml` decimal(10,2) DEFAULT 0.00,
+  `jml_satuan` int(11) DEFAULT 0,
+  `subtotal` decimal(10,2) DEFAULT 0.00,
+  `status` int(11) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `fk_item_refs_items` (`id_item`),
+  KEY `fk_item_refs_items_ref` (`id_item_ref`),
+  CONSTRAINT `fk_item_refs_items` FOREIGN KEY (`id_item`) REFERENCES `tbl_m_items` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_item_refs_items_ref` FOREIGN KEY (`id_item_ref`) REFERENCES `tbl_m_items` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table db_medkit3.tbl_m_item_refs: ~0 rows (approximately)
+DELETE FROM `tbl_m_item_refs`;
+
+-- Dumping structure for table db_medkit3.tbl_m_item_ref_inputs
+DROP TABLE IF EXISTS `tbl_m_item_ref_inputs`;
+CREATE TABLE IF NOT EXISTS `tbl_m_item_ref_inputs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_item` int(11) NOT NULL DEFAULT 0,
+  `id_user` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `item_name` varchar(160) DEFAULT NULL,
+  `item_value` text DEFAULT NULL,
+  `item_value_l1` text DEFAULT NULL,
+  `item_value_l2` text DEFAULT NULL,
+  `item_value_p1` text DEFAULT NULL,
+  `item_value_p2` text DEFAULT NULL,
+  `item_satuan` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_item_ref_inputs_items` (`id_item`),
+  CONSTRAINT `fk_item_ref_inputs_items` FOREIGN KEY (`id_item`) REFERENCES `tbl_m_items` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- Dumping data for table db_medkit3.tbl_m_item_ref_inputs: ~0 rows (approximately)
+DELETE FROM `tbl_m_item_ref_inputs`;
+INSERT INTO `tbl_m_item_ref_inputs` (`id`, `id_item`, `id_user`, `created_at`, `updated_at`, `item_name`, `item_value`, `item_value_l1`, `item_value_l2`, `item_value_p1`, `item_value_p2`, `item_satuan`) VALUES
+	(2, 12, 0, '2025-01-03 23:52:51', '2025-01-03 23:52:51', 'Anti HBS', 'Negatif', 'Negatif', 'Negatif', 'Negatif', 'Negatif', '');
+
+-- Dumping structure for table db_medkit3.tbl_m_item_stoks
+DROP TABLE IF EXISTS `tbl_m_item_stoks`;
+CREATE TABLE IF NOT EXISTS `tbl_m_item_stoks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_item` int(11) NOT NULL,
+  `id_satuan` int(11) DEFAULT NULL,
+  `id_gudang` int(11) DEFAULT 1,
+  `id_user` int(11) DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` datetime DEFAULT '0000-00-00 00:00:00',
+  `jml` float DEFAULT 0,
+  `jml_satuan` float DEFAULT 1,
+  `satuan` varchar(50) DEFAULT NULL,
+  `status` enum('0','1','2') DEFAULT '0',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `FK_tbl_m_item_stoks_tbl_m_items` (`id_item`),
+  CONSTRAINT `FK_tbl_m_item_stoks_tbl_m_items` FOREIGN KEY (`id_item`) REFERENCES `tbl_m_items` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Dumping data for table db_medkit3.tbl_m_item_stoks: ~0 rows (approximately)
+DELETE FROM `tbl_m_item_stoks`;
+
+-- Dumping structure for table db_medkit3.tbl_m_karyawans
+DROP TABLE IF EXISTS `tbl_m_karyawans`;
+CREATE TABLE IF NOT EXISTS `tbl_m_karyawans` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `id_user` int(4) DEFAULT 0,
+  `id_poli` int(4) DEFAULT 0,
+  `id_user_group` int(4) DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `kode` varchar(10) COLLATE latin1_general_ci DEFAULT NULL,
+  `nik` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `sip` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `str` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `no_ijin` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `nama_dpn` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `nama` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `nama_blk` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `nama_pgl` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `tmp_lahir` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `tgl_lahir` date DEFAULT NULL,
+  `alamat` text COLLATE latin1_general_ci DEFAULT NULL,
+  `alamat_domisili` text COLLATE latin1_general_ci DEFAULT NULL,
+  `rt` varchar(3) COLLATE latin1_general_ci DEFAULT NULL,
+  `rw` varchar(3) COLLATE latin1_general_ci DEFAULT NULL,
+  `kelurahan` varchar(50) COLLATE latin1_general_ci DEFAULT NULL,
+  `kecamatan` varchar(50) COLLATE latin1_general_ci DEFAULT NULL,
+  `kota` varchar(50) COLLATE latin1_general_ci DEFAULT NULL,
+  `jns_klm` enum('L','P') COLLATE latin1_general_ci DEFAULT NULL,
+  `jabatan` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+  `no_hp` varchar(20) COLLATE latin1_general_ci DEFAULT NULL,
+  `file_foto` varchar(160) COLLATE latin1_general_ci DEFAULT NULL,
+  `status` int(11) DEFAULT NULL COMMENT '1=perawat\r\n2=dokter\r\n3=kasir\r\n4=analis\r\n5=radiografer\r\n6=farmasi',
+  `status_aps` enum('0','1') COLLATE latin1_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `id_poli` (`id_poli`),
+  KEY `id_user` (`id_user`),
+  KEY `id_user_group` (`id_user_group`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='Table untuk menyimpan data karyawan';
+
+-- Dumping data for table db_medkit3.tbl_m_karyawans: ~0 rows (approximately)
+DELETE FROM `tbl_m_karyawans`;
 
 -- Dumping structure for table db_medkit3.tbl_m_kategoris
 DROP TABLE IF EXISTS `tbl_m_kategoris`;
@@ -18933,13 +19050,12 @@ CREATE TABLE IF NOT EXISTS `tbl_m_kategoris` (
   `keterangan` text DEFAULT NULL,
   `status` enum('0','1') CHARACTER SET latin1 DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='Untuk menyimpan data kategori obat';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COMMENT='Untuk menyimpan data kategori obat';
 
--- Dumping data for table db_medkit3.tbl_m_kategoris: ~2 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_kategoris: ~1 rows (approximately)
 DELETE FROM `tbl_m_kategoris`;
 INSERT INTO `tbl_m_kategoris` (`id`, `created_at`, `updated_at`, `kode`, `kategori`, `keterangan`, `status`) VALUES
-	(6, '2024-12-27 23:12:55', '2024-12-27 23:12:55', 'KTG24120001', 'DEFAULT', '', '1'),
-	(7, '2024-12-30 10:47:59', '2024-12-30 10:47:59', 'KTG24120002', 'dsdsad', 'sadsad', '1');
+	(6, '2024-12-27 23:12:55', '2025-01-03 08:18:59', 'KTG24120001', 'DEFAULT', '', '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_merks
 DROP TABLE IF EXISTS `tbl_m_merks`;
@@ -18952,7 +19068,7 @@ CREATE TABLE IF NOT EXISTS `tbl_m_merks` (
   `keterangan` text DEFAULT NULL,
   `status` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_medkit3.tbl_m_merks: ~2 rows (approximately)
 DELETE FROM `tbl_m_merks`;
@@ -18996,7 +19112,7 @@ CREATE TABLE IF NOT EXISTS `tbl_m_pasiens` (
 -- Dumping data for table db_medkit3.tbl_m_pasiens: ~1 rows (approximately)
 DELETE FROM `tbl_m_pasiens`;
 INSERT INTO `tbl_m_pasiens` (`id`, `id_gelar`, `id_pekerjaan`, `id_user`, `created_at`, `updated_at`, `kode`, `nik`, `nama`, `nama_pgl`, `tgl_lahir`, `tmp_lahir`, `jns_klm`, `no_hp`, `alamat`, `alamat_domisili`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `pekerjaan`, `file_ktp`, `file_foto`, `status`) VALUES
-	(1, 1, 0, 0, '2024-12-30 14:02:47', '2024-12-30 15:19:23', 'P24120001', '3374071502920002', 'MIKHAEL FELIAN WASKITO', 'TN. MIKHAEL FELIAN WASKITO', '1992-02-15', 'Semarang', 'L', '085741220427', 'Perum Mutiara Pandanaran Blok D11, Mangunharjo, Tembalang, Kota Semarang', 'dsds', '11', '11', 'MANGUNHARJO', 'TEMBALANG', 'Semarang', 'DASD', 'public/file/pasien/p24120001/p24120001_ktp.png', 'public/file/pasien/p24120001/p24120001_profile.png', '1');
+	(1, 1, 0, 0, '2024-12-30 14:02:47', '2024-12-31 03:40:07', 'P24120001', '3374071502920002', 'MIKHAEL FELIAN WASKITO', 'TN. MIKHAEL FELIAN WASKITO', '1992-02-15', 'Semarang', 'L', '085741220427', 'Perum Mutiara Pandanaran Blok D11, Mangunharjo, Tembalang, Kota Semarang', 'dsds', '11', '11', 'MANGUNHARJO', 'TEMBALANG', 'Semarang', 'DASD', 'public/file/pasien/p24120001/p24120001_ktp.png', 'public/file/pasien/p24120001/p24120001_profile.png', '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_polis
 DROP TABLE IF EXISTS `tbl_m_polis`;
@@ -19010,12 +19126,10 @@ CREATE TABLE IF NOT EXISTS `tbl_m_polis` (
   `post_location` varchar(100) DEFAULT NULL,
   `status` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Untuk menyimpan data poli/unit layanan';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Untuk menyimpan data poli/unit layanan';
 
 -- Dumping data for table db_medkit3.tbl_m_polis: ~0 rows (approximately)
 DELETE FROM `tbl_m_polis`;
-INSERT INTO `tbl_m_polis` (`id`, `created_at`, `updated_at`, `kode`, `poli`, `keterangan`, `post_location`, `status`) VALUES
-	(1, '2024-12-30 23:07:53', '2024-12-30 23:13:42', 'PL24120001', 'POLI JIWA KONTOL', 'asasas', NULL, '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_satuans
 DROP TABLE IF EXISTS `tbl_m_satuans`;
@@ -19028,12 +19142,12 @@ CREATE TABLE IF NOT EXISTS `tbl_m_satuans` (
   `jml` int(11) NOT NULL,
   `status` enum('1','0') COLLATE latin1_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 -- Dumping data for table db_medkit3.tbl_m_satuans: ~1 rows (approximately)
 DELETE FROM `tbl_m_satuans`;
 INSERT INTO `tbl_m_satuans` (`id`, `created_at`, `updated_at`, `satuanKecil`, `satuanBesar`, `jml`, `status`) VALUES
-	(1, '2024-12-30 10:45:21', '2024-12-30 10:45:21', 'PCS', 'BOX', 10, '1');
+	(1, '2024-12-30 10:45:21', '2025-01-03 08:18:41', 'PCS', 'PCS', 1, '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_suppliers
 DROP TABLE IF EXISTS `tbl_m_suppliers`;
@@ -19074,13 +19188,14 @@ CREATE TABLE IF NOT EXISTS `tbl_pengaturans` (
   `pagination_limit` int(11) DEFAULT NULL,
   `favicon` varchar(255) DEFAULT NULL,
   `logo` varchar(255) DEFAULT NULL,
+  `logo_header` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- Dumping data for table db_medkit3.tbl_pengaturans: ~1 rows (approximately)
 DELETE FROM `tbl_pengaturans`;
-INSERT INTO `tbl_pengaturans` (`id`, `updated_at`, `judul`, `judul_app`, `alamat`, `deskripsi`, `kota`, `url`, `theme`, `pagination_limit`, `favicon`, `logo`) VALUES
-	(1, '2024-12-29 12:33:59', 'SIMRS ESENSIA', 'MEDKIT', 'Perum Mutiara Pandanaran Blok D11', 'SIMEDIS is an part of SIMRS application', 'KOTA SEMARANG', 'http://localhost/medkit3/', 'default', 10, 'public/file/app/favicon_677141b70ef29.png', 'public/file/app/logo_677141b70e672.png');
+INSERT INTO `tbl_pengaturans` (`id`, `updated_at`, `judul`, `judul_app`, `alamat`, `deskripsi`, `kota`, `url`, `theme`, `pagination_limit`, `favicon`, `logo`, `logo_header`) VALUES
+	(1, '2025-01-03 16:55:48', 'KLINIK UTAMA dan LABORATORIUM "ESENSIA"', 'Medkit', 'Perum Mutiara Pandanaran Blok D11', 'SIMEDIS is an part of SIMRS application', 'KOTA SEMARANG', 'http://localhost/medkit3/', 'default', 10, 'public/file/app/favicon_677141b70ef29.png', 'public/file/app/logo_677141b70e672.png', 'public/file/app/logo_header_6778117c84072.png');
 
 -- Dumping structure for table db_medkit3.tbl_tbl_m_gudangs
 DROP TABLE IF EXISTS `tbl_tbl_m_gudangs`;
