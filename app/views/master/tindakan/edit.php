@@ -66,7 +66,7 @@
                                         <span class="input-group-text rounded-0">Rp</span>
                                     </div>
                                     <input type="text" class="form-control rounded-0 autonumber" id="harga"
-                                        name="harga_jual" value="<?= Angka::format($data->harga_jual) ?>" required>
+                                        name="harga_jual" value="<?= (float) $data->harga_jual ?>" required>
                                 </div>
                             </div>
                             <div class="row">
@@ -95,7 +95,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control rounded-0 autonumber" id="remun_nom"
-                                            name="remun_nom" value="<?= Angka::format($data->remun_nom) ?>"
+                                            name="remun_nom" value="<?= (float) $data->remun_nom ?>"
                                             placeholder="Masukkan nominal" data-a-sep="." data-a-dec="," readonly
                                             <?= $data->remun_tipe != '2' ? 'disabled' : '' ?>>
                                     </div>
@@ -127,7 +127,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <input type="text" class="form-control rounded-0 autonumber" id="apres_nom"
-                                            name="apres_nom" value="<?= Angka::format($data->apres_nom) ?>"
+                                            name="apres_nom" value="<?= (float) $data->apres_nom ?>"
                                             placeholder="Masukkan nominal" data-a-sep="." data-a-dec="," readonly
                                             <?= $data->apres_tipe != '2' ? 'disabled' : '' ?>>
                                     </div>
@@ -206,16 +206,38 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th width="5%">No</th>
+                                        <th width="5%" class="text-center">No</th>
                                         <th>Item</th>
-                                        <th width="15%">Jumlah</th>
-                                        <th width="20%">Harga</th>
-                                        <th width="20%">Subtotal</th>
+                                        <th width="15%" class="text-center">Jumlah</th>
+                                        <th width="20%" class="text-right">Harga</th>
+                                        <th width="20%" class="text-right">Subtotal</th>
                                         <th width="10%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    <?php if (!empty($item_reffs)): ?>
+                                        <?php $no = 1; ?>
+                                        <?php foreach ($item_reffs as $reff): ?>
+                                            <tr>
+                                                <td class="text-center"><?= $no++ ?></td>
+                                                <td class="text-left"><?= $reff->item ?></td>
+                                                <td class="text-center"><?= (int) $reff->jml ?></td>
+                                                <td class="text-right"><?= Angka::format($reff->harga) ?></td>
+                                                <td class="text-right"><?= Angka::format($reff->subtotal); ?></td>
+                                                <td>
+                                                    <a href="<?= BaseRouting::url('tindakan/delete_reff/' . $reff->id) ?>" 
+                                                       class="btn btn-danger btn-sm rounded-0"
+                                                       onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="6" class="text-center">Tidak ada data</td>
+                                        </tr>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

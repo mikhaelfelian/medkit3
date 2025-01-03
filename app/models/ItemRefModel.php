@@ -1,11 +1,11 @@
 <?php
-class ItemReffModel extends BaseModel {
-    protected $table = 'tbl_m_item_reffs';
+class ItemRefModel extends BaseModel {
+    protected $table = 'tbl_m_item_refs';
     protected $primaryKey = 'id';
     
     protected $fillable = [
         'id_item',
-        'id_item_reff',
+        'id_item_ref',
         'id_satuan',
         'item',
         'harga',
@@ -19,9 +19,10 @@ class ItemReffModel extends BaseModel {
 
     public function getByItemId($itemId) {
         try {
-            $sql = "SELECT r.*, i.kode as kode_reff, i.item as nama_item_reff 
+            $sql = "SELECT r.*, i.kode as kode_reff, i.item as nama_item_reff,
+                    (r.jml * r.harga) as subtotal 
                     FROM {$this->table} r
-                    LEFT JOIN tbl_m_items i ON r.id_item_reff = i.id
+                    LEFT JOIN tbl_m_items i ON r.id_item_ref = i.id
                     WHERE r.id_item = :id_item
                     AND r.status = '1'
                     ORDER BY r.created_at DESC";
@@ -67,14 +68,10 @@ class ItemReffModel extends BaseModel {
 
     public function deleteReff($id) {
         try {
-            $sql = "UPDATE {$this->table} 
-                    SET status = '0', 
-                        updated_at = :updated_at 
-                    WHERE id = :id";
+            $sql = "DELETE FROM {$this->table} WHERE id = :id";
                     
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':id', $id);
-            $stmt->bindValue(':updated_at', date('Y-m-d H:i:s'));
             
             return $stmt->execute();
             

@@ -30,4 +30,4 @@ class Angka extends AngkaHelper {
     public static function cleanNumber($number) {
         return parent::cleanNumber($number);
     }
-} 
+}

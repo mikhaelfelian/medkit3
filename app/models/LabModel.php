@@ -163,6 +163,28 @@ class LabModel extends BaseModel {
         }
     }
 
+    public function getDetails($id) {
+        try {
+            $sql = "SELECT * FROM {$this->table} WHERE id = :id";
+                
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            
+            $data = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            if (!$data) {
+                throw new Exception("Record not found");
+            }
+            
+            return $data;
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in getDetails: " . $e->getMessage());
+            throw new Exception("Failed to fetch record details");
+        }
+    }
+
     public function softDelete($id) {
         try {
             $sql = "UPDATE {$this->table} 
@@ -283,6 +305,27 @@ class LabModel extends BaseModel {
         } catch (PDOException $e) {
             error_log("Database Error in permanentDelete: " . $e->getMessage());
             throw new Exception("Failed to permanently delete record");
+        }
+    }
+
+    public function searchActiveItems($term) {
+        try {
+            $sql = "SELECT id, kode, item, harga_jual as harga
+                    FROM {$this->table} 
+                    WHERE status_hps = '0' 
+                    AND (kode LIKE :term OR item LIKE :term) 
+                    ORDER BY item ASC 
+                    LIMIT 10";
+                    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':term', "%{$term}%");
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in searchActiveItems: " . $e->getMessage());
+            throw new Exception("Failed to search items");
         }
     }
 } 

@@ -31,10 +31,10 @@ return [
         'Form',
         'Security',
         'Notification',
-        'Paginate',      // This will load PaginateHelper from system
+        'Paginate',
         
         // App Helpers
-        'Angka',
+        'AngkaHelper',  // This will autoload AngkaHelper.php
         'Tanggalan',
         'Debug',
         'View'

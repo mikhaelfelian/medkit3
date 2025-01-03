@@ -5,8 +5,7 @@ class LabController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Lab');
-        $this->loadHelper('Angka');
-        $this->loadHelper('debug');
+        $this->itemReffModel = $this->loadModel('ItemRef');
     }
     
     public function index() {
@@ -68,8 +67,8 @@ class LabController extends BaseController {
                 'item' => $this->input->post('item'),
                 'item_alias' => $this->input->post('item_alias'),
                 'item_kand' => $this->input->post('item_kand'),
-                'harga_beli' => Angka::formatDB($this->input->post('harga_beli')),
-                'harga_jual' => Angka::formatDB($this->input->post('harga_jual')),
+                'harga_beli' => AngkaHelper::formatDB($this->input->post('harga_beli')),
+                'harga_jual' => AngkaHelper::formatDB($this->input->post('harga_jual')),
                 'status' => $this->input->post('status', '1'),
                 'status_item' => '3', // For Lab items
                 'created_at' => date('Y-m-d H:i:s')
@@ -90,25 +89,28 @@ class LabController extends BaseController {
 
     public function edit($id) {
         try {
-            // Get lab data with details
-            $data = $this->model->getWithDetails($id);
-            
-            // Load required models for dropdowns
+            // Load required models
             $kategoriModel = $this->loadModel('Kategori');
             $merkModel = $this->loadModel('Merk');
             
-            // Get active records for dropdowns
-            $kategoris = $kategoriModel->getActiveRecords();
-            $merks = $merkModel->getActiveRecords();
+            // Get lab data with details
+            $data = $this->model->getWithDetails($id);
+            if (!$data) {
+                throw new Exception('Data not found');
+            }
+
+            // Get item references
+            $item_reffs = $this->itemReffModel->getByItemId($id);
 
             return $this->view('master/lab/edit', [
-                'title' => 'Edit Data Lab',
+                'title' => 'Edit Lab',
                 'data' => $data,
-                'kategoris' => $kategoris,
-                'merks' => $merks,
+                'kategoris' => $kategoriModel->getActiveRecords(),
+                'merks' => $merkModel->getActiveRecords(),
+                'item_reffs' => $item_reffs,
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
-            
+
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('lab');
@@ -238,6 +240,95 @@ class LabController extends BaseController {
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('lab/trash');
+        }
+    }
+
+    public function search_items() {
+        try {
+            $term = $this->input->get('term');
+            
+            if (empty($term)) {
+                return $this->json([]);
+            }
+            
+            $items = $this->model->searchActiveItems($term);
+            return $this->json($items);
+            
+        } catch (Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function store_reff() {
+        try {
+            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
+                throw new Exception('Invalid security token');
+            }
+
+            $id         = $this->input->post('id');           // Parent lab item ID
+            $reff_id    = $this->input->post('item_reff_id'); // Selected reference item ID
+            $item_reff  = $this->input->post('item_reff');    // Reference item name
+            $jml_reff   = (int)$this->input->post('jml_reff');
+            $harga_reff = AngkaHelper::formatDB($this->input->post('harga_reff'));
+
+            // Get reference item details using item_reff_id
+            $sql_item = $this->model->getDetails($reff_id);
+
+            if (!$sql_item) {
+                throw new Exception('Item referensi tidak ditemukan');
+            }
+
+            $subtotal = $jml_reff * $harga_reff;
+
+            // Get form data
+            $data = [
+                'id_item'       => $id,                    // Parent lab item ID
+                'id_item_ref'   => $reff_id,              // Reference item ID
+                'id_satuan'     => $sql_item->id_satuan ? $sql_item->id_satuan : 0,
+                'item'          => $sql_item->item,        // Reference item name
+                'jml'           => (int)$jml_reff,
+                'harga'         => (float)$harga_reff,
+                'subtotal'      => (float)$subtotal,
+                'status'        => $sql_item->status ? $sql_item->status : 0,
+            ];
+
+            // Validate required fields
+            if (empty($id) || empty($reff_id) || empty($jml_reff)) {
+                throw new Exception('Semua field harus diisi');
+            }
+
+            // Create new reference
+            if (!$this->itemReffModel->create($data)) {
+                throw new Exception('Gagal menyimpan data referensi');
+            }
+
+            Notification::success('Data referensi berhasil ditambahkan');
+            return $this->redirect('lab/edit/' . $data['id_item']);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('lab/edit/' . $this->input->post('id'));
+        }
+    }
+
+    public function delete_reff($id) {
+        try {
+            // Get reference data first to get parent ID for redirect
+            $reff = $this->itemReffModel->find($id);
+            if (!$reff) {
+                throw new Exception('Reference not found');
+            }
+
+            if (!$this->itemReffModel->deleteReff($id)) {
+                throw new Exception('Failed to delete reference');
+            }
+
+            Notification::success('Referensi berhasil dihapus');
+            return $this->redirect('lab/edit/' . $reff->id_item);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('lab');
         }
     }
 } 

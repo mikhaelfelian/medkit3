@@ -6,7 +6,7 @@ class TindakanController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Tindakan');
-        $this->itemReffModel = $this->loadModel('ItemReff');
+        $this->itemReffModel = $this->loadModel('ItemRef');
         // Load Angka helper
         $this->loadHelper('angka');
     }
@@ -350,17 +350,20 @@ class TindakanController extends BaseController {
             $id         = $this->input->post('id');
             $reff_id    = $this->input->post('item_reff_id');
             $item_reff  = $this->input->post('item_reff');
-            $jml_reff   = Angka::cleanNumber($this->input->post('jml_reff'));
-            $sql_item   = $this->model->getWithDetails($this->input->post('id'));
-            $subtotal   = Angka::cleanNumber($this->input->post('jml_reff')) * Angka::cleanNumber($this->input->post('harga'));
+            $jml_reff   = (int)$this->input->post('jml_reff');
+            $harga_reff = Angka::formatDB($this->input->post('harga_reff'));
+            $subtotal   = $jml_reff * $harga_reff;
+            
+            $sql_item   = $this->model->getWithDetails($reff_id);
 
             // Get form data
             $data = [
-                'id_item'       => $this->input->post('id'), // Main item ID
-                'id_item_reff'  => $sql_item->id ? $sql_item->id : 0,
+                'id_item'       => $id,
+                'id_item_ref'   => $sql_item->id ? $sql_item->id : 0,
+                'id_satuan'     => $sql_item->id_satuan ? $sql_item->id_satuan : 0,
                 'item'          => $sql_item->item ? $sql_item->item : null,
-                'jml'           => AngkaHelper::cleanNumber($this->input->post('jml_reff')),
-                'harga'         => AngkaHelper::cleanNumber($this->input->post('harga_reff')),
+                'jml'           => $jml_reff,
+                'harga'         => $harga_reff,
                 'subtotal'      => $subtotal,
                 'status'        => $sql_item->status ? $sql_item->status : 0,
             ];
