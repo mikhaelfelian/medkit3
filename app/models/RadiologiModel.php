@@ -212,10 +212,14 @@ class RadiologiModel extends BaseModel {
 
     public function permanentDelete($id) {
         try {
-            $sql = "DELETE FROM {$this->table} WHERE id = :id AND status_hps = '1'";
+            // Only allow deletion of items that are already in trash
+            $sql = "DELETE FROM {$this->table} 
+                    WHERE id = :id 
+                    AND status_hps = '1' 
+                    AND status_item = '4'"; // Only radiologi items
+                    
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':id', $id);
-            
             return $stmt->execute();
             
         } catch (PDOException $e) {

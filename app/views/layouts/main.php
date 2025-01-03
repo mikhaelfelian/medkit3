@@ -18,8 +18,10 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/fontawesome-free/css/all.min.css') ?>">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/dist/css/adminlte.min.css') ?>">
-    <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') ?>">
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery-ui/jquery-ui.min.css') ?>">
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery-ui/jquery-ui.theme.min.css') ?>">
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery-ui/jquery-ui.structure.min.css') ?>">
     <!-- Additional CSS -->
     <?= $this->getSection('css') ?>
 	
@@ -46,6 +48,33 @@ $faviconPath = !empty($settings->favicon) ? $settings->favicon : 'assets/theme/a
     <!-- Toastr -->
     <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/toastr/toastr.min.css') ?>">
     <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/toastr/toastr.min.js') ?>"></script>
+
+    <!-- AutoNumeric -->
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/JAutoNumber/autonumeric.js') ?>"></script>
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery-ui/jquery-ui.min.css') ?>">
+    <script src="<?= BaseRouting::asset('theme/admin-lte-3/plugins/jquery-ui/jquery-ui.min.js') ?>"></script>
+
+    <!-- Add custom styles for autocomplete -->
+    <style>
+    .ui-autocomplete {
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 9999;
+    }
+    .ui-autocomplete .ui-menu-item {
+        padding: 5px 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .ui-autocomplete .ui-menu-item:last-child {
+        border-bottom: none;
+    }
+    .ui-autocomplete .ui-menu-item small {
+        font-size: 85%;
+    }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">

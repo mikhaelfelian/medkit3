@@ -36,12 +36,15 @@ return [
         // App Helpers
         'Angka',
         'Tanggalan',
-        'Debug'
+        'Debug',
+        'View'
     ],
 
     // Libraries to autoload
     'libraries' => [
         'Input',
-        'Logger'
+        'Logger',
+        'Database',
+        'Security'
     ]
 ];

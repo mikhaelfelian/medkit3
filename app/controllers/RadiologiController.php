@@ -176,8 +176,14 @@ class RadiologiController extends BaseController {
         }
     }
 
-    public function permanentDelete($id) {
+    public function hapus($id) {
         try {
+            // Check if record exists and is in trash
+            $data = $this->model->find($id);
+            if (!$data || $data->status_hps != '1') {
+                throw new Exception('Data not found in trash');
+            }
+
             if (!$this->model->permanentDelete($id)) {
                 throw new Exception('Failed to delete data permanently');
             }

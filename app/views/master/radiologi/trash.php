@@ -69,8 +69,8 @@
                                 <td><?= $no++ ?></td>
                                 <td><?= $item->kode ?></td>
                                 <td><?= $item->item ?></td>
-                                <td>Rp <?= number_format($item->harga_beli, 0, ',', '.') ?></td>
-                                <td>Rp <?= number_format($item->harga_jual, 0, ',', '.') ?></td>
+                                <td><?= AngkaHelper::formatRupiah($item->harga_beli) ?></td>
+                                <td><?= AngkaHelper::formatRupiah($item->harga_jual) ?></td>
                                 <td>
                                     <?php if ($item->status == '1'): ?>
                                         <span class="badge badge-success">Aktif</span>
@@ -81,13 +81,13 @@
                                 <td>
                                     <div class="btn-group">
                                         <a href="<?= BaseRouting::url('radiologi/restore/' . $item->id) ?>" 
-                                           class="btn btn-info btn-sm rounded-0"
-                                           onclick="return confirm('Apakah Anda yakin ingin memulihkan data ini?')">
+                                           class="btn btn-success btn-sm rounded-0"
+                                           onclick="return confirm('Pulihkan data ini?')">
                                             <i class="fas fa-undo"></i>
                                         </a>
-                                        <a href="<?= BaseRouting::url('radiologi/permanent-delete/' . $item->id) ?>" 
+                                        <a href="<?= BaseRouting::url('radiologi/hapus/' . $item->id) ?>" 
                                            class="btn btn-danger btn-sm rounded-0"
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus permanen data ini?')">
+                                           onclick="return confirm('Hapus permanen data ini?')">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>

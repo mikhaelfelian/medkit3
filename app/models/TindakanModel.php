@@ -405,4 +405,25 @@ class TindakanModel extends BaseModel {
             throw new Exception("Failed to update tindakan");
         }
     }
+
+    public function searchActiveItems($term) {
+        try {
+            $sql = "SELECT id, kode, item, harga_jual 
+                    FROM {$this->table} 
+                    WHERE status_hps = '0' 
+                    AND (kode LIKE :term OR item LIKE :term) 
+                    ORDER BY item ASC 
+                    LIMIT 10";
+                    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':term', "%{$term}%");
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+        } catch (PDOException $e) {
+            error_log("Database Error in searchActiveItems: " . $e->getMessage());
+            throw new Exception("Failed to search items");
+        }
+    }
 } 

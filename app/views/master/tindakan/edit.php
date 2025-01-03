@@ -20,184 +20,272 @@
 <section class="content">
     <div class="container-fluid">
         <?= Notification::render() ?>
-
-        <div class="card rounded-0">
-            <div class="card-header rounded-0">
-                <h3 class="card-title"><?= $title ?></h3>
-                <div class="card-tools">
-                    <a href="<?= BaseRouting::url('tindakan') ?>" class="btn btn-tool">
-                        <i class="fas fa-times"></i>
-                    </a>
-                </div>
-            </div>
-            <form action="<?= BaseRouting::url('tindakan/update/' . $data->id) ?>" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-                <div class="card-body rounded-0">
-                    <div class="form-group">
-                        <label for="kode">Kode <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control rounded-0" id="kode" name="kode"
-                            value="<?= $data->kode ?>" readonly>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
-                        <select class="form-control select2 rounded-0" id="id_kategori" name="id_kategori" required>
-                            <option value="">Pilih Kategori</option>
-                            <?php foreach ($kategoris as $kategori): ?>
-                                <option value="<?= $kategori->id ?>" <?= $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
-                                    <?= $kategori->kode . ' - ' . $kategori->kategori ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="item">Nama Tindakan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control rounded-0" id="item" name="item"
-                            value="<?= $data->item ?>" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="harga_jual">Harga <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text rounded-0">Rp</span>
-                            </div>
-                            <input type="text" class="form-control rounded-0 currency" id="harga_jual" name="harga_jual"
-                                value="<?= Angka::format($data->harga_jual) ?>" required
-                                onkeyup="formatCurrency(this)">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4"><label class="control-label">Remunerasi</label></div>
-                        <div class="col-lg-2"><label class="control-label">%</label></div>
-                        <div class="col-lg-6"><label class="control-label">Rp</label></div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <select name="remun_tipe" class="form-control rounded-0">
-                                    <option value="">[Tipe]</option>
-                                    <option value="1" <?= $data->remun_tipe == '1' ? 'selected' : '' ?>>Persen</option>
-                                    <option value="2" <?= $data->remun_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="form-group">
-                                <input type="text" 
-                                       class="form-control rounded-0" 
-                                       id="remun_perc" 
-                                       name="remun_perc"
-                                       value="<?= (float)$data->remun_perc ?>" 
-                                       placeholder="Masukkan %" 
-                                       oninput="validateNumber(this)"
-                                       maxlength="3"
-                                       <?= $data->remun_tipe != '1' ? 'disabled' : '' ?>>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" 
-                                       class="form-control rounded-0 currency" 
-                                       id="remun_nom" 
-                                       name="remun_nom"
-                                       value="<?= Angka::format($data->remun_nom) ?>" 
-                                       placeholder="Masukkan nominal" 
-                                       onkeyup="formatCurrency(this)"
-                                       <?= $data->remun_tipe != '2' ? 'disabled' : '' ?>>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4"><label class="control-label">Apresiasi</label></div>
-                        <div class="col-lg-2"><label class="control-label">%</label></div>
-                        <div class="col-lg-6"><label class="control-label">Rp</label></div>
-                        <div class="col-lg-4">
-                            <div class="form-group">
-                                <select name="apres_tipe" class="form-control rounded-0">
-                                    <option value="">[Tipe]</option>
-                                    <option value="1" <?= $data->apres_tipe == '1' ? 'selected' : '' ?>>Persen</option>
-                                    <option value="2" <?= $data->apres_tipe == '2' ? 'selected' : '' ?>>Nominal</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-2">
-                            <div class="form-group">
-                                <input type="text" 
-                                       class="form-control rounded-0" 
-                                       id="apres_perc" 
-                                       name="apres_perc"
-                                       value="<?= (float)$data->apres_perc ?>" 
-                                       placeholder="Masukkan %" 
-                                       oninput="validateNumber(this)"
-                                       maxlength="3"
-                                       <?= $data->apres_tipe != '1' ? 'disabled' : '' ?>>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <input type="text" 
-                                       class="form-control rounded-0 currency" 
-                                       id="apres_nom" 
-                                       name="apres_nom"
-                                       value="<?= Angka::format($data->apres_nom) ?>" 
-                                       placeholder="Masukkan nominal" 
-                                       onkeyup="formatCurrency(this)"
-                                       <?= $data->apres_tipe != '2' ? 'disabled' : '' ?>>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Status <span class="text-danger">*</span></label>
-                        <div class="custom-control custom-radio">
-                            <input class="custom-control-input" type="radio" id="status1" name="status" 
-                                   value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
-                            <label for="status1" class="custom-control-label">Aktif</label>
-                        </div>
-                        <div class="custom-control custom-radio">
-                            <input class="custom-control-input" type="radio" id="status0" name="status" 
-                                   value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
-                            <label for="status0" class="custom-control-label">Non Aktif</label>
-                        </div>
-                    </div>
-                </div>
-				<div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a href="<?= BaseRouting::url('tindakan') ?>" class="btn btn-default rounded-0">
-                                <i class="fas fa-arrow-left mr-2"></i>Kembali
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card rounded-0">
+                    <div class="card-header rounded-0">
+                        <h3 class="card-title"><?= $title ?></h3>
+                        <div class="card-tools">
+                            <a href="<?= BaseRouting::url('tindakan') ?>" class="btn btn-tool">
+                                <i class="fas fa-times"></i>
                             </a>
                         </div>
-                        <div class="col-md-6 text-right">
-                            <button type="submit" class="btn btn-primary rounded-0">
-                                <i class="fas fa-save mr-2"></i>Update
-                            </button>
+                    </div>
+                    <form action="<?= BaseRouting::url('tindakan/update/' . $data->id) ?>" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                        <div class="card-body rounded-0">
+                            <div class="form-group">
+                                <label for="kode">Kode <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-0" id="kode" name="kode"
+                                    value="<?= $data->kode ?>" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_kategori">Kategori <span class="text-danger">*</span></label>
+                                <select class="form-control select2 rounded-0" id="id_kategori" name="id_kategori"
+                                    required>
+                                    <option value="">Pilih Kategori</option>
+                                    <?php foreach ($kategoris as $kategori): ?>
+                                        <option value="<?= $kategori->id ?>" <?= $data->id_kategori == $kategori->id ? 'selected' : '' ?>>
+                                            <?= $kategori->kode . ' - ' . $kategori->kategori ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item">Nama Tindakan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-0" id="item" name="item"
+                                    value="<?= $data->item ?>" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="harga_jual">Harga <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text rounded-0">Rp</span>
+                                    </div>
+                                    <input type="text" class="form-control rounded-0 autonumber" id="harga"
+                                        name="harga_jual" value="<?= Angka::format($data->harga_jual) ?>" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4"><label class="control-label">Remunerasi</label></div>
+                                <div class="col-lg-2"><label class="control-label">%</label></div>
+                                <div class="col-lg-6"><label class="control-label">Rp</label></div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <select name="remun_tipe" class="form-control rounded-0">
+                                            <option value="">[Tipe]</option>
+                                            <option value="1" <?= $data->remun_tipe == '1' ? 'selected' : '' ?>>Persen
+                                            </option>
+                                            <option value="2" <?= $data->remun_tipe == '2' ? 'selected' : '' ?>>Nominal
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control rounded-0" id="remun_perc"
+                                            name="remun_perc" value="<?= (float) $data->remun_perc ?>"
+                                            placeholder="Masukkan %" oninput="validateNumber(this)" maxlength="3"
+                                            <?= $data->remun_tipe != '1' ? 'disabled' : '' ?>>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control rounded-0 autonumber" id="remun_nom"
+                                            name="remun_nom" value="<?= Angka::format($data->remun_nom) ?>"
+                                            placeholder="Masukkan nominal" data-a-sep="." data-a-dec="," readonly
+                                            <?= $data->remun_tipe != '2' ? 'disabled' : '' ?>>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4"><label class="control-label">Apresiasi</label></div>
+                                <div class="col-lg-2"><label class="control-label">%</label></div>
+                                <div class="col-lg-6"><label class="control-label">Rp</label></div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <select name="apres_tipe" class="form-control rounded-0">
+                                            <option value="">[Tipe]</option>
+                                            <option value="1" <?= $data->apres_tipe == '1' ? 'selected' : '' ?>>Persen
+                                            </option>
+                                            <option value="2" <?= $data->apres_tipe == '2' ? 'selected' : '' ?>>Nominal
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control rounded-0" id="apres_perc"
+                                            name="apres_perc" value="<?= (float) $data->apres_perc ?>"
+                                            placeholder="Masukkan %" oninput="validateNumber(this)" maxlength="3"
+                                            <?= $data->apres_tipe != '1' ? 'disabled' : '' ?>>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control rounded-0 autonumber" id="apres_nom"
+                                            name="apres_nom" value="<?= Angka::format($data->apres_nom) ?>"
+                                            placeholder="Masukkan nominal" data-a-sep="." data-a-dec="," readonly
+                                            <?= $data->apres_tipe != '2' ? 'disabled' : '' ?>>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Status <span class="text-danger">*</span></label>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status1" name="status"
+                                        value="1" <?= $data->status == '1' ? 'checked' : '' ?>>
+                                    <label for="status1" class="custom-control-label">Aktif</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input class="custom-control-input" type="radio" id="status0" name="status"
+                                        value="0" <?= $data->status == '0' ? 'checked' : '' ?>>
+                                    <label for="status0" class="custom-control-label">Non Aktif</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="<?= BaseRouting::url('tindakan') ?>" class="btn btn-default rounded-0">
+                                        <i class="fas fa-arrow-left mr-2"></i>Kembali
+                                    </a>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <button type="submit" class="btn btn-primary rounded-0">
+                                        <i class="fas fa-save mr-2"></i>Update
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card rounded-0">
+                    <div class="card-header">
+                        <h3 class="card-title">Item Referensi</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="<?= BaseRouting::url('tindakan/store_reff') ?>" method="POST" class="mb-3">
+                            <input type="hidden" id="id" name="id" value="<?= $data->id ?>">
+                            <input type="hidden" id="item_reff_id" name="item_reff_id">
+                            <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <input type="text" id="item_reff" class="form-control rounded-0" name="item_reff"
+                                            placeholder="Item" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="number" id="jml_reff" class="form-control rounded-0" name="jml_reff"
+                                            placeholder="Jumlah" min="1" step="1" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input type="text" id="harga_reff" class="form-control rounded-0 currency"
+                                            name="harga_reff" placeholder="Harga" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary btn-block rounded-0">
+                                        <i class="fas fa-plus"></i> Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th>Item</th>
+                                        <th width="15%">Jumlah</th>
+                                        <th width="20%">Harga</th>
+                                        <th width="20%">Subtotal</th>
+                                        <th width="10%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </section>
 
+
 <script>
-    function formatCurrency(input) {
-        // Remove non-digit characters
-        let value = input.value.replace(/\D/g, '');
+    $("#jml_reff").prop('readonly', true);
+    $("#harga, #harga_reff").autoNumeric({ aSep: '.', aDec: ',', aPad: false });
 
-        // Convert to number and format
-        if (value !== '') {
-            value = parseInt(value);
-            value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    // Update the form submission to handle autoNumeric values
+    $('form').on('submit', function (e) {
+        $('.autonumber').each(function () {
+            var value = AutoNumeric.getAutoNumericElement(this).getNumber();
+            $(this).val(value);
+        });
+    });
+
+    // Update calculation functions to use autoNumeric
+    function calculateRemunNom() {
+        const hargaJual = AutoNumeric.getAutoNumericElement('#harga_jual').getNumber();
+        const remunPerc = parseInt($('#remun_perc').val() || 0);
+
+        if (hargaJual && remunPerc) {
+            const remunNom = Math.round((hargaJual * remunPerc) / 100);
+            AutoNumeric.getAutoNumericElement('#remun_nom').set(remunNom);
         }
+    }
 
-        // Update input value
-        input.value = value;
+    function calculateApresNom() {
+        const hargaJual = AutoNumeric.getAutoNumericElement('#harga_jual').getNumber();
+        const apresPerc = parseInt($('#apres_perc').val() || 0);
+
+        if (hargaJual && apresPerc) {
+            const apresNom = Math.round((hargaJual * apresPerc) / 100);
+            AutoNumeric.getAutoNumericElement('#apres_nom').set(apresNom);
+        }
+    }
+
+    function calculateRemunPerc() {
+        const hargaJual = AutoNumeric.getAutoNumericElement('#harga_jual').getNumber();
+        const remunNom = AutoNumeric.getAutoNumericElement('#remun_nom').getNumber();
+
+        if (hargaJual && remunNom) {
+            const remunPerc = Math.round((remunNom * 100) / hargaJual);
+            const finalPerc = Math.min(remunPerc, 100);
+            $('#remun_perc').val(finalPerc);
+        }
+    }
+
+    function calculateApresPerc() {
+        const hargaJual = AutoNumeric.getAutoNumericElement('#harga_jual').getNumber();
+        const apresNom = AutoNumeric.getAutoNumericElement('#apres_nom').getNumber();
+
+        if (hargaJual && apresNom) {
+            const apresPerc = Math.round((apresNom * 100) / hargaJual);
+            const finalPerc = Math.min(apresPerc, 100);
+            $('#apres_perc').val(finalPerc);
+        }
     }
 
     function validateNumber(input) {
         // Remove any non-digit characters except decimal point
         input.value = input.value.replace(/[^\d]/g, '');
-        
+
         // Ensure value is between 0 and 100
         let value = parseInt(input.value);
         if (value > 100) {
@@ -210,54 +298,12 @@
         }
     }
 
-    function calculateRemunNom() {
-        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-        const remunPerc = parseInt($('#remun_perc').val() || 0);
-        
-        if (hargaJual && remunPerc) {
-            const remunNom = Math.round((hargaJual * remunPerc) / 100);
-            $('#remun_nom').val(remunNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-        }
-    }
-
-    function calculateApresNom() {
-        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-        const apresPerc = parseInt($('#apres_perc').val() || 0);
-        
-        if (hargaJual && apresPerc) {
-            const apresNom = Math.round((hargaJual * apresPerc) / 100);
-            $('#apres_nom').val(apresNom.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
-        }
-    }
-
-    function calculateRemunPerc() {
-        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-        const remunNom = parseInt($('#remun_nom').val().replace(/\./g, '') || 0);
-        
-        if (hargaJual && remunNom) {
-            const remunPerc = Math.round((remunNom * 100) / hargaJual);
-            const finalPerc = Math.min(remunPerc, 100);
-            $('#remun_perc').val(finalPerc);
-        }
-    }
-
-    function calculateApresPerc() {
-        const hargaJual = parseInt($('#harga_jual').val().replace(/\./g, '') || 0);
-        const apresNom = parseInt($('#apres_nom').val().replace(/\./g, '') || 0);
-        
-        if (hargaJual && apresNom) {
-            const apresPerc = Math.round((apresNom * 100) / hargaJual);
-            const finalPerc = Math.min(apresPerc, 100);
-            $('#apres_perc').val(finalPerc);
-        }
-    }
-
     function handleRemunTipeChange() {
         const remunTipe = $('select[name="remun_tipe"]').val();
-        
+
         // Reset fields
         $('#remun_perc, #remun_nom').val('').prop('disabled', true);
-        
+
         if (remunTipe === '1') { // Persen
             $('#remun_perc').prop('disabled', false);
             $('#remun_nom').prop('disabled', true);
@@ -269,10 +315,10 @@
 
     function handleApresTipeChange() {
         const apresTipe = $('select[name="apres_tipe"]').val();
-        
+
         // Reset fields
         $('#apres_perc, #apres_nom').val('').prop('disabled', true);
-        
+
         if (apresTipe === '1') { // Persen
             $('#apres_perc').prop('disabled', false);
             $('#apres_nom').prop('disabled', true);
@@ -282,7 +328,7 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initially disable all fields
         $('#remun_perc, #remun_nom, #apres_perc, #apres_nom').prop('disabled', true);
 
@@ -290,9 +336,9 @@
         $('select[name="remun_tipe"]').on('change', handleRemunTipeChange);
         $('select[name="apres_tipe"]').on('change', handleApresTipeChange);
 
-		
+
         // Handle harga_jual changes
-        $('#harga_beli').on('keyup', function() {
+        $('#harga_beli').on('keyup', function () {
             const remunTipe = $('select[name="remun_tipe"]').val();
             const apresTipe = $('select[name="apres_tipe"]').val();
 
@@ -301,9 +347,9 @@
             if (apresTipe === '1') calculateApresNom();
             if (apresTipe === '2') calculateApresPerc();
         });
-		
+
         // Handle harga_jual changes
-        $('#harga_jual').on('keyup', function() {
+        $('#harga_jual').on('keyup', function () {
             const remunTipe = $('select[name="remun_tipe"]').val();
             const apresTipe = $('select[name="apres_tipe"]').val();
 
@@ -314,34 +360,34 @@
         });
 
         // Handle percentage inputs
-        $('#remun_perc').on('input', function() {
+        $('#remun_perc').on('input', function () {
             if ($('select[name="remun_tipe"]').val() === '1') {
                 calculateRemunNom();
             }
         });
 
-        $('#apres_perc').on('input', function() {
+        $('#apres_perc').on('input', function () {
             if ($('select[name="apres_tipe"]').val() === '1') {
                 calculateApresNom();
             }
         });
 
         // Handle nominal inputs
-        $('#remun_nom').on('keyup', function() {
+        $('#remun_nom').on('keyup', function () {
             if ($('select[name="remun_tipe"]').val() === '2') {
                 calculateRemunPerc();
             }
         });
 
-        $('#apres_nom').on('keyup', function() {
+        $('#apres_nom').on('keyup', function () {
             if ($('select[name="apres_tipe"]').val() === '2') {
                 calculateApresPerc();
             }
         });
 
         // Handle form submission
-        $('form').on('submit', function(e) {
-            $('.currency').each(function() {
+        $('form').on('submit', function (e) {
+            $('.currency').each(function () {
                 var value = $(this).val().replace(/\./g, '');
                 $(this).val(value);
             });
@@ -351,23 +397,55 @@
         $('.select2').select2({
             theme: 'bootstrap4',
             width: '100%',
-            placeholder: function() {
+            placeholder: function () {
                 return $(this).data('placeholder');
             },
             allowClear: true
         });
 
         // Add keypress validation for percentage fields
-        $('#remun_perc, #apres_perc').on('keypress', function(e) {
+        $('#remun_perc, #apres_perc').on('keypress', function (e) {
             // Allow only numbers (0-9)
             if (e.which < 48 || e.which > 57) {
                 e.preventDefault();
             }
-            
+
             // Prevent input if current value is 100 and trying to add more digits
             if (this.value === '100' || (this.value.length === 2 && parseInt(this.value + e.key) > 100)) {
                 e.preventDefault();
             }
+        });
+
+        $(document).ready(function () {
+            $("#item_reff").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "<?= BaseRouting::url('tindakan/search_items') ?>",
+                        dataType: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength: 1,
+                select: function (event, ui) {
+                    $("#item_reff_id").val(ui.item.id);
+                    $("#item_reff").val(ui.item.item);
+                    $("#harga_reff").autoNumeric('set', ui.item.harga_jual);
+                    $("#jml_reff").prop('readonly', false);
+                    $("#jml_reff").val(1);
+                    $("#jml_reff").focus();
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>")
+                    .data("item.autocomplete", item)
+                    .append("<a>" + item.item + "</a>")
+                    .appendTo(ul);
+            };
         });
     });
 </script>

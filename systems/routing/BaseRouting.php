@@ -14,69 +14,53 @@ class BaseRouting {
     public static function dispatch() {
         try {
             // Get the URL path
-            $path = $_SERVER['REQUEST_URI'];
+            $uri = $_SERVER['REQUEST_URI'];
+            $path = parse_url($uri, PHP_URL_PATH);
             
-            // Remove base path from URL
-            $basePath = self::getBasePath();
-            if ($basePath && strpos($path, $basePath) === 0) {
-                $path = substr($path, strlen($basePath));
-            }
+            // Remove base path and index.php from URL
+            $path = str_replace(['index.php', '/medkit3'], '', $path);
             
-            // Remove query string if exists
-            if (($pos = strpos($path, '?')) !== false) {
-                $path = substr($path, 0, $pos);
-            }
+            // Split into segments
+            $segments = array_values(array_filter(explode('/', $path)));
             
-            // Remove trailing slash
-            $path = trim($path, '/');
+            // Default controller and method
+            $controller = !empty($segments[0]) ? $segments[0] : 'home';
+            $method = !empty($segments[1]) ? str_replace('-', '_', $segments[1]) : 'index';
+            $params = array_slice($segments, 2);
             
-            // If empty path, use default controller/action
-            if (empty($path)) {
-                $controller = 'Home';
-                $action = 'index';
-                $params = [];
-            } else {
-                // Split path into segments
-                $segments = explode('/', $path);
-                
-                // Get controller
-                $controller = ucfirst(array_shift($segments));
-                
-                // Get action
-                $action = !empty($segments) ? array_shift($segments) : 'index';
-                
-                // Remaining segments are parameters
-                $params = $segments;
-            }
-            
-            // Add Controller suffix
-            $controllerClass = $controller . 'Controller';
+            // Build controller class name
+            $controllerClass = ucfirst($controller) . 'Controller';
             $controllerFile = APP_PATH . '/controllers/' . $controllerClass . '.php';
             
-            // Check if controller exists
             if (!file_exists($controllerFile)) {
-                throw new Exception("Controller not found: {$controllerClass}");
+                throw new Exception('Controller not found: ' . $controllerClass);
             }
             
-            // Create controller instance
-            $controller = new $controllerClass();
+            require_once $controllerFile;
             
-            // Check if action exists
-            if (!method_exists($controller, $action)) {
-                throw new Exception("Action not found: {$action}");
+            if (!class_exists($controllerClass)) {
+                throw new Exception('Controller class not found: ' . $controllerClass);
             }
             
-            // Call the action with parameters
-            return call_user_func_array([$controller, $action], $params);
+            $controllerInstance = new $controllerClass();
+            
+            if (!method_exists($controllerInstance, $method)) {
+                throw new Exception('Method not found: ' . $method);
+            }
+            
+            return call_user_func_array([$controllerInstance, $method], $params);
             
         } catch (Exception $e) {
-            // Log the error
-            Logger::getInstance()->error("Routing Error: " . $e->getMessage(), [
-                'exception' => $e
-            ]);
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                // Return JSON error for AJAX requests
+                header('Content-Type: application/json');
+                echo json_encode(['error' => $e->getMessage()]);
+                exit;
+            }
             
-            // Handle exception using static method
-            BaseController::handleException($e);
+            // Show error page for normal requests
+            require_once APP_PATH . '/views/errors/404.php';
         }
     }
     

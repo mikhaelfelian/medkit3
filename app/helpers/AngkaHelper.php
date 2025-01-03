@@ -1,14 +1,23 @@
 <?php
 class AngkaHelper {
     public static function formatRupiah($angka) {
-        return 'Rp ' . number_format($angka, 0, ',', '.');
+        if ($angka === null || $angka === '') {
+            return 'Rp 0';
+        }
+        return 'Rp ' . number_format((float)$angka, 0, ',', '.');
     }
     
     public static function formatNumber($angka) {
-        return number_format($angka, 0, ',', '.');
+        if ($angka === null || $angka === '') {
+            return '0';
+        }
+        return number_format((float)$angka, 0, ',', '.');
     }
     
     public static function unformat($angka) {
+        if ($angka === null || $angka === '') {
+            return 0;
+        }
         return (float)str_replace(['Rp ', '.', ','], ['', '', '.'], $angka);
     }
     

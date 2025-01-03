@@ -15,7 +15,21 @@ abstract class Migration {
         return $this->prefix . $name;
     }
     
-    abstract public function up();
-    abstract public function down();
+    /**
+     * Get the description of the migration
+     * @return string
+     */
     abstract public function getDescription();
+
+    /**
+     * Run the migrations
+     * @return bool
+     */
+    abstract public function up();
+
+    /**
+     * Reverse the migrations
+     * @return bool
+     */
+    abstract public function down();
 } 

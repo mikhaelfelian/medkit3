@@ -6,9 +6,9 @@ class TindakanController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->model = $this->loadModel('Tindakan');
+        $this->itemReffModel = $this->loadModel('ItemReff');
         // Load Angka helper
         $this->loadHelper('angka');
-        $this->loadHelper('debug');
     }
     
     public function index() {
@@ -143,10 +143,14 @@ class TindakanController extends BaseController {
                 throw new Exception('Data not found');
             }
 
+            // Get item references
+            $item_reffs = $this->itemReffModel->getByItemId($id);
+
             return $this->view('master/tindakan/edit', [
                 'title' => 'Edit Tindakan',
                 'data' => $data,
                 'kategoris' => $kategoriModel->getActiveKategoris(), // Get active categories
+                'item_reffs' => $item_reffs, // Pass item references to view
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
 
@@ -318,6 +322,86 @@ class TindakanController extends BaseController {
         } catch (Exception $e) {
             Notification::error($e->getMessage());
             return $this->redirect('tindakan/create');
+        }
+    }
+
+    public function search_items() {
+        try {
+            $term = $this->input->get('term');
+            
+            if (empty($term)) {
+                return $this->json([]);
+            }
+            
+            $items = $this->model->searchActiveItems($term);
+            return $this->json($items);
+            
+        } catch (Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function store_reff() {
+        try {
+            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
+                throw new Exception('Invalid security token');
+            }
+
+            $id         = $this->input->post('id');
+            $reff_id    = $this->input->post('item_reff_id');
+            $item_reff  = $this->input->post('item_reff');
+            $jml_reff   = Angka::cleanNumber($this->input->post('jml_reff'));
+            $sql_item   = $this->model->getWithDetails($this->input->post('id'));
+            $subtotal   = Angka::cleanNumber($this->input->post('jml_reff')) * Angka::cleanNumber($this->input->post('harga'));
+
+            // Get form data
+            $data = [
+                'id_item'       => $this->input->post('id'), // Main item ID
+                'id_item_reff'  => $sql_item->id ? $sql_item->id : 0,
+                'item'          => $sql_item->item ? $sql_item->item : null,
+                'jml'           => AngkaHelper::cleanNumber($this->input->post('jml_reff')),
+                'harga'         => AngkaHelper::cleanNumber($this->input->post('harga_reff')),
+                'subtotal'      => $subtotal,
+                'status'        => $sql_item->status ? $sql_item->status : 0,
+            ];
+
+            // Validate required fields
+            if (empty($id) || empty($reff_id) || empty($jml_reff)) {
+                throw new Exception('Semua field harus diisi');
+            }
+
+            // Create new reference
+            if (!$this->itemReffModel->create($data)) {
+                throw new Exception('Gagal menyimpan data referensi');
+            }
+
+            Notification::success('Data referensi berhasil ditambahkan');
+            return $this->redirect('tindakan/edit/' . $data['id_item']);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('tindakan/edit/' . $this->input->post('id'));
+        }
+    }
+
+    public function delete_reff($id) {
+        try {
+            // Get reference data first to get parent ID for redirect
+            $reff = $this->itemReffModel->find($id);
+            if (!$reff) {
+                throw new Exception('Reference not found');
+            }
+
+            if (!$this->itemReffModel->deleteReff($id)) {
+                throw new Exception('Failed to delete reference');
+            }
+
+            Notification::success('Referensi berhasil dihapus');
+            return $this->redirect('tindakan/edit/' . $reff->id_item);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('tindakan');
         }
     }
 } 
