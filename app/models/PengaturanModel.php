@@ -14,6 +14,7 @@ class PengaturanModel extends BaseModel {
         'pagination_limit',
         'favicon',
         'logo',
+        'logo_header',
         'updated_at'
     ];
 

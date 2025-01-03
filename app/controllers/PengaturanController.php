@@ -51,6 +51,18 @@ class PengaturanController extends BaseController {
                 }
             }
 
+            // Handle logo_header upload
+            if (isset($_FILES['logo_header']) && $_FILES['logo_header']['error'] === UPLOAD_ERR_OK) {
+                $current = $this->model->get();
+                if ($current && $current->logo_header) {
+                    $this->model->deleteFile($current->logo_header);
+                }
+                $logo_header = $this->model->uploadFile($_FILES['logo_header'], 'logo_header');
+                if ($logo_header) {
+                    $data['logo_header'] = 'public/'.$logo_header;
+                }
+            }
+
             // Handle favicon upload
             if (isset($_FILES['favicon']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
                 $current = $this->model->get();

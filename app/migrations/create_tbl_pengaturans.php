@@ -9,7 +9,8 @@ class Migration_create_tbl_pengaturans extends Migration {
             `alamat` TEXT NULL DEFAULT NULL,
             `telepon` VARCHAR(20) NULL DEFAULT NULL,
             `email` VARCHAR(100) NULL DEFAULT NULL,
-            `logo` VARCHAR(255) NULL DEFAULT NULL,
+            `logo` VARCHAR(255) NULL DEFAULT NULL,            
+            `logo_header` VARCHAR(255) NULL DEFAULT NULL,
             `favicon` VARCHAR(255) NULL DEFAULT NULL,
             `footer_text` VARCHAR(255) NULL DEFAULT NULL,
             PRIMARY KEY (`id`) USING BTREE

@@ -32,6 +32,7 @@ return [
         'Security',
         'Notification',
         'Paginate',
+        'Html',
         
         // App Helpers
         'AngkaHelper',  // This will autoload AngkaHelper.php
