@@ -212,6 +212,252 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                     </ul>
                 </li>
 
+                <!-- Transaksi -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'transaksi') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'transaksi') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>
+                            Transaksi
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('po'); ?>" 
+                                class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/po' ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-file-invoice nav-icon"></i>
+                                <p>Purchase Order</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('faktur'); ?>" 
+                                class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/faktur' ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-cart-plus nav-icon"></i>
+                                <p>Faktur</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('transaksi'); ?>" 
+                                class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/transaksi' ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-list nav-icon"></i>
+                                <p>Data Pembelian</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('transaksi'); ?>" 
+                                class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/transaksi' ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-list nav-icon"></i>
+                                <p>Data Pembelian</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Gudang -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <p>
+                            Gudang
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-header"><?= HtmlHelper::nbs() ?>INVENTORI</li>
+                        <li class="nav-item">
+                            <a href="#<?php //echo BaseRouting::url('gudang'); ?>" 
+                                class="nav-link <?php //echo $_SERVER['REQUEST_URI'] == BASE_URL . '/gudang' ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data Stok</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Medical Records -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'medical-records') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'medical-records') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-hospital"></i>
+                        <p>
+                            Medical Records
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-header"><?= HtmlHelper::nbs() ?>PELAYANAN</li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pendaftaran'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pendaftaran') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-user-plus nav-icon"></i>
+                                <p>Pendaftaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('antrian'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'antrian') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Antrian</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('rawat-jalan'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'rawat-jalan') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-procedures nav-icon"></i>
+                                <p>Rawat Jalan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('rawat-inap'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'rawat-inap') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-bed nav-icon"></i>
+                                <p>Rawat Inap</p>
+                            </a>
+                        </li>
+                        <li class="nav-header"><?= HtmlHelper::nbs() ?>PENUNJANG</li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('radiologi'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'radiologi') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-x-ray nav-icon"></i>
+                                <p>Radiologi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('laboratorium'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laboratorium') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-flask nav-icon"></i>
+                                <p>Laboratorium</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Apotek -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'apotek') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'apotek') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-pills"></i>
+                        <p>
+                            Apotek
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('apotek/penjualan'); ?>" 
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'apotek/penjualan') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-cash-register nav-icon"></i>
+                                <p>Penjualan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('apotek/resep'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'apotek/resep') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-prescription nav-icon"></i>
+                                <p>Resep</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('apotek/stok'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'apotek/stok') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-boxes nav-icon"></i>
+                                <p>Stok</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Human Resources -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'hr') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'hr') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Human Resources
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('hr/karyawan'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'hr/karyawan') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-user-md nav-icon"></i>
+                                <p>Data Karyawan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('hr/jadwal'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'hr/jadwal') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-calendar-alt nav-icon"></i>
+                                <p>Jadwal Kerja</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('hr/presensi'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'hr/presensi') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-clipboard-check nav-icon"></i>
+                                <p>Presensi</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Laporan -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>
+                            Laporan
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('laporan/kunjungan'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan/kunjungan') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-chart-line nav-icon"></i>
+                                <p>Kunjungan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('laporan/pendapatan'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan/pendapatan') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-money-bill-wave nav-icon"></i>
+                                <p>Pendapatan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('laporan/farmasi'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan/farmasi') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-pills nav-icon"></i>
+                                <p>Farmasi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('laporan/medis'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan/medis') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-notes-medical nav-icon"></i>
+                                <p>Rekam Medis</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Settings with Submenu -->
                 <li
                     class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan') !== false ? 'menu-open' : ''; ?>">
