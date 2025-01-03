@@ -66,11 +66,16 @@ class ItemRefInputModel extends BaseModel {
 
     public function delete($id) {
         try {
-            return parent::delete($id);
+            $sql = "DELETE FROM {$this->table} WHERE id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            
+            return $stmt->execute();
             
         } catch (PDOException $e) {
             error_log("Database Error in delete: " . $e->getMessage());
-            throw new Exception("Failed to delete reference input");
+            throw new Exception("Failed to delete item pemeriksaan");
         }
     }
 } 

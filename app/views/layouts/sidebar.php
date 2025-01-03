@@ -78,7 +78,8 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
 					<li class="nav-item">
                             <a href="<?php echo BaseRouting::url('satuan'); ?>" 
                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'satuan') !== false ? 'active' : ''; ?>">
-                                <i class="far fa-circle nav-icon"></i>
+                               &nbsp;&nbsp;
+                               <i class="nav-icon fas fa-list-alt"></i>
                                 <p>Data Satuan</p>
                             </a>
                         </li>

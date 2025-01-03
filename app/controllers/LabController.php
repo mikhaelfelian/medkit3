@@ -4,8 +4,9 @@ class LabController extends BaseController {
     
     public function __construct() {
         parent::__construct();
-        $this->model = $this->loadModel('Lab');
-        $this->itemReffModel = $this->loadModel('ItemRef');
+        $this->model                = $this->loadModel('Lab');
+        $this->itemReffModel        = $this->loadModel('ItemRef');
+        $this->itemRefInputModel = $this->loadModel('ItemRefInput');
     }
     
     public function index() {
@@ -101,6 +102,9 @@ class LabController extends BaseController {
 
             // Get item references
             $item_reffs = $this->itemReffModel->getByItemId($id);
+            
+            // Get reference inputs
+            $item_inputs = $this->itemRefInputModel->getByItemId($id);
 
             return $this->view('master/lab/edit', [
                 'title' => 'Edit Lab',
@@ -108,6 +112,7 @@ class LabController extends BaseController {
                 'kategoris' => $kategoriModel->getActiveRecords(),
                 'merks' => $merkModel->getActiveRecords(),
                 'item_reffs' => $item_reffs,
+                'item_ref_inputs' => $item_inputs,
                 'csrf_token' => $this->security->getCSRFToken()
             ]);
 
@@ -325,6 +330,68 @@ class LabController extends BaseController {
 
             Notification::success('Referensi berhasil dihapus');
             return $this->redirect('lab/edit/' . $reff->id_item);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('lab');
+        }
+    }
+
+    public function store_item() {
+        try {
+            if (!$this->security->validateCSRFToken($this->input->post('csrf_token'))) {
+                throw new Exception('Invalid security token');
+            }
+
+            $id = $this->input->post('id'); // Parent lab item ID
+            
+            // Get form data
+            $data = [
+                'id_item'       => $id,
+                'id_user'       => 0, // Get logged in user ID
+                'item_name'     => $this->input->post('item_name'),
+                'item_value'    => $this->input->post('item_value'),
+                'item_value_l1' => $this->input->post('item_value_l1'),
+                'item_value_l2' => $this->input->post('item_value_l2'),
+                'item_value_p1' => $this->input->post('item_value_p1'),
+                'item_value_p2' => $this->input->post('item_value_p2'),
+                'item_satuan'   => $this->input->post('item_satuan')
+            ];
+
+            // Validate required fields
+            if (empty($data['id_item']) || empty($data['item_name'])) {
+                throw new Exception('Item pemeriksaan harus diisi');
+            }
+
+            // Create new reference input
+            if (!$this->itemRefInputModel->create($data)) {
+                throw new Exception('Gagal menyimpan data pemeriksaan');
+            }
+
+            Notification::success('Data pemeriksaan berhasil ditambahkan');
+            return $this->redirect('lab/edit/' . $data['id_item']);
+            
+        } catch (Exception $e) {
+            Notification::error($e->getMessage());
+            return $this->redirect('lab/edit/' . $this->input->post('id'));
+        }
+    }
+
+    public function delete_item($id) {
+        try {
+            // Get reference input data first to get parent ID for redirect
+            $item = $this->itemRefInputModel->find($id);
+            if (!$item) {
+                throw new Exception('Item pemeriksaan tidak ditemukan');
+            }
+
+            // Delete the reference input
+            if (!$this->itemRefInputModel->delete($id)) {
+                throw new Exception('Gagal menghapus item pemeriksaan');
+            }
+
+            Notification::success('Item pemeriksaan berhasil dihapus');
+            return $this->redirect('lab/edit/' . $item->id_item);
             
         } catch (Exception $e) {
             Notification::error($e->getMessage());

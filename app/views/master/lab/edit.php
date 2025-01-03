@@ -230,6 +230,130 @@
                             </div>
                             <div class="tab-pane fade" id="item-lab" role="tabpanel" aria-labelledby="item-lab-tab">
                                 <!-- Content for Item Lab tab -->
+                                <form action="<?= BaseRouting::url('lab/store_item/' . $data->id) ?>" method="POST"
+                                    class="mb-4">
+                                    <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+                                    <input type="hidden" name="id" value="<?= $data->id ?>">
+
+                                    <div class="form-group">
+                                        <label>Item Pemeriksaan</label>
+                                        <input type="text" name="item_name" class="form-control rounded-0"
+                                            placeholder="Item Pemeriksaan..." required>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Nilai</label>
+                                                <input type="text" name="item_value" class="form-control rounded-0"
+                                                    placeholder="Nilai Default...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Satuan</label>
+                                                <input type="text" name="item_satuan" class="form-control rounded-0"
+                                                    placeholder="Nilai Satuan...">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nilai L1</label>
+                                                <input type="text" name="item_value_l1" class="form-control rounded-0"
+                                                    placeholder="N. Laki Dws...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nilai L2</label>
+                                                <input type="text" name="item_value_l2" class="form-control rounded-0"
+                                                    placeholder="N. Laki Ank...">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nilai P1</label>
+                                                <input type="text" name="item_value_p1" class="form-control rounded-0"
+                                                    placeholder="N. Perempuan Dws...">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nilai P2</label>
+                                                <input type="text" name="item_value_p2" class="form-control rounded-0"
+                                                    placeholder="N. Perempuan Ank...">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary rounded-0">
+                                            <i class="fas fa-save"></i> Simpan
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th width="5%" class="text-center">No</th>
+                                                <th>Item Pemeriksaan</th>
+                                                <th width="20%" class="text-right">Nilai Default</th>
+                                                <th width="20%" class="text-right">Satuan</th>
+                                                <th width="10%">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($item_ref_inputs)): ?>
+                                                <?php $no = 1; ?>
+                                                <?php foreach ($item_ref_inputs as $item): ?>
+                                                    <tr>
+                                                        <td class="text-center"><?= $no++ ?></td>
+                                                        <td>
+                                                            <?= $item->item_name ?><br>
+                                                            <?php if (!empty($item->item_value_l1)): ?>
+                                                                <small class="text-muted">• Laki-laki Dewasa:
+                                                                    <?= $item->item_value_l1 ?></small><br>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($item->item_value_l2)): ?>
+                                                                <small class="text-muted">• Laki-laki Anak:
+                                                                    <?= $item->item_value_l2 ?></small><br>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($item->item_value_p1)): ?>
+                                                                <small class="text-muted">• Perempuan Dewasa:
+                                                                    <?= $item->item_value_p1 ?></small><br>
+                                                            <?php endif; ?>
+                                                            <?php if (!empty($item->item_value_p2)): ?>
+                                                                <small class="text-muted">• Perempuan Anak:
+                                                                    <?= $item->item_value_p2 ?></small>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td class="text-center"><?= $item->item_value ?></td>
+                                                        <td class="text-right"><?= $item->item_satuan ?></td>
+                                                        <td>
+                                                            <a href="<?= BaseRouting::url('lab/delete_item/' . $item->id) ?>"
+                                                                class="btn btn-danger btn-sm rounded-0"
+                                                                onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <tr>
+                                                    <td colspan="6" class="text-center">Tidak ada data</td>
+                                                </tr>
+                                            <?php endif; ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,9 +411,9 @@
             }
         }).data("ui-autocomplete")._renderItem = function (ul, item) {
             return $("<li></li>")
-                    .data("item.autocomplete", item)
-                    .append("<a>" + item.item + "</a>")
-                    .appendTo(ul);
+                .data("item.autocomplete", item)
+                .append("<a>" + item.item + "</a>")
+                .appendTo(ul);
         };
     });
 </script>
