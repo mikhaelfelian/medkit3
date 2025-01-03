@@ -193,6 +193,7 @@ ROOT_PATH/
 │   │   ├── ObatController.php
 │   │   ├── PasienController.php
 │   │   ├── RadiologiController.php
+│   │   ├── TindakanController.php
 │   │   └── PengaturanController.php
 │   ├── models/
 │   │   ├── GudangModel.php
@@ -201,6 +202,7 @@ ROOT_PATH/
 │   │   ├── ObatModel.php
 │   │   ├── PasienModel.php
 │   │   ├── RadiologiModel.php
+│   │   ├── TindakanModel.php
 │   │   └── PengaturanModel.php
 │   ├── views/
 │   │   ├── errors/
@@ -222,6 +224,11 @@ ROOT_PATH/
 │   │   │   ├── footer.php
 │   │   │   ├── navbar.php
 │   │   │   └── sidebar.php
+│   │   ├── master/
+│   │   │   └── tindakan/
+│   │   │       ├── index.php
+│   │   │       ├── create.php
+│   │   │       └── edit.php
 │   │   ├── obat/
 │   │   │   ├── index.php
 │   │   │   ├── form.php
@@ -237,9 +244,11 @@ ROOT_PATH/
 │   ├── helpers/
 │   │   └── ViewHelper.php
 │   ├── libraries/
-│   │   └── Input.php
+│   │   ├── Input.php
+│   │   └── NumberFormatter.php
 │   └── migrations/
-│       └── 20240322_create_tbl_m_kategoris.php
+│       ├── 20240322_create_tbl_m_kategoris.php
+│       └── 20240325_create_tbl_m_tindakan.php
 ├── systems/
 │   ├── controllers/
 │   │   └── BaseController.php
