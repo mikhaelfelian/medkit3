@@ -101,7 +101,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('satuan'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'satuan') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="nav-icon fas fa-list-alt"></i>
+                                <i class="fas fa-ruler nav-icon"></i>
                                 <p>Data Satuan</p>
                             </a>
                         </li>
@@ -109,7 +109,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('kategori'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'kategori') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-tags nav-icon"></i>
                                 <p>Data Kategori</p>
                             </a>
                         </li>
@@ -117,7 +117,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('merk'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'merk') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-trademark nav-icon"></i>
                                 <p>Data Merk</p>
                             </a>
                         </li>
@@ -125,7 +125,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('obat'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'obat') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-pills nav-icon"></i>
                                 <p>Data Obat</p>
                             </a>
                         </li>
@@ -133,7 +133,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('tindakan'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'tindakan') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-procedures nav-icon"></i>
                                 <p>Data Tindakan</p>
                             </a>
                         </li>
@@ -141,7 +141,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('lab'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'lab') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-flask nav-icon"></i>
                                 <p>Data Laboratorium</p>
                             </a>
                         </li>
@@ -149,7 +149,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('radiologi'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'radiologi') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-x-ray nav-icon"></i>
                                 <p>Data Radiologi</p>
                             </a>
                         </li>
@@ -157,7 +157,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('poli'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'poli') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-clinic-medical nav-icon"></i>
                                 <p>Data Klinik</p>
                             </a>
                         </li>
@@ -165,7 +165,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('gelar'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gelar') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-graduation-cap nav-icon"></i>
                                 <p>Data Gelar</p>
                             </a>
                         </li>
@@ -173,7 +173,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('pasien'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pasien') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-user-injured nav-icon"></i>
                                 <p>Data Pasien</p>
                             </a>
                         </li>
@@ -181,7 +181,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('karyawan'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'karyawan') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-user-md nav-icon"></i>
                                 <p>Data Karyawan</p>
                             </a>
                         </li>
@@ -189,7 +189,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('gudang'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'gudang') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-warehouse nav-icon"></i>
                                 <p>Data Gudang</p>
                             </a>
                         </li>
@@ -197,7 +197,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('supplier'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'supplier') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-truck nav-icon"></i>
                                 <p>Data Supplier</p>
                             </a>
                         </li>
@@ -205,7 +205,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                             <a href="<?php echo BaseRouting::url('icd'); ?>"
                                 class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'icd') !== false ? 'active' : ''; ?>">
                                 <?= HtmlHelper::nbs(2) ?>
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="fas fa-book-medical nav-icon"></i>
                                 <p>Data ICD</p>
                             </a>
                         </li>
@@ -377,6 +377,36 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                         </li>
                     </ul>
                 </li>
+
+                <!-- Kasir -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'kasir') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'kasir') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-cash-register"></i>
+                        <p>
+                            Kasir
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('kasir/pembayaran'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'kasir/pembayaran') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-money-bill-wave nav-icon"></i>
+                                <p>Pembayaran</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('kasir/riwayat'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'kasir/riwayat') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-history nav-icon"></i>
+                                <p>Riwayat Transaksi</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <!-- Human Resources -->
                 <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'hr') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'hr') !== false ? 'active' : ''; ?>">
@@ -413,6 +443,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                         </li>
                     </ul>
                 </li>
+
                 <!-- Laporan -->
                 <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'laporan') !== false ? 'active' : ''; ?>">
@@ -473,8 +504,41 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                         <li class="nav-item">
                             <a href="<?php echo BaseRouting::url('pengaturan'); ?>"
                                 class="nav-link <?php echo $_SERVER['REQUEST_URI'] == BASE_URL . '/pengaturan' ? 'active' : ''; ?>">
-                                <i class="far fa-circle nav-icon"></i>
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-cogs nav-icon"></i>
                                 <p>Aplikasi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pengaturan/lisensi'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan/lisensi') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-key nav-icon"></i>
+                                <p>Lisensi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pengaturan/api'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan/api') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-code nav-icon"></i>
+                                <p>API</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pengaturan/bpjs'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan/bpjs') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-hospital nav-icon"></i>
+                                <p>BPJS</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('pengaturan/satusehat'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'pengaturan/satusehat') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-heartbeat nav-icon"></i>
+                                <p>SATU SEHAT</p>
                             </a>
                         </li>
                     </ul>
