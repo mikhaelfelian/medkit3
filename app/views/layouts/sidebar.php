@@ -279,6 +279,28 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                     </ul>
                 </li>
 
+                <!-- Master Antrian -->
+                <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'master-antrian') !== false ? 'menu-open' : ''; ?>">
+                    <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'master-antrian') !== false ? 'active' : ''; ?>">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Antrian
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('master-antrian'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'master-antrian') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-list nav-icon"></i>
+                                <p>Data Antrian</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
                 <!-- Medical Records -->
                 <li class="nav-item <?php echo strpos($_SERVER['REQUEST_URI'], 'medical-records') !== false ? 'menu-open' : ''; ?>">
                     <a href="#" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'medical-records') !== false ? 'active' : ''; ?>">
