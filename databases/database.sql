@@ -18968,12 +18968,12 @@ CREATE TABLE IF NOT EXISTS `tbl_m_item_ref_inputs` (
   PRIMARY KEY (`id`),
   KEY `fk_item_ref_inputs_items` (`id_item`),
   CONSTRAINT `fk_item_ref_inputs_items` FOREIGN KEY (`id_item`) REFERENCES `tbl_m_items` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
--- Dumping data for table db_medkit3.tbl_m_item_ref_inputs: ~0 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_item_ref_inputs: ~1 rows (approximately)
 DELETE FROM `tbl_m_item_ref_inputs`;
 INSERT INTO `tbl_m_item_ref_inputs` (`id`, `id_item`, `id_user`, `created_at`, `updated_at`, `item_name`, `item_value`, `item_value_l1`, `item_value_l2`, `item_value_p1`, `item_value_p2`, `item_satuan`) VALUES
-	(2, 12, 0, '2025-01-03 23:52:51', '2025-01-03 23:52:51', 'Anti HBS', 'Negatif', 'Negatif', 'Negatif', 'Negatif', 'Negatif', '');
+	(3, 12, 0, '2025-01-04 09:18:42', '2025-01-04 09:18:42', 'Anti HBS', 'Negatif', 'Negatif', 'Negatif', 'Negatif', 'Negatif', '');
 
 -- Dumping structure for table db_medkit3.tbl_m_item_stoks
 DROP TABLE IF EXISTS `tbl_m_item_stoks`;
@@ -19114,6 +19114,26 @@ DELETE FROM `tbl_m_pasiens`;
 INSERT INTO `tbl_m_pasiens` (`id`, `id_gelar`, `id_pekerjaan`, `id_user`, `created_at`, `updated_at`, `kode`, `nik`, `nama`, `nama_pgl`, `tgl_lahir`, `tmp_lahir`, `jns_klm`, `no_hp`, `alamat`, `alamat_domisili`, `rt`, `rw`, `kelurahan`, `kecamatan`, `kota`, `pekerjaan`, `file_ktp`, `file_foto`, `status`) VALUES
 	(1, 1, 0, 0, '2024-12-30 14:02:47', '2024-12-31 03:40:07', 'P24120001', '3374071502920002', 'MIKHAEL FELIAN WASKITO', 'TN. MIKHAEL FELIAN WASKITO', '1992-02-15', 'Semarang', 'L', '085741220427', 'Perum Mutiara Pandanaran Blok D11, Mangunharjo, Tembalang, Kota Semarang', 'dsds', '11', '11', 'MANGUNHARJO', 'TEMBALANG', 'Semarang', 'DASD', 'public/file/pasien/p24120001/p24120001_ktp.png', 'public/file/pasien/p24120001/p24120001_profile.png', '1');
 
+-- Dumping structure for table db_medkit3.tbl_m_penjamins
+DROP TABLE IF EXISTS `tbl_m_penjamins`;
+CREATE TABLE IF NOT EXISTS `tbl_m_penjamins` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp(),
+  `kode` varchar(160) DEFAULT NULL,
+  `penjamin` varchar(160) DEFAULT NULL,
+  `persen` decimal(10,1) DEFAULT 0.0,
+  `status` enum('0','1') DEFAULT '0',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='Tabel master penjamin yang berisi penjamin pelayanan.\r\nYang berupa :\r\n- UMUM (Pasien UMUM / Bayar Duit Cash)\r\n- ASURANSI (Pasien spt Mandiri InHealth, ManuLife, dll)\r\n- BPJS (Pasti sudah tahu semua)';
+
+-- Dumping data for table db_medkit3.tbl_m_penjamins: ~3 rows (approximately)
+DELETE FROM `tbl_m_penjamins`;
+INSERT INTO `tbl_m_penjamins` (`id`, `created_at`, `updated_at`, `kode`, `penjamin`, `persen`, `status`) VALUES
+	(1, '2025-01-04 10:34:27', '2025-01-04 10:34:27', 'PJM0001', 'UMUM', 0.0, '1'),
+	(2, '2025-01-04 10:39:23', '2025-01-04 10:40:36', 'PJM0002', 'ASURANSI', 2.0, '1'),
+	(3, '2025-01-04 10:39:36', '2025-01-04 10:39:36', 'PJM0003', 'BPJS', 0.0, '0');
+
 -- Dumping structure for table db_medkit3.tbl_m_polis
 DROP TABLE IF EXISTS `tbl_m_polis`;
 CREATE TABLE IF NOT EXISTS `tbl_m_polis` (
@@ -19126,10 +19146,12 @@ CREATE TABLE IF NOT EXISTS `tbl_m_polis` (
   `post_location` varchar(100) DEFAULT NULL,
   `status` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='Untuk menyimpan data poli/unit layanan';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COMMENT='Untuk menyimpan data poli/unit layanan';
 
--- Dumping data for table db_medkit3.tbl_m_polis: ~0 rows (approximately)
+-- Dumping data for table db_medkit3.tbl_m_polis: ~1 rows (approximately)
 DELETE FROM `tbl_m_polis`;
+INSERT INTO `tbl_m_polis` (`id`, `created_at`, `updated_at`, `kode`, `poli`, `keterangan`, `post_location`, `status`) VALUES
+	(3, '2025-01-04 09:07:27', '2025-01-04 09:07:27', 'PL25010001', 'POLI JIWA KONTOL', 'aaa', NULL, '1');
 
 -- Dumping structure for table db_medkit3.tbl_m_satuans
 DROP TABLE IF EXISTS `tbl_m_satuans`;
@@ -19195,7 +19217,7 @@ CREATE TABLE IF NOT EXISTS `tbl_pengaturans` (
 -- Dumping data for table db_medkit3.tbl_pengaturans: ~1 rows (approximately)
 DELETE FROM `tbl_pengaturans`;
 INSERT INTO `tbl_pengaturans` (`id`, `updated_at`, `judul`, `judul_app`, `alamat`, `deskripsi`, `kota`, `url`, `theme`, `pagination_limit`, `favicon`, `logo`, `logo_header`) VALUES
-	(1, '2025-01-03 16:55:48', 'KLINIK UTAMA dan LABORATORIUM "ESENSIA"', 'Medkit', 'Perum Mutiara Pandanaran Blok D11', 'SIMEDIS is an part of SIMRS application', 'KOTA SEMARANG', 'http://localhost/medkit3/', 'default', 10, 'public/file/app/favicon_677141b70ef29.png', 'public/file/app/logo_677141b70e672.png', 'public/file/app/logo_header_6778117c84072.png');
+	(1, '2025-01-04 02:17:05', 'KLINIK UTAMA dan LABORATORIUM "ESENSIA"', 'Medkit', 'Perum Mutiara Pandanaran Blok D11', 'SIMEDIS is an part of SIMRS application', 'KOTA SEMARANG', 'http://localhost/medkit3/', 'light', 10, 'public/file/app/favicon_677141b70ef29.png', 'public/file/app/logo_677141b70e672.png', 'public/file/app/logo_header_6778117c84072.png');
 
 -- Dumping structure for table db_medkit3.tbl_tbl_m_gudangs
 DROP TABLE IF EXISTS `tbl_tbl_m_gudangs`;
