@@ -18,7 +18,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 class="brand-image img-circle elevation-0" style="opacity: .8">
         <?php } ?>
         <span
-            class="brand-text font-weight-light"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>
+            class="brand-text font-weight-light" style="color: white;"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>
     </a>
 
     <!-- Sidebar -->
