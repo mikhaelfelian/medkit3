@@ -33,12 +33,12 @@ class PenjaminController extends BaseController {
             Notification::error('Gagal mengambil data penjamin: ' . $e->getMessage());
             // Return view with empty data instead of redirecting
             return $this->view('master/penjamin/index', [
-                'title' => 'Data Penjamin',
-                'data' => [],
-                'total' => 0,
-                'page' => $page,
-                'perPage' => $perPage,
-                'search' => $search
+                'title'     => 'Data Penjamin',
+                'data'      => [],
+                'total'     => 0,
+                'page'      => 1,
+                'perPage'   => 10,
+                'search'    => ''
             ]);
         }
     }
@@ -62,9 +62,9 @@ class PenjaminController extends BaseController {
             }
 
             $data = [
-                'penjamin' => $this->input->post('penjamin'),
-                'persen' => $this->input->post('persen'), 
-                'status' => $this->input->post('status', '0')
+                'penjamin'  => $this->input->post('penjamin'),
+                'persen'    => $this->input->post('persen'), 
+                'status'    => $this->input->post('status', '0')
             ];
 
             // Validate the data first
