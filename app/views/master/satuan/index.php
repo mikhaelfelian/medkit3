@@ -77,15 +77,17 @@
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <a href="<?= BaseRouting::url('satuan/edit/' . $item->id) ?>"
-                                                class="btn btn-info btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="<?= BaseRouting::url('satuan/delete/' . $item->id) ?>"
-                                                class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
+                                            <div class="btn-group">
+                                                <a href="<?= BaseRouting::url('satuan/edit/' . $item->id) ?>"
+                                                    class="btn btn-warning btn-sm rounded-0">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="<?= BaseRouting::url('satuan/delete/' . $item->id) ?>"
+                                                    class="btn btn-danger btn-sm rounded-0"
+                                                    onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

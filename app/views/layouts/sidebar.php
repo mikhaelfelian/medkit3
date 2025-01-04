@@ -2,7 +2,7 @@
 $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
 ?>
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-light-primary elevation-0">
     <!-- Brand Logo -->
     <a href="<?php echo BaseRouting::url(''); ?>" class="brand-link">
         <?php
@@ -12,10 +12,10 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
             ?>
             <img src="<?= BaseRouting::url(htmlspecialchars((string) ($logoPath))) ?>"
                 alt="<?= htmlspecialchars((string) ($settings->judul_app ?? 'AdminLTE Logo')) ?>"
-                class="brand-image img-circle elevation-3" style="opacity: .8">
+                class="brand-image img-circle elevation-0" style="opacity: .8">
         <?php } catch (Exception $e) { ?>
             <img src="<?php echo BaseRouting::asset('theme/admin-lte-3/dist/img/AdminLTELogo.png'); ?>" alt="AdminLTE Logo"
-                class="brand-image img-circle elevation-3" style="opacity: .8">
+                class="brand-image img-circle elevation-0" style="opacity: .8">
         <?php } ?>
         <span
             class="brand-text font-weight-light"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>

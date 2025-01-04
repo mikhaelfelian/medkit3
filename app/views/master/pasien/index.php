@@ -71,15 +71,15 @@
                                                 <td>
                                                     <div class="btn-group">
                                                         <a href="<?= BaseRouting::url('pasien/show/' . $item->id) ?>"
-                                                            class="btn btn-info btn-sm">
+                                                        class="btn btn-info btn-sm rounded-0">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                         <a href="<?= BaseRouting::url('pasien/edit/' . $item->id) ?>"
-                                                            class="btn btn-warning btn-sm">
+                                                            class="btn btn-warning btn-sm rounded-0">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
                                                         <a href="<?= BaseRouting::url('pasien/delete/' . $item->id) ?>"
-                                                            class="btn btn-danger btn-sm"
+                                                            class="btn btn-danger btn-sm rounded-0"
                                                             onclick="return confirm('Are you sure?')">
                                                             <i class="fas fa-trash"></i>
                                                         </a>

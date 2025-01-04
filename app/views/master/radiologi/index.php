@@ -99,11 +99,11 @@
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <a href="<?= BaseRouting::url('radiologi/edit/' . $item->id) ?>"
-                                                                class="btn btn-info btn-xs rounded-0" title="Edit">
+                                                                class="btn btn-warning btn-sm rounded-0">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
                                                             <a href="<?= BaseRouting::url('radiologi/delete/' . $item->id) ?>"
-                                                                class="btn btn-danger btn-xs rounded-0"
+                                                                class="btn btn-danger btn-sm rounded-0"
                                                                 onclick="return confirm('Yakin ingin menghapus data ini?')"
                                                                 title="Hapus">
                                                                 <i class="fas fa-trash"></i>

@@ -29,7 +29,8 @@
                     <div class="col-md-6">
                         <form action="<?= BaseRouting::url('gelar') ?>" method="GET">
                             <div class="input-group">
-                                <input type="text" class="form-control rounded-0" name="search" value="<?= $search ?>" placeholder="Cari...">
+                                <input type="text" class="form-control rounded-0" name="search" value="<?= $search ?>"
+                                    placeholder="Cari...">
                                 <div class="input-group-append">
                                     <button class="btn btn-default rounded-0"><i class="fas fa-search"></i></button>
                                 </div>
@@ -38,8 +39,8 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
+            <div class="card-body table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th width="100">No</th>
@@ -57,12 +58,17 @@
                                     <td><?= $item->gelar ?></td>
                                     <td><?= $item->keterangan ?></td>
                                     <td>
-                                        <a href="<?= BaseRouting::url('gelar/edit/' . $item->id) ?>" class="btn btn-warning btn-sm rounded-0">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="<?= BaseRouting::url('gelar/delete/' . $item->id) ?>" class="btn btn-danger btn-sm rounded-0" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                        <div class="btn-group">
+                                            <a href="<?= BaseRouting::url('gelar/edit/' . $item->id) ?>"
+                                                class="btn btn-warning btn-sm rounded-0">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="<?= BaseRouting::url('gelar/delete/' . $item->id) ?>"
+                                                class="btn btn-danger btn-sm rounded-0"
+                                                onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -81,4 +87,4 @@
             <?php endif; ?>
         </div>
     </div>
-</section> 
+</section>
