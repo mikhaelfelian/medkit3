@@ -10,8 +10,8 @@ class Migration_create_tbl_m_penjamins extends Migration {
     public function up() {
         $sql = "CREATE TABLE IF NOT EXISTS `" . $this->getTableName('m_penjamins') . "` (
             `id` INT(11) NOT NULL AUTO_INCREMENT,
-            `created_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-            `updated_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+            `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
             `kode` VARCHAR(160) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
             `penjamin` VARCHAR(160) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
             `persen` DECIMAL(10,1) NULL DEFAULT '0.0',

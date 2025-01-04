@@ -18,7 +18,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 class="brand-image img-circle elevation-0" style="opacity: .8">
         <?php } ?>
         <span
-            class="brand-text font-weight-light" style="color: white;"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>
+            class="brand-text font-weight-light"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></span>
     </a>
 
     <!-- Sidebar -->
@@ -45,7 +45,7 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                 <?php } ?>
                 <div class="info">
                     <a href="#"
-                        class="d-block"><?= htmlspecialchars((string) ($settings->judul_app ?? 'NUSANTARA HMVC')) ?></a>
+                        class="d-block"><?= HtmlHelper::nbs(2) ?></a>
                 </div>
             </div>
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -199,6 +199,14 @@ $settings = ViewHelper::loadModel('Pengaturan')->getSettings();
                                 <?= HtmlHelper::nbs(2) ?>
                                 <i class="fas fa-truck nav-icon"></i>
                                 <p>Data Supplier</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo BaseRouting::url('penjamin'); ?>"
+                                class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'penjami') !== false ? 'active' : ''; ?>">
+                                <?= HtmlHelper::nbs(2) ?>
+                                <i class="fas fa-hand-holding-medical nav-icon"></i>
+                                <p>Data Penjamin</p>
                             </a>
                         </li>
                         <li class="nav-item">
